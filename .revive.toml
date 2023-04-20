@@ -1,0 +1,30 @@
+ignoreGeneratedHeader = true
+severity = "error"
+confidence = 0.8
+errorCode = 1
+warningCode = 0
+enableAllRules = true
+
+# Rules tunning
+[rule.argument-limit]
+    Arguments = [5]
+[rule.function-result-limit]
+    Arguments = [3]
+[rule.cyclomatic]
+    Arguments = [10]
+[rule.cognitive-complexity]
+    Arguments = [11]
+
+# Disabled rules
+[rule.file-header]
+    Disabled = true
+[rule.max-public-structs]
+    Disabled = true
+[rule.line-length-limit]
+    Disabled = true
+[rule.function-length]
+    Disabled = true
+[rule.banned-characters]
+    Disabled = true
+[rule.package-comments]
+    Disabled = true
