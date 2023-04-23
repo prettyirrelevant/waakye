@@ -91,12 +91,10 @@ type spotifyAPIBearerCredentialsResponse struct {
 }
 
 type spotifyAPIErrorResponse struct {
-	APIError spotifyAPIError `json:"error"`
-}
-
-type spotifyAPIError struct {
-	Status  uint   `json:"status"`
-	Message string `json:"message"`
+	APIError struct {
+		Status  uint   `json:"status"`
+		Message string `json:"message"`
+	} `json:"error"`
 }
 
 func (e *spotifyAPIErrorResponse) Error() string {
