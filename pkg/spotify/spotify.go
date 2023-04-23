@@ -157,6 +157,7 @@ func (s *Spotify) populatePlaylistWithTracks(tracks []types.Track, playlistID, a
 			defer wg.Done()
 			err := s.RequestClient.
 				Post(s.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
+				SetBearerAuthToken(accessToken).
 				SetContentType("application/json").
 				SetFormData(map[string]string{
 					"uris": strings.Join(chunk, ","),

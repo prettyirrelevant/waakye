@@ -52,3 +52,19 @@ func trackToSearchQuery(track types.Track) string {
 	}
 	return searchQuery
 }
+
+// parseGetPlaylistResponse transforms the playlist object returned from `ytmusicapi` into our internal object.
+func parseGetPlaylistResponse(playlist ytmusicapi.Playlist) types.Playlist {
+	var tracks []types.Track
+
+	for _, entry := range playlist.Tracks {
+		tracks = append(tracks, types.Track{ID: entry.ID, Title: cleanTrackTitle(entry.Title), Artists: entry.Artistes})
+	}
+
+	return types.Playlist{
+		ID:          playlist.ID,
+		Title:       playlist.Title,
+		Description: playlist.Description,
+		Tracks:      tracks,
+	}
+}

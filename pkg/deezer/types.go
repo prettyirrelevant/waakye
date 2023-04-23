@@ -33,7 +33,7 @@ type deezerAPIGetPlaylistResponse struct {
 	ID          int                         `json:"id"`
 	Title       string                      `json:"title"`
 	Description string                      `json:"description"`
-	Tracks      deezerAPITracksDataResponse `json:"tracks`
+	Tracks     deezerAPITracksDataResponse `json:"tracks"`
 }
 
 type deezerAPISearchTrackResponse struct {

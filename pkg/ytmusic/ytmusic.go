@@ -26,11 +26,11 @@ func (y *YTMusic) GetPlaylist(playlistURI string) (types.Playlist, error) {
 		return types.Playlist{}, fmt.Errorf("ytmusic: %s", err.Error())
 	}
 
-	return y.parseGetPlaylistResponse(playlist), nil
+	return parseGetPlaylistResponse(playlist), nil
 }
 
 // CreatePlaylist creates a new playlist using the information provided.
-func (y *YTMusic) CreatePlaylist(playlist types.Playlist) (string, error) {
+func (*YTMusic) CreatePlaylist(playlist types.Playlist) (string, error) {
 	var foundTracks []types.Track
 	var wg sync.WaitGroup
 
@@ -53,20 +53,4 @@ func (y *YTMusic) CreatePlaylist(playlist types.Playlist) (string, error) {
 		return "", fmt.Errorf("ytmusic: %s", err.Error())
 	}
 	return playlistID, nil
-}
-
-// parseGetPlaylistResponse transforms the playlist object returned from `ytmusicapi` into our internal object.
-func (y *YTMusic) parseGetPlaylistResponse(playlist ytmusicapi.Playlist) types.Playlist {
-	var tracks []types.Track
-
-	for _, entry := range playlist.Tracks {
-		tracks = append(tracks, types.Track{ID: entry.ID, Title: cleanTrackTitle(entry.Title), Artists: entry.Artistes})
-	}
-
-	return types.Playlist{
-		ID:          playlist.ID,
-		Title:       playlist.Title,
-		Description: playlist.Description,
-		Tracks:      tracks,
-	}
 }

@@ -127,9 +127,10 @@ func (d *Deezer) populatePlaylistWithTracks(tracks []types.Track, playlistID, ac
 		tracksURI = append(tracksURI, track.ID)
 	}
 
-	var response interface{}
+	var response any
 	err := d.RequestClient.
 		Post(d.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
+		SetBearerAuthToken(accessToken).
 		SetContentType("application/json").
 		SetFormData(map[string]string{
 			"songs": strings.Join(tracksURI, ","),
