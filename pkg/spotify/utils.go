@@ -48,9 +48,35 @@ func parseTracksResponse(response spotifyAPITracksResponse) []types.Track {
 	return tracks
 }
 
+// parseTracksResponse transforms the playlist items returned from Spotify API into our internal object.
+func parseSearchResponse(response spotifyAPISearchResponse) []types.Track {
+	var tracks []types.Track
+
+	for _, entry := range response.Tracks.Items {
+		artistes := []string{}
+		for _, artiste := range entry.Artists {
+			artistes = append(artistes, artiste.Name)
+		}
+		tracks = append(tracks, types.Track{ID: entry.ID, Title: entry.Name, Artists: artistes})
+	}
+
+	return tracks
+}
+
 // trackIDToURI transforms a Spotify ID into URI.
 func trackIDToURI(track types.Track) string {
 	return "spotify:track:" + track.ID
+}
+
+// trackToSearchQuery transforms our internal track object into a Spotify search query.
+func trackToSearchQuery(track types.Track) string {
+	query := "track:" + track.Title
+	for _, artist := range track.Artists {
+		query += " artist:" + artist
+		break // search with > 1 artiste fails.
+	}
+
+	return query
 }
 
 func setupRequestClient(reqClient *req.Client) *req.Client {

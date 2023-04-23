@@ -57,8 +57,19 @@ type spotifyAPITracksResponse struct {
 	} `json:"items"`
 }
 
-type spotifyAPISearchTrackResponse struct {
-	Tracks spotifyAPITracksResponse `json:"tracks"`
+type spotifyAPISearchResponse struct {
+	Tracks struct {
+		Limit int    `json:"limit"`
+		Next  string `json:"next"`
+		Total int    `json:"total"`
+		Items []struct {
+			Artists []struct {
+				Name string `json:"name"`
+			} `json:"artists"`
+			ID   string `json:"id"`
+			Name string `json:"name"`
+		} `json:"items"`
+	} `json:"tracks"`
 }
 
 type spotifyAPICreatePlaylistResponse struct {

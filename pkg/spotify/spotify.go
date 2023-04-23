@@ -177,14 +177,15 @@ func (s *Spotify) lookupTrack(track types.Track, tracksFound *[]types.Track) {
 		return
 	}
 
-	var response spotifyAPISearchTrackResponse
+	var response spotifyAPISearchResponse
 	err = s.RequestClient.
 		Get(s.Config.BaseAPIURI + "/search").
 		SetBearerAuthToken(clientAuthToken).
 		SetContentType("application/json").
 		SetQueryParams(map[string]string{
-			"q":    "track:" + track.ToSearchQuery(),
-			"type": "track",
+			"q":     trackToSearchQuery(track),
+			"type":  "track",
+			"limit": "5",
 		}).
 		Do().
 		Into(&response)
@@ -196,8 +197,7 @@ func (s *Spotify) lookupTrack(track types.Track, tracksFound *[]types.Track) {
 	if len(response.Tracks.Items) == 0 {
 		return
 	}
-
-	*tracksFound = append(*tracksFound, parseTracksResponse(response.Tracks)[0])
+	*tracksFound = append(*tracksFound, parseSearchResponse(response)[0])
 }
 
 // getClientAuthenticationCredentials fetches the client credentials needed for Spotify authentication.
