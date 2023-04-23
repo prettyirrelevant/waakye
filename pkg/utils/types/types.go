@@ -14,3 +14,21 @@ type Track struct {
 	Title   string
 	Artists []string
 }
+
+// ToSearchQuery takes a track and transforms it into a search query.
+func (t *Track) ToSearchQuery() string {
+	searchQuery := t.Title + " by"
+	for index, artiste := range t.Artists {
+		if len(t.Artists) == 1 {
+			searchQuery += " " + artiste
+		} else if len(t.Artists) > 1 && len(t.Artists)-1 == index {
+			searchQuery += " and " + artiste
+		} else {
+			searchQuery += " " + artiste
+			if index < len(t.Artists)-2 {
+				searchQuery += ","
+			}
+		}
+	}
+	return searchQuery
+}
