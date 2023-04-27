@@ -116,7 +116,7 @@ func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (s
 	return response.ID, nil
 }
 
-func (s *Spotify) GetAuthorizationCode(code string) (spotifyAPIBearerCredentialsResponse, error) {
+func (s *Spotify) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
 	var response spotifyAPIBearerCredentialsResponse
 	err := s.RequestClient.
 		Post(s.Config.AuthenticationURI).
@@ -126,10 +126,15 @@ func (s *Spotify) GetAuthorizationCode(code string) (spotifyAPIBearerCredentials
 		Into(&response)
 
 	if err != nil {
-		return response, err
+		return types.OauthCredentials{}, err
 	}
 
-	return response, nil
+	return types.OauthCredentials{AccessToken: response.AccessToken, RefreshToken: response.RefreshToken, ExpiresAt: int(response.ExpiresAt)}, nil
+}
+
+// RequiresAccessToken specifies if the streaming requires Oauth.
+func (*Spotify) RequiresAccessToken() bool {
+	return true
 }
 
 // populatePlaylistWithTracks adds tracks found on Spotify to a newly created playlist.

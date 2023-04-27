@@ -14,7 +14,7 @@ type Cache struct {
 }
 
 type cacheItem struct {
-	value      interface{}
+	value      any
 	expiration time.Time
 }
 
@@ -24,7 +24,7 @@ func NewCache() *Cache {
 	}
 }
 
-func (c *Cache) Get(key string) (interface{}, bool) {
+func (c *Cache) Get(key string) (any, bool) {
 	c.RLock()
 	defer c.RUnlock()
 
@@ -35,7 +35,7 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 	return item.value, true
 }
 
-func (c *Cache) Set(key string, value interface{}, duration time.Duration) {
+func (c *Cache) Set(key string, value any, duration time.Duration) {
 	c.Lock()
 	defer c.Unlock()
 

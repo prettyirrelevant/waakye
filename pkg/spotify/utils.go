@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/imroc/req/v3"
+
 	"github.com/prettyirrelevant/waakye/pkg/utils/types"
 )
 

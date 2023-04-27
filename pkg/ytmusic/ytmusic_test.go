@@ -21,7 +21,7 @@ func TestYTMusic(t *testing.T) {
 	is.Len(playlist.Tracks, 100)
 
 	// Test create playlist
-	id, err := ytmusic.CreatePlaylist(types.Playlist{Title: "Hello!", Description: "Hahahahahahaha!", Tracks: playlist.Tracks[:20]})
+	id, err := ytmusic.CreatePlaylist(types.Playlist{Title: "Hello!", Description: "Hahahahahahaha!", Tracks: playlist.Tracks[:20]}, "")
 	is.NoError(err)
 	is.NotEmpty(id)
 	// delete the created playlist

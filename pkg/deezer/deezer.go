@@ -78,7 +78,7 @@ func (d *Deezer) CreatePlaylist(playlist types.Playlist, accessToken string) (st
 	return response.ID, nil
 }
 
-func (d *Deezer) GetAuthorizationCode(code string) (string, error) {
+func (d *Deezer) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
 	var response deezerAPIBearerCredentialsResponse
 	err := d.RequestClient.
 		Get(d.Config.AuthenticationURI).
@@ -92,10 +92,15 @@ func (d *Deezer) GetAuthorizationCode(code string) (string, error) {
 		Into(&response)
 
 	if err != nil {
-		return "", err
+		return types.OauthCredentials{}, err
 	}
 
-	return response.AccessToken, nil
+	return types.OauthCredentials{AccessToken: response.AccessToken, ExpiresAt: int(response.Expires)}, nil
+}
+
+// RequiresAccessToken specifies if the streaming requires Oauth.
+func (*Deezer) RequiresAccessToken() bool {
+	return true
 }
 
 func (d *Deezer) lookupTrack(track types.Track, tracksFound *[]types.Track) {

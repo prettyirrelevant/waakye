@@ -4,8 +4,9 @@ import (
 	"testing"
 
 	"github.com/imroc/req/v3"
-	"github.com/prettyirrelevant/waakye/pkg/deezer"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/prettyirrelevant/waakye/pkg/deezer"
 )
 
 func TestDeezer(t *testing.T) {

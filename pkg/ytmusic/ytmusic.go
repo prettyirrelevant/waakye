@@ -30,7 +30,7 @@ func (y *YTMusic) GetPlaylist(playlistURI string) (types.Playlist, error) {
 }
 
 // CreatePlaylist creates a new playlist using the information provided.
-func (*YTMusic) CreatePlaylist(playlist types.Playlist) (string, error) {
+func (*YTMusic) CreatePlaylist(playlist types.Playlist, accessToken string) (string, error) {
 	var foundTracks []types.Track
 	var wg sync.WaitGroup
 
@@ -53,4 +53,13 @@ func (*YTMusic) CreatePlaylist(playlist types.Playlist) (string, error) {
 		return "", fmt.Errorf("ytmusic: %s", err.Error())
 	}
 	return playlistID, nil
+}
+
+func (*YTMusic) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
+	return types.OauthCredentials{}, nil
+}
+
+// RequiresAccessToken specifies if the streaming requires Oauth.
+func (*YTMusic) RequiresAccessToken() bool {
+	return false
 }

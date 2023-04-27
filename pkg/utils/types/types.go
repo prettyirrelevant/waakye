@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 // Playlist represents a playlist entry from any of the supported streaming platform internally.
 type Playlist struct {
 	ID          string
@@ -13,4 +15,29 @@ type Track struct {
 	ID      string
 	Title   string
 	Artists []string
+}
+
+type OauthCredentials struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresAt    int
+}
+
+func (o *OauthCredentials) ToString() (string, error) {
+	stringFormat, err := json.Marshal(o)
+	if err != nil {
+		return "", err
+	}
+
+	return string(stringFormat), nil
+}
+
+func (o OauthCredentials) FromString(payload string) (OauthCredentials, error) {
+	var credentials OauthCredentials
+	err := json.Unmarshal([]byte(payload), &credentials)
+	if err != nil {
+		return credentials, err
+	}
+
+	return credentials, nil
 }
