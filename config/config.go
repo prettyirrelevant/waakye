@@ -1,14 +1,13 @@
 package config
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/caarlos0/env/v7"
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
+	SecretKey               string `env:"SECRET_KEY,notEmpty"`
+	MasaAuthUsername        string `env:"MASA_AUTH_USERNAME,notEmpty`
+	MasaAuthPassword        string `env:"MASA_AUTH_PASSWORD,notEmpty`
 	DatabaseURI             string `env:"DATABASE_URI,notEmpty"`
 	Port                    int    `env:"PORT,notEmpty"`
 	SpotifyClientID         string `env:"SPOTIFY_CLIENT_ID,notEmpty"`
@@ -27,23 +26,10 @@ type Config struct {
 	DeezerAuthRedirectURI   string `env:"DEEZER_AUTH_REDIRECT_URI,notEmpty"`
 	DeezerAuthEmail         string `env:"DEEZER_AUTH_EMAIL,notEmpty"`
 	DeezerAuthPassword      string `env:"DEEZER_AUTH_PASSWORD,notEmpty"`
-	BaseDir                 string
 }
 
 func New() (*Config, error) {
 	var cfg Config
-
-	currentWorkingDir, err := os.Getwd()
-	if err != nil {
-		return &cfg, err
-	}
-
-	cfg.BaseDir = currentWorkingDir
-	err = godotenv.Load(filepath.Join(cfg.BaseDir, ".env"))
-	if err != nil {
-		return &cfg, err
-	}
-
 	if err := env.Parse(&cfg, env.Options{RequiredIfNoDef: true}); err != nil {
 		return &cfg, err
 	}
