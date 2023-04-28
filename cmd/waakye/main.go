@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,7 +28,7 @@ func main() {
 	apiGroup := app.Group("/api")
 	routes.RouterV1(apiGroup, aggregatorService)
 
-	log.Fatal(app.Listen(fmt.Sprintf(":%d", config.Port)))
+	log.Fatal(app.Listen(":8000"))
 }
 
 func setupMiddlewares(app *fiber.App) {

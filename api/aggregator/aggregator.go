@@ -10,9 +10,11 @@ import (
 	"github.com/prettyirrelevant/waakye/config"
 	"github.com/prettyirrelevant/waakye/pkg/deezer"
 	"github.com/prettyirrelevant/waakye/pkg/spotify"
+	"github.com/prettyirrelevant/waakye/pkg/utils/types"
 	"github.com/prettyirrelevant/waakye/pkg/ytmusic"
 )
 
+// New creates a new MusicStreamingPlatformsAggregator instance.
 func New(db *database.Database, config *config.Config) *MusicStreamingPlatformsAggregator {
 	return &MusicStreamingPlatformsAggregator{
 		Config:   config,
@@ -27,6 +29,7 @@ func New(db *database.Database, config *config.Config) *MusicStreamingPlatformsA
 		}),
 		Spotify: spotify.New(&spotify.InitialisationOpts{
 			RequestClient:             req.C(),
+			UserID:                    config.SpotifyUserID,
 			BaseAPIURI:                config.SpotifyBaseApiURL,
 			ClientID:                  config.SpotifyClientID,
 			ClientSecret:              config.SpotifyClientSecret,
@@ -36,8 +39,8 @@ func New(db *database.Database, config *config.Config) *MusicStreamingPlatformsA
 	}
 }
 
+// ConvertPlaylist converts a playlist from one music streaming platform to another.
 func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination api.MusicStreamingPlatform, playlistURL string) (string, error) {
-	// this is checked at the API validation level but it does not hurt to check here also.
 	if source == destination {
 		return "", fmt.Errorf("api.aggregator: `source` must not be the same as `destination`")
 	}
@@ -50,10 +53,18 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 	}
 
 	var accessToken string
-
-	// if the `toPlatform` requires access token, fetch it from the database.
 	if destinationPlatform.RequiresAccessToken() {
-		// m.Database
+		dbCredentials, err := m.Database.GetOauthCredentials(destination)
+		if err != nil {
+			return "", err
+		}
+
+		credentials, err := types.OauthCredentialsFromDB(dbCredentials.Credentials)
+		if err != nil {
+			return "", err
+		}
+
+		accessToken = credentials.AccessToken
 	}
 
 	playlistURL, err = destinationPlatform.CreatePlaylist(playlist, accessToken)
@@ -64,12 +75,12 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 	return playlistURL, nil
 }
 
-// SupportedPlatforms returns a slice of supported music streaming platforms
+// SupportedPlatforms returns a list of supported music streaming platforms.
 func (m *MusicStreamingPlatformsAggregator) SupportedPlatforms() []api.MusicStreamingPlatform {
 	return []api.MusicStreamingPlatform{api.Deezer, api.Spotify, api.YTMusic}
 }
 
-// getStreamingPlatform maps a `MusicStreamingPlatform` to one of `spotify.Spotify`, `deezer.Deezer` or `ytmusic.YTMusic`
+// getStreamingPlatform retrieves the music streaming platform from the MusicStreamingPlatformsAggregator.
 func (m *MusicStreamingPlatformsAggregator) getStreamingPlatform(platform api.MusicStreamingPlatform) MusicStreamingPlatformInterface {
 	switch platform {
 	case api.Spotify:

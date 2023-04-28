@@ -1,5 +1,6 @@
 package database
 
+// PlaylistConversionHistoryInDB represents playlist conversion history stored in a database.
 type PlaylistConversionHistoryInDB struct {
 	ID              string `db:"id"`
 	PlaylistURL     string `db:"playlist_url"`
@@ -10,6 +11,7 @@ type PlaylistConversionHistoryInDB struct {
 	UpdatedAt       int    `db:"updated_at"`
 }
 
+// OauthCredentialsInDB represents OAuth credentials stored in a database.
 type OauthCredentialsInDB struct {
 	ID          string `db:"id"`
 	Platform    string `db:"platform"`

@@ -1,0 +1,20 @@
+version: '3'
+services:
+  waakye:
+    build:
+      context: .
+      dockerfile: waakye.Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+  masa:
+    build:
+      context: .
+      dockerfile: masa.Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - waakye
+    env_file:
+      - .env

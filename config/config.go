@@ -1,19 +1,17 @@
 package config
 
-import (
-	"github.com/caarlos0/env/v7"
-)
+import "github.com/caarlos0/env/v7"
 
 type Config struct {
 	SecretKey               string `env:"SECRET_KEY,notEmpty"`
 	MasaAuthUsername        string `env:"MASA_AUTH_USERNAME,notEmpty`
 	MasaAuthPassword        string `env:"MASA_AUTH_PASSWORD,notEmpty`
 	DatabaseURI             string `env:"DATABASE_URI,notEmpty"`
-	Port                    int    `env:"PORT,notEmpty"`
 	SpotifyClientID         string `env:"SPOTIFY_CLIENT_ID,notEmpty"`
 	SpotifyClientSecret     string `env:"SPOTIFY_CLIENT_SECRET,notEmpty"`
 	SpotifyClientAuthURL    string `env:"SPOTIFY_CLIENT_AUTH_URL,notEmpty"`
 	SpotifyBaseApiURL       string `env:"SPOTIFY_BASE_API_URL,notEmpty"`
+	SpotifyUserID           string `env:"SPOTIFY_USER_ID,notEmpty"`
 	SpotifyAuthEmail        string `env:"SPOTIFY_AUTH_EMAIL,notEmpty"`
 	SpotifyAuthPassword     string `env:"SPOTIFY_AUTH_PASSWORD,notEmpty"`
 	SpotifyAuthRedirectURI  string `env:"SPOTIFY_AUTH_REDIRECT_URI,notEmpty"`

@@ -103,7 +103,12 @@ func deezerAuthenticationTask(config *config.Config) chromedp.Tasks {
 }
 
 func setupChromeDp() (context.Context, context.CancelFunc, context.CancelFunc) {
-	actx, acancel := chromedp.NewExecAllocator(context.Background(), chromedp.DisableGPU, chromedp.Headless)
+	allocatorOpts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.DisableGPU,
+		chromedp.Headless,
+		chromedp.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"),
+	)
+	actx, acancel := chromedp.NewExecAllocator(context.Background(), allocatorOpts...)
 	ctx, cancel := chromedp.NewContext(actx,
 		chromedp.WithLogf(log.Printf),
 		chromedp.WithDebugf(log.Printf),

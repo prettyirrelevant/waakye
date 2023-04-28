@@ -7,10 +7,13 @@ import (
 	v1 "github.com/prettyirrelevant/waakye/api/controllers/v1"
 )
 
-func RouterV1(app fiber.Router, aggregatorService *aggregator.MusicStreamingPlatformsAggregator) {
-	app.Post("/playlists/convert", v1.ConvertPlaylistController(aggregatorService))
-	app.Get("/playlists/supported", v1.GetSupportedPlatformsController(aggregatorService))
+// RouterV1 registers v1 routes for the given fiber.Router and aggregator service
+func RouterV1(router fiber.Router, aggregatorService *aggregator.MusicStreamingPlatformsAggregator) {
+	router.Post("/playlists/convert", v1.ConvertPlaylistController(aggregatorService))
 
-	app.Get("/spotify/callback", v1.SpotifyOauthCallbackController(aggregatorService))
-	app.Get("/deezer/callback", v1.DeezerOauthCallbackController(aggregatorService))
+	router.Get("/playlists/supported", v1.GetSupportedPlatformsController(aggregatorService))
+
+	router.Get("/auth/spotify/callback", v1.SpotifyOauthCallbackController(aggregatorService))
+
+	router.Get("/auth/deezer/callback", v1.DeezerOauthCallbackController(aggregatorService))
 }

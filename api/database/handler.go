@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -12,13 +13,19 @@ import (
 	"github.com/prettyirrelevant/waakye/pkg/utils/types"
 )
 
+// Database represents a connection to a SQLite database.
 type Database struct {
 	db *sqlx.DB
 }
 
-// New creates a `Database` struct.
+// New creates a new Database struct and connects to a SQLite database at the given URL.
 func New(databaseURL string) (*Database, error) {
-	db, err := sqlx.Connect("sqlite3", databaseURL)
+	baseDir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := sqlx.Connect("sqlite3", fmt.Sprintf("%s/%s", baseDir, databaseURL))
 	if err != nil {
 		return nil, err
 	}
@@ -27,35 +34,49 @@ func New(databaseURL string) (*Database, error) {
 	return &Database{db: db}, nil
 }
 
-// GenerateID returns an identifier for use as primary key in database.
+// GenerateID returns a new unique identifier to use as a primary key in the database.
 func GenerateID() string {
 	return xid.New().String()
 }
 
-// GetOauthCredentials retrieves oauth credentials from the database for a streaming platform.
+// GetOauthCredentials retrieves the OAuth credentials for a given music streaming platform from the database.
 func (d *Database) GetOauthCredentials(platform api.MusicStreamingPlatform) (OauthCredentialsInDB, error) {
 	var credentials OauthCredentialsInDB
+
 	err := d.db.Get(&credentials, "SELECT * FROM oauth_credentials WHERE platform=$1;", platform)
 	if err != nil {
-		return credentials, fmt.Errorf("api.database: could not fetch oauth credentials for %s due to %s", platform, err.Error())
+		return credentials, fmt.Errorf("api.database: could not fetch OAuth credentials for %s due to %s", platform, err.Error())
 	}
 
 	return credentials, nil
 }
 
-// SetOauthCredentials saves the oauth credentials of a streaming platform in the database.
-func (d *Database) SetOauthCredentials(platform api.MusicStreamingPlatform, entry types.OauthCredentials) error {
-	authCredentialsString, err := entry.ToString()
+// SetOauthCredentials saves the OAuth credentials for a given music streaming platform in the database.
+func (d *Database) SetOauthCredentials(platform api.MusicStreamingPlatform, credentials types.OauthCredentials) error {
+	authCredentialsString, err := credentials.ToString()
 	if err != nil {
 		return err
 	}
 
-	d.db.Exec(
+	now := time.Now().UnixMicro()
+	result, err := d.db.Exec(
 		`
-			INSERT INTO oauth_credentials (id, platform, credentials, updated_at)
-			VALUES ($1, $2, $3, $4) ON CONFLICT(platform) DO UPDATE SET credentials=excluded.credentials, updated_at=excluded.updated_at;
+			INSERT INTO oauth_credentials (id, platform, credentials, created_at, updated_at)
+			VALUES ($1, $2, $3, $4, $5) ON CONFLICT(platform) DO UPDATE SET credentials=excluded.credentials, updated_at=excluded.updated_at;
 		`,
-		GenerateID(), platform, authCredentialsString, time.Now().UnixMicro(),
+		GenerateID(), platform, authCredentialsString, now, now,
 	)
+	if err != nil {
+		return err
+	}
+
+	rowCount, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowCount != 1 {
+		return fmt.Errorf("database: failed to add %s credentials", platform)
+	}
+
 	return nil
 }

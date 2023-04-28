@@ -97,6 +97,7 @@ func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (s
 	var response spotifyAPICreatePlaylistResponse
 	err := s.RequestClient.
 		Post(s.Config.BaseAPIURI + "/users/" + s.Config.UserID + "/playlists").
+		SetBearerAuthToken(accessToken).
 		SetContentType("application/json").
 		SetFormData(map[string]string{
 			"name":        playlist.Title,
@@ -121,7 +122,8 @@ func (s *Spotify) GetAuthorizationCode(code string) (types.OauthCredentials, err
 	err := s.RequestClient.
 		Post(s.Config.AuthenticationURI).
 		SetFormData(map[string]string{"grant_type": "authorization_code", "code": code, "redirect_uri": s.Config.AuthenticationRedirectURI}).
-		SetContentType("application/json").
+		SetBasicAuth(s.Config.ClientID, s.Config.ClientSecret).
+		SetContentType("application/x-www-form-urlencoded").
 		Do().
 		Into(&response)
 

@@ -3,8 +3,6 @@ FROM golang:1.19.6-buster AS build
 
 WORKDIR /app
 
-ENV BUILD_DIR=/app/bin
-
 COPY go.* ./
 
 RUN go mod download -x all
