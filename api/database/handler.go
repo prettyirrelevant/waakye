@@ -8,6 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/xid"
 
+	"github.com/prettyirrelevant/waakye/api"
 	"github.com/prettyirrelevant/waakye/pkg/utils/types"
 )
 
@@ -32,7 +33,7 @@ func GenerateID() string {
 }
 
 // GetOauthCredentials retrieves oauth credentials from the database for a streaming platform.
-func (d *Database) GetOauthCredentials(platform string) (OauthCredentialsInDB, error) {
+func (d *Database) GetOauthCredentials(platform api.MusicStreamingPlatform) (OauthCredentialsInDB, error) {
 	var credentials OauthCredentialsInDB
 	err := d.db.Get(&credentials, "SELECT * FROM oauth_credentials WHERE platform=$1;", platform)
 	if err != nil {
@@ -43,7 +44,7 @@ func (d *Database) GetOauthCredentials(platform string) (OauthCredentialsInDB, e
 }
 
 // SetOauthCredentials saves the oauth credentials of a streaming platform in the database.
-func (d *Database) SetOauthCredentials(platform string, entry types.OauthCredentials) error {
+func (d *Database) SetOauthCredentials(platform api.MusicStreamingPlatform, entry types.OauthCredentials) error {
 	authCredentialsString, err := entry.ToString()
 	if err != nil {
 		return err

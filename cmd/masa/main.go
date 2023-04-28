@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/chromedp/chromedp"
 	"github.com/gofiber/fiber/v2"
@@ -14,6 +15,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 
 	"github.com/prettyirrelevant/waakye/config"
+	"github.com/prettyirrelevant/waakye/pkg/utils/cryptography"
 )
 
 func main() {
@@ -66,6 +68,12 @@ func spotifyAuthenticationTask(config *config.Config) chromedp.Tasks {
 	queryParams.Add("client_id", config.SpotifyClientID)
 	queryParams.Add("redirect_uri", config.SpotifyAuthRedirectURI)
 	queryParams.Add("scope", "playlist-modify-public")
+
+	state, err := cryptography.Encrypt(fmt.Sprintf("%d:spotify", time.Now().UnixMicro()), config.SecretKey)
+	if err != nil {
+		panic(err)
+	}
+	queryParams.Add("state", state)
 
 	return chromedp.Tasks{
 		chromedp.Navigate(fmt.Sprintf("https://accounts.spotify.com/authorize?%s", queryParams.Encode())),

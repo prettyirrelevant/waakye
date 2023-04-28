@@ -15,6 +15,7 @@ import (
 
 func New(db *database.Database, config *config.Config) *MusicStreamingPlatformsAggregator {
 	return &MusicStreamingPlatformsAggregator{
+		Config:   config,
 		Database: db,
 		YTMusic:  ytmusic.New(),
 		Deezer: deezer.New(&deezer.InitialisationOpts{

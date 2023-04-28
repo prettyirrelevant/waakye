@@ -2,6 +2,7 @@ package aggregator
 
 import (
 	"github.com/prettyirrelevant/waakye/api/database"
+	"github.com/prettyirrelevant/waakye/config"
 	"github.com/prettyirrelevant/waakye/pkg/deezer"
 	"github.com/prettyirrelevant/waakye/pkg/spotify"
 	"github.com/prettyirrelevant/waakye/pkg/utils/types"
@@ -9,6 +10,7 @@ import (
 )
 
 type MusicStreamingPlatformsAggregator struct {
+	Config   *config.Config
 	Database *database.Database
 	Spotify  *spotify.Spotify
 	Deezer   *deezer.Deezer

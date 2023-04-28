@@ -11,6 +11,6 @@ func RouterV1(app fiber.Router, aggregatorService *aggregator.MusicStreamingPlat
 	app.Post("/playlists/convert", v1.ConvertPlaylistController(aggregatorService))
 	app.Get("/playlists/supported", v1.GetSupportedPlatformsController(aggregatorService))
 
-	app.Get("/spotify/callback", v1.SpotifyOauthCallbackController())
-	app.Get("/deezer/callback", v1.DeezerOauthCallbackController())
+	app.Get("/spotify/callback", v1.SpotifyOauthCallbackController(aggregatorService))
+	app.Get("/deezer/callback", v1.DeezerOauthCallbackController(aggregatorService))
 }
