@@ -11,14 +11,6 @@ set dotenv-load
     cd api/database/migrations && goose create {{NAME}} sql -v
 
 
-run-dev NAME:
-    #!/usr/bin/env python3
-    import sys
-    import subprocess
-
-    if "{{NAME}}" in {"waakye", "masa"}:
-        print("Starting {{NAME}} server...")
-        subprocess.run("air -c .air.{{NAME}}.toml", shell=True)
-    else:
-        print("Unknown server {{NAME}}. Exiting...")
-        sys.exit(1)
+run-dev waakye:
+    echo "Starting waakye API server."
+    air -c .air.toml
