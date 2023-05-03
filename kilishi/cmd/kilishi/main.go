@@ -40,7 +40,6 @@ func setupMiddlewares(app *fiber.App) {
 	app.Use(cors.New())
 	app.Use(logger.New())
 	app.Use(recover.New())
-	// app.Get("/metrics", monitor.New())
 }
 
 func setupDatabase(config *config.Config) *database.Database {
