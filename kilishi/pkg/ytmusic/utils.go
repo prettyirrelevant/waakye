@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 	"github.com/prettyirrelevant/ytmusicapi"
 )
@@ -14,13 +15,6 @@ func lookupTrack(track types.Track, foundTracks *[]types.Track) {
 	if err == nil && len(searchResults) > 0 {
 		*foundTracks = append(*foundTracks, types.Track{ID: searchResults[0].VideoID, Title: searchResults[0].Title, Artists: searchResults[0].Artistes})
 	}
-}
-
-// cleanTrackTitle removes noise from YTMusic track title such as [Official Audio], (Official Video), etc.
-func cleanTrackTitle(title string) string {
-	// An example usage of the regex can be found here regexr.com/7cf46
-	re := regexp.MustCompile(`\s*\(_*\s*(Official Visualizer|Official Video|Official Audio|Official Music Video|Live)\s*_*\)\s*`)
-	return re.ReplaceAllString(title, "")
 }
 
 // parsePlaylistURI validates a YTMusic playlist URI and returns the playlist ID.
@@ -58,7 +52,7 @@ func parseGetPlaylistResponse(playlist ytmusicapi.Playlist) types.Playlist {
 	var tracks []types.Track
 
 	for _, entry := range playlist.Tracks {
-		tracks = append(tracks, types.Track{ID: entry.ID, Title: cleanTrackTitle(entry.Title), Artists: entry.Artistes})
+		tracks = append(tracks, types.Track{ID: entry.ID, Title: utils.CleanTrackTitle(entry.Title), Artists: entry.Artistes})
 	}
 
 	return types.Playlist{

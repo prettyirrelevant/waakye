@@ -9,10 +9,11 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 
-	"github.com/prettyirrelevant/kilishi/api/aggregator"
+	"github.com/prettyirrelevant/kilishi/api/callbacks"
 	"github.com/prettyirrelevant/kilishi/api/database"
-	"github.com/prettyirrelevant/kilishi/api/routes"
+	"github.com/prettyirrelevant/kilishi/api/playlists"
 	"github.com/prettyirrelevant/kilishi/config"
+	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
 )
 
 func main() {
@@ -28,10 +29,10 @@ func main() {
 	app := fiber.New(fiberConfig)
 	setupMiddlewares(app)
 
-	aggregatorService := aggregator.New(db, config)
-
 	apiGroup := app.Group("/api")
-	routes.RouterV1(apiGroup, aggregatorService)
+	aggregatorService := aggregator.New(config)
+	playlists.RouterV1(apiGroup, aggregatorService, db)
+	callbacks.RouterV1(apiGroup, aggregatorService, db)
 
 	log.Fatal(app.Listen(":8000"))
 }

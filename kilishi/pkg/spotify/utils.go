@@ -8,6 +8,7 @@ import (
 
 	"github.com/imroc/req/v3"
 
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 )
 
@@ -43,7 +44,14 @@ func parseTracksResponse(response spotifyAPITracksResponse) []types.Track {
 		for _, artiste := range entry.Track.Artists {
 			artistes = append(artistes, artiste.Name)
 		}
-		tracks = append(tracks, types.Track{ID: entry.Track.ID, Title: entry.Track.Name, Artists: artistes})
+		tracks = append(
+			tracks,
+			types.Track{
+				ID:      entry.Track.ID,
+				Title:   utils.CleanTrackTitle(entry.Track.Name),
+				Artists: artistes,
+			},
+		)
 	}
 
 	return tracks

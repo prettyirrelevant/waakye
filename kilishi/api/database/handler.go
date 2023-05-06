@@ -9,7 +9,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/xid"
 
-	"github.com/prettyirrelevant/kilishi/api"
+	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
 	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 )
 
@@ -40,7 +40,7 @@ func GenerateID() string {
 }
 
 // GetOauthCredentials retrieves the OAuth credentials for a given music streaming platform from the database.
-func (d *Database) GetOauthCredentials(platform api.MusicStreamingPlatform) (OauthCredentialsInDB, error) {
+func (d *Database) GetOauthCredentials(platform aggregator.MusicStreamingPlatform) (OauthCredentialsInDB, error) {
 	var credentials OauthCredentialsInDB
 
 	err := d.db.Get(&credentials, "SELECT * FROM oauth_credentials WHERE platform=$1;", platform)
@@ -52,7 +52,7 @@ func (d *Database) GetOauthCredentials(platform api.MusicStreamingPlatform) (Oau
 }
 
 // SetOauthCredentials saves the OAuth credentials for a given music streaming platform in the database.
-func (d *Database) SetOauthCredentials(platform api.MusicStreamingPlatform, credentials types.OauthCredentials) error {
+func (d *Database) SetOauthCredentials(platform aggregator.MusicStreamingPlatform, credentials types.OauthCredentials) error {
 	authCredentialsString, err := credentials.ToString()
 	if err != nil {
 		return err

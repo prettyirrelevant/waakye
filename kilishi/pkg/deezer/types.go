@@ -8,7 +8,7 @@ import (
 
 type Deezer struct {
 	RequestClient *req.Client
-	Config        *Config
+	Config        Config
 }
 
 type InitialisationOpts struct {

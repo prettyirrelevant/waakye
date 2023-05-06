@@ -9,6 +9,7 @@ import (
 
 	"github.com/imroc/req/v3"
 
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 )
 
@@ -49,7 +50,7 @@ func parseTracksResponse(response deezerAPITracksDataResponse) []types.Track {
 	for _, track := range response.Data {
 		tracks = append(tracks, types.Track{
 			ID:      strconv.Itoa(track.ID),
-			Title:   track.Title,
+			Title:   utils.CleanTrackTitle(track.Title),
 			Artists: []string{track.Artist.Name},
 		})
 	}

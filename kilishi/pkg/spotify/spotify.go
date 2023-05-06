@@ -10,10 +10,10 @@ import (
 )
 
 // New initialises a `Spotify` object.
-func New(opts *InitialisationOpts) *Spotify {
+func New(opts InitialisationOpts) *Spotify {
 	return &Spotify{
 		RequestClient: setupRequestClient(opts.RequestClient),
-		Config: &Config{
+		Config: Config{
 			UserID:                    opts.UserID,
 			ClientID:                  opts.ClientID,
 			BaseAPIURI:                opts.BaseAPIURI,

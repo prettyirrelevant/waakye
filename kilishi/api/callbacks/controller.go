@@ -1,4 +1,4 @@
-package v1
+package callbacks
 
 import (
 	"fmt"
@@ -8,14 +8,14 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-
-	"github.com/prettyirrelevant/kilishi/api"
-	"github.com/prettyirrelevant/kilishi/api/aggregator"
+	"github.com/prettyirrelevant/kilishi/api/database"
+	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
+	ag "github.com/prettyirrelevant/kilishi/pkg/aggregator"
 	"github.com/prettyirrelevant/kilishi/pkg/utils/cryptography"
 )
 
 // SpotifyOauthCallbackController handles Spotify OAuth callback requests.
-func SpotifyOauthCallbackController(aggregator *aggregator.MusicStreamingPlatformsAggregator) fiber.Handler {
+func SpotifyOauthCallbackController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		state := c.Query("state")
 		code := c.Query("code")
@@ -47,7 +47,7 @@ func SpotifyOauthCallbackController(aggregator *aggregator.MusicStreamingPlatfor
 				JSON(fiber.Map{"status": false, "data": nil, "error": err.Error()})
 		}
 
-		if stateParamSlice[1] != string(api.Spotify) || time.Now().UnixMilli()-int64(stateParamTime) >= 60000 {
+		if stateParamSlice[1] != string(ag.Spotify) || time.Now().UnixMilli()-int64(stateParamTime) >= 60000 {
 			return c.
 				Status(http.StatusBadRequest).
 				JSON(fiber.Map{"status": false, "data": nil, "error": "provided `state` query parameter has expired."})
@@ -61,7 +61,7 @@ func SpotifyOauthCallbackController(aggregator *aggregator.MusicStreamingPlatfor
 				JSON(fiber.Map{"status": false, "data": nil, "error": err.Error()})
 		}
 
-		err = aggregator.Database.SetOauthCredentials(api.Spotify, oauthCredentials)
+		err = db.SetOauthCredentials(ag.Spotify, oauthCredentials)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
@@ -75,7 +75,7 @@ func SpotifyOauthCallbackController(aggregator *aggregator.MusicStreamingPlatfor
 }
 
 // DeezerOauthCallbackController handles Deezer OAuth callback requests.
-func DeezerOauthCallbackController(aggregator *aggregator.MusicStreamingPlatformsAggregator) fiber.Handler {
+func DeezerOauthCallbackController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		oauthCredentials, err := aggregator.Deezer.GetAuthorizationCode(c.Query("code"))
 		if err != nil {
@@ -84,7 +84,7 @@ func DeezerOauthCallbackController(aggregator *aggregator.MusicStreamingPlatform
 				JSON(fiber.Map{"status": false, "data": nil, "error": err.Error()})
 		}
 
-		err = aggregator.Database.SetOauthCredentials(api.Deezer, oauthCredentials)
+		err = db.SetOauthCredentials(ag.Deezer, oauthCredentials)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).

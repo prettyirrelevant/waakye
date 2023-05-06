@@ -8,10 +8,10 @@ import (
 )
 
 // New initialises a `Spotify` object.
-func New(opts *InitialisationOpts) *Deezer {
+func New(opts InitialisationOpts) *Deezer {
 	return &Deezer{
 		RequestClient: setupRequestClient(opts.RequestClient),
-		Config: &Config{
+		Config: Config{
 			AppID:             opts.AppID,
 			BaseAPIURI:        opts.BaseAPIURI,
 			ClientSecret:      opts.ClientSecret,

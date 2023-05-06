@@ -1,21 +1,28 @@
 package aggregator
 
 import (
-	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/config"
+	"github.com/prettyirrelevant/kilishi/pkg/applemusic"
 	"github.com/prettyirrelevant/kilishi/pkg/deezer"
 	"github.com/prettyirrelevant/kilishi/pkg/spotify"
 	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 	"github.com/prettyirrelevant/kilishi/pkg/ytmusic"
 )
 
+const (
+	Spotify    MusicStreamingPlatform = "spotify"
+	Deezer     MusicStreamingPlatform = "deezer"
+	YTMusic    MusicStreamingPlatform = "ytmusic"
+	AppleMusic MusicStreamingPlatform = "apple music"
+)
+
 // MusicStreamingPlatformsAggregator is a struct that represents an aggregator of different music streaming platforms.
 type MusicStreamingPlatformsAggregator struct {
-	Config   *config.Config
-	Database *database.Database
-	Spotify  *spotify.Spotify
-	Deezer   *deezer.Deezer
-	YTMusic  *ytmusic.YTMusic
+	Config     *config.Config
+	Spotify    *spotify.Spotify
+	Deezer     *deezer.Deezer
+	YTMusic    *ytmusic.YTMusic
+	AppleMusic *applemusic.AppleMusic
 }
 
 type MusicStreamingPlatformInterface interface {
@@ -35,3 +42,5 @@ type MusicStreamingPlatformInterface interface {
 	// RequiresAccessToken returns a boolean indicating whether the platform requires an access token for API calls.
 	RequiresAccessToken() bool
 }
+
+type MusicStreamingPlatform string

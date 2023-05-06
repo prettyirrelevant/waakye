@@ -56,10 +56,10 @@ func (*YTMusic) CreatePlaylist(playlist types.Playlist, accessToken string) (str
 }
 
 func (*YTMusic) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
-	return types.OauthCredentials{}, nil
+	return types.OauthCredentials{}, nil // no-op
 }
 
 // RequiresAccessToken specifies if the streaming requires Oauth.
 func (*YTMusic) RequiresAccessToken() bool {
-	return false
+	return false // no-op
 }

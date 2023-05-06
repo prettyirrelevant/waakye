@@ -8,7 +8,7 @@ import (
 
 type Spotify struct {
 	RequestClient *req.Client
-	Config        *Config
+	Config        Config
 }
 
 type InitialisationOpts struct {
@@ -31,7 +31,7 @@ type Config struct {
 }
 
 // /////////////////////////////////////////////////
-// API Errors
+// API Types
 // /////////////////////////////////////////////////
 type spotifyAPIGetPlaylistResponse struct {
 	ID          string `json:"id"`
