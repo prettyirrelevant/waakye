@@ -47,21 +47,6 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 		return "", err
 	}
 
-	// var accessToken string
-	// if destinationPlatform.RequiresAccessToken() {
-	// 	dbCredentials, err := m.Database.GetOauthCredentials(destination)
-	// 	if err != nil {
-	// 		return "", err
-	// 	}
-
-	// 	credentials, err := types.OauthCredentialsFromDB(dbCredentials.Credentials)
-	// 	if err != nil {
-	// 		return "", err
-	// 	}
-
-	// 	accessToken = credentials.AccessToken
-	// }
-
 	playlistURL, err = destinationPlatform.CreatePlaylist(playlist, accessToken)
 	if err != nil {
 		return "", err
