@@ -57,7 +57,7 @@ func (d *Deezer) CreatePlaylist(playlist types.Playlist, accessToken string) (st
 	var response deezerAPICreatePlaylistResponse
 	err := d.RequestClient.
 		Post(d.Config.BaseAPIURI + "/users/me/playlist").
-		SetContentType("application/json").
+		SetContentType(types.ApplicationJSON).
 		SetBearerAuthToken(accessToken).
 		SetQueryParams(map[string]string{
 			"title": playlist.Title,
@@ -107,7 +107,7 @@ func (d *Deezer) lookupTrack(track types.Track, tracksFound *[]types.Track) {
 	var response deezerAPISearchTrackResponse
 	err := d.RequestClient.
 		Get(d.Config.BaseAPIURI + "/search/track").
-		SetContentType("application/json").
+		SetContentType(types.ApplicationJSON).
 		SetQueryParams(map[string]string{
 			"q": trackToSearchQuery(track),
 		}).
@@ -136,7 +136,7 @@ func (d *Deezer) populatePlaylistWithTracks(tracks []types.Track, playlistID, ac
 	err := d.RequestClient.
 		Post(d.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
 		SetBearerAuthToken(accessToken).
-		SetContentType("application/json").
+		SetContentType(types.ApplicationJSON).
 		SetFormData(map[string]string{
 			"songs": strings.Join(tracksURI, ","),
 		}).

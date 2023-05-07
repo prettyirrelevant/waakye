@@ -2,6 +2,8 @@ package types
 
 import "encoding/json"
 
+const ApplicationJSON = "application/json"
+
 // Playlist represents a playlist entry from any of the supported streaming platform internally.
 type Playlist struct {
 	ID          string

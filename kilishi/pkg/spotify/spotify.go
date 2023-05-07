@@ -39,7 +39,7 @@ func (s *Spotify) GetPlaylist(playlistURI string) (types.Playlist, error) {
 	err = s.RequestClient.
 		Get(s.Config.BaseAPIURI + "/playlists/" + playlistID).
 		SetBearerAuthToken(clientAuthToken).
-		SetContentType("application/json").
+		SetContentType(types.ApplicationJSON).
 		Do().
 		Into(&response)
 
@@ -59,7 +59,7 @@ func (s *Spotify) GetPlaylist(playlistURI string) (types.Playlist, error) {
 		err := s.RequestClient.
 			Get(response.Tracks.Next).
 			SetBearerAuthToken(clientAuthToken).
-			SetContentType("application/json").
+			SetContentType(types.ApplicationJSON).
 			Do().
 			Into(&playlistItemsResp)
 
@@ -80,7 +80,6 @@ func (s *Spotify) GetPlaylist(playlistURI string) (types.Playlist, error) {
 
 // CreatePlaylist uses our internal playlist object to create a playlist on Spotify.
 func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (string, error) {
-	// first, look for the tracks on Spotify
 	var tracksFound []types.Track
 	var wg sync.WaitGroup
 	for _, entry := range playlist.Tracks {
@@ -93,12 +92,11 @@ func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (s
 	}
 	wg.Wait()
 
-	// then, create the playlist.
 	var response spotifyAPICreatePlaylistResponse
 	err := s.RequestClient.
 		Post(s.Config.BaseAPIURI + "/users/" + s.Config.UserID + "/playlists").
 		SetBearerAuthToken(accessToken).
-		SetContentType("application/json").
+		SetContentType(types.ApplicationJSON).
 		SetFormData(map[string]string{
 			"name":        playlist.Title,
 			"description": playlist.Description,
@@ -111,7 +109,6 @@ func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (s
 		return "", err
 	}
 
-	// finally, add the tracks in batches
 	s.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
 
 	return response.ID, nil
@@ -165,7 +162,7 @@ func (s *Spotify) populatePlaylistWithTracks(tracks []types.Track, playlistID, a
 			err := s.RequestClient.
 				Post(s.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
 				SetBearerAuthToken(accessToken).
-				SetContentType("application/json").
+				SetContentType(types.ApplicationJSON).
 				SetFormData(map[string]string{
 					"uris": strings.Join(chunk, ","),
 				}).
@@ -189,7 +186,7 @@ func (s *Spotify) lookupTrack(track types.Track, tracksFound *[]types.Track) {
 	err = s.RequestClient.
 		Get(s.Config.BaseAPIURI + "/search").
 		SetBearerAuthToken(clientAuthToken).
-		SetContentType("application/json").
+		SetContentType(types.ApplicationJSON).
 		SetQueryParams(map[string]string{
 			"q":     trackToSearchQuery(track),
 			"type":  "track",
