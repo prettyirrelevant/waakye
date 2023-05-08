@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+const logger = require("./config/logger");
 
 /**
  * Encrypts a plain text using AES-256-CBC encryption with the given secret key and IV
@@ -59,39 +60,39 @@ const getPuppeteerSetup = async () => {
 /**
  * Handles the authentication process for a music streaming service by opening a browser window and automating the login process using Puppeteer.
  * @param authenticationParams - The authentication parameters for the music streaming service.
- * @returns {Promise<boolean>} Whether the authentication was successful or not.
+ * @returns A Promise that resolves to a boolean whether the authentication was successful or not.
  */
 const handleMusicServiceAuthentication = async (authenticationParams) => {
   const [page, browser] = await getPuppeteerSetup();
   try {
     await page.goto(authenticationParams.authUrl);
-    console.debug(`Navigated to ${authenticationParams.authUrl}...`);
+    logger.info(`Navigated to ${authenticationParams.authUrl}...`);
 
     await page.type(
       authenticationParams.emailSelector,
       authenticationParams.email,
       { delay: 100 }
     );
-    console.debug(`Added email...`);
+    logger.info(`Added email...`);
 
     await page.type(
       authenticationParams.passwordSelector,
       authenticationParams.password,
       { delay: 100 }
     );
-    console.debug(`Added password...`);
+    logger.info(`Added password...`);
 
     await Promise.all([
       page.waitForNavigation(),
       page.click(authenticationParams.submitButtonSelector, { delay: 100 }),
     ]);
-    console.log(`Redirected to ${authenticationParams.authUrl}`);
+    logger.info(`Redirected to ${authenticationParams.authUrl}`);
 
     const content = await page.content();
     const isSuccessful = content.includes(authenticationParams.successText, 0);
     return isSuccessful;
   } catch (error) {
-    console.error(
+    logger.error(
       `Error occurred during ${authenticationParams.serviceName} OAuth: ${error}`
     );
     throw error;
