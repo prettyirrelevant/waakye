@@ -1,7 +1,6 @@
-import crypto from "crypto";
-import { Browser, Page } from "puppeteer";
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
+const crypto = require("crypto");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 
 /**
  * Encrypts a plain text using AES-256-CBC encryption with the given secret key and IV
@@ -10,11 +9,7 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
  * @param plainText - The plain text to encrypt
  * @returns A base64-encoded string representing the encrypted text
  */
-const encryptWithAES256CBC = (
-  secretKeyHex: string,
-  ivHex: string,
-  plainText: string
-): string => {
+const encryptWithAES256CBC = (secretKeyHex, ivHex, plainText) => {
   const key = Buffer.from(secretKeyHex, "hex");
   const iv = Buffer.from(ivHex, "hex");
   const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
@@ -32,7 +27,7 @@ const encryptWithAES256CBC = (
  * Sets up a new Puppeteer browser and page with anti-detection measures enabled.
  * @returns A Promise that resolves to an array containing the new page and browser instances.
  */
-const getPuppeteerSetup = async (): Promise<[page: Page, browser: Browser]> => {
+const getPuppeteerSetup = async () => {
   puppeteer.use(StealthPlugin());
 
   const browserExecutablePath =
@@ -50,25 +45,23 @@ const getPuppeteerSetup = async (): Promise<[page: Page, browser: Browser]> => {
   return [page, browser];
 };
 
-interface AuthenticationParams {
-  authUrl: string;
-  emailSelector: string;
-  passwordSelector: string;
-  submitButtonSelector: string;
-  successText: string;
-  email: string;
-  password: string;
-  serviceName: "spotify" | "deezer";
-}
+// interface AuthenticationParams {
+//   authUrl: string;
+//   emailSelector: string;
+//   passwordSelector: string;
+//   submitButtonSelector: string;
+//   successText: string;
+//   email: string;
+//   password: string;
+//   serviceName: "spotify" | "deezer";
+// }
 
 /**
  * Handles the authentication process for a music streaming service by opening a browser window and automating the login process using Puppeteer.
- * @param {AuthenticationParams} authenticationParams - The authentication parameters for the music streaming service.
+ * @param authenticationParams - The authentication parameters for the music streaming service.
  * @returns {Promise<boolean>} Whether the authentication was successful or not.
  */
-const handleMusicServiceAuthentication = async (
-  authenticationParams: AuthenticationParams
-): Promise<boolean> => {
+const handleMusicServiceAuthentication = async (authenticationParams) => {
   const [page, browser] = await getPuppeteerSetup();
   try {
     await page.goto(authenticationParams.authUrl);
@@ -113,10 +106,7 @@ const handleMusicServiceAuthentication = async (
  * @param queryParams An object containing the query string parameters to be appended to the URL.
  * @returns The URL with the appended query string parameters.
  */
-const generateAuthenticationURL = (
-  url: string,
-  queryParams: Record<string, string>
-): string => {
+const generateAuthenticationURL = (url, queryParams) => {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(queryParams)) {
     searchParams.set(key, value);
@@ -125,7 +115,7 @@ const generateAuthenticationURL = (
   return `${url}?${searchParams.toString()}`;
 };
 
-export {
+module.exports = {
   getPuppeteerSetup,
   encryptWithAES256CBC,
   generateAuthenticationURL,
