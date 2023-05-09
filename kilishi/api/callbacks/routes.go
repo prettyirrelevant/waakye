@@ -7,6 +7,6 @@ import (
 )
 
 func RouterV1(router fiber.Router, aggregatorService *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) {
-	router.Get("/auth/spotify/callback", SpotifyOauthCallbackController(aggregatorService, db))
-	router.Get("/auth/deezer/callback", DeezerOauthCallbackController(aggregatorService, db))
+	router.Get("/v1/auth/spotify/callback", SpotifyOauthCallbackController(aggregatorService, db))
+	router.Get("/v1/auth/deezer/callback", DeezerOauthCallbackController(aggregatorService, db))
 }
