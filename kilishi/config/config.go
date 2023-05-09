@@ -5,6 +5,7 @@ import "github.com/caarlos0/env/v7"
 type Config struct {
 	Debug                   bool   `env:"DEBUG,notEmpty"`
 	SecretKey               string `env:"SECRET_KEY,notEmpty"`
+	RedisURI                string `env:"REDIS_URI,notEmpty"`
 	InitializationVector    string `env:"INITIALIZATION_VECTOR,notEmpty"`
 	DatabaseURI             string `env:"DATABASE_URI,notEmpty"`
 	SpotifyClientID         string `env:"SPOTIFY_CLIENT_ID,notEmpty"`

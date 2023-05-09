@@ -2,12 +2,17 @@ package main
 
 import (
 	"log"
+	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/storage/redis"
 
+	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2/utils"
 
 	"github.com/prettyirrelevant/kilishi/api/callbacks"
 	"github.com/prettyirrelevant/kilishi/api/database"
@@ -27,7 +32,7 @@ func main() {
 	}
 
 	app := fiber.New(fiberConfig)
-	setupMiddlewares(app)
+	setupMiddlewares(app, config)
 
 	apiGroup := app.Group("/api")
 	aggregatorService := aggregator.New(config)
@@ -37,10 +42,28 @@ func main() {
 	log.Fatal(app.Listen(":8000"))
 }
 
-func setupMiddlewares(app *fiber.App) {
+func setupMiddlewares(app *fiber.App, config *config.Config) {
 	app.Use(cors.New())
 	app.Use(logger.New())
 	app.Use(recover.New())
+	app.Use(cache.New(cache.Config{
+		Expiration: 168 * time.Hour,
+		Methods:    []string{fiber.MethodPost},
+		Next: func(c *fiber.Ctx) bool {
+			ignoreCache := c.Query("ignoreCache", "false")
+			if val, err := strconv.ParseBool(ignoreCache); err != nil || !val {
+				return true
+			}
+			return false
+		},
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return utils.CopyString(c.Path()) + string(utils.CopyBytes(c.Body()))
+		},
+		Storage: redis.New(redis.Config{
+			URL:   config.RedisURI,
+			Reset: false,
+		}),
+	}))
 }
 
 func setupDatabase(config *config.Config) *database.Database {
