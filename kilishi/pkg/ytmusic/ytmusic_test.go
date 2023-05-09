@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 	"github.com/prettyirrelevant/kilishi/pkg/ytmusic"
 	"github.com/prettyirrelevant/ytmusicapi"
 )
@@ -21,7 +21,7 @@ func TestYTMusic(t *testing.T) {
 	is.Len(playlist.Tracks, 100)
 
 	// Test create playlist
-	id, err := ytmusic.CreatePlaylist(types.Playlist{Title: "Hello!", Description: "Hahahahahahaha!", Tracks: playlist.Tracks[:20]}, "")
+	id, err := ytmusic.CreatePlaylist(utils.Playlist{Title: "Hello!", Description: "Hahahahahahaha!", Tracks: playlist.Tracks[:20]}, "")
 	is.NoError(err)
 	is.NotEmpty(id)
 	// delete the created playlist

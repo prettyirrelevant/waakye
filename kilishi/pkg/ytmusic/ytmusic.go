@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 	"github.com/prettyirrelevant/ytmusicapi"
 )
 
@@ -15,28 +15,28 @@ func New() *YTMusic {
 }
 
 // GetPlaylist returns information about a playlist.
-func (y *YTMusic) GetPlaylist(playlistURI string) (types.Playlist, error) {
+func (y *YTMusic) GetPlaylist(playlistURI string) (utils.Playlist, error) {
 	playlistID, err := parsePlaylistURI(playlistURI)
 	if err != nil {
-		return types.Playlist{}, err
+		return utils.Playlist{}, err
 	}
 
 	playlist, err := ytmusicapi.GetPlaylist(playlistID, 0)
 	if err != nil {
-		return types.Playlist{}, fmt.Errorf("ytmusic: %s", err.Error())
+		return utils.Playlist{}, fmt.Errorf("ytmusic: %s", err.Error())
 	}
 
 	return parseGetPlaylistResponse(playlist), nil
 }
 
 // CreatePlaylist creates a new playlist using the information provided.
-func (*YTMusic) CreatePlaylist(playlist types.Playlist, accessToken string) (string, error) {
-	var foundTracks []types.Track
+func (*YTMusic) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
+	var foundTracks []utils.Track
 	var wg sync.WaitGroup
 
 	for _, trackEntry := range playlist.Tracks {
 		wg.Add(1)
-		go func(payload types.Track) {
+		go func(payload utils.Track) {
 			defer wg.Done()
 			lookupTrack(payload, &foundTracks)
 		}(trackEntry)
@@ -55,8 +55,8 @@ func (*YTMusic) CreatePlaylist(playlist types.Playlist, accessToken string) (str
 	return playlistID, nil
 }
 
-func (*YTMusic) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
-	return types.OauthCredentials{}, nil // no-op
+func (*YTMusic) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
+	return utils.OauthCredentials{}, nil // no-op
 }
 
 // RequiresAccessToken specifies if the streaming requires Oauth.

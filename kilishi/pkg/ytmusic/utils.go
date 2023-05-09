@@ -5,15 +5,14 @@ import (
 	"regexp"
 
 	"github.com/prettyirrelevant/kilishi/pkg/utils"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 	"github.com/prettyirrelevant/ytmusicapi"
 )
 
 // lookupTrack searches for track on YTMusic and appends the top result to a slice.
-func lookupTrack(track types.Track, foundTracks *[]types.Track) {
+func lookupTrack(track utils.Track, foundTracks *[]utils.Track) {
 	searchResults, err := ytmusicapi.SearchTracks(trackToSearchQuery(track), ytmusicapi.SongsFilter, ytmusicapi.NoScope, 5, false)
 	if err == nil && len(searchResults) > 0 {
-		*foundTracks = append(*foundTracks, types.Track{ID: searchResults[0].VideoID, Title: searchResults[0].Title, Artists: searchResults[0].Artistes})
+		*foundTracks = append(*foundTracks, utils.Track{ID: searchResults[0].VideoID, Title: searchResults[0].Title, Artists: searchResults[0].Artistes})
 	}
 }
 
@@ -30,7 +29,7 @@ func parsePlaylistURI(playlistURI string) (string, error) {
 }
 
 // trackToSearchQuery takes a track and transforms it into a search query.
-func trackToSearchQuery(track types.Track) string {
+func trackToSearchQuery(track utils.Track) string {
 	searchQuery := track.Title + " by"
 	for index, artiste := range track.Artists {
 		if len(track.Artists) == 1 {
@@ -48,14 +47,14 @@ func trackToSearchQuery(track types.Track) string {
 }
 
 // parseGetPlaylistResponse transforms the playlist object returned from `ytmusicapi` into our internal object.
-func parseGetPlaylistResponse(playlist ytmusicapi.Playlist) types.Playlist {
-	var tracks []types.Track
+func parseGetPlaylistResponse(playlist ytmusicapi.Playlist) utils.Playlist {
+	var tracks []utils.Track
 
 	for _, entry := range playlist.Tracks {
-		tracks = append(tracks, types.Track{ID: entry.ID, Title: utils.CleanTrackTitle(entry.Title), Artists: entry.Artistes})
+		tracks = append(tracks, utils.Track{ID: entry.ID, Title: utils.CleanTrackTitle(entry.Title), Artists: entry.Artistes})
 	}
 
-	return types.Playlist{
+	return utils.Playlist{
 		ID:          playlist.ID,
 		Title:       playlist.Title,
 		Description: playlist.Description,

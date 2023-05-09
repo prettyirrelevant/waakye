@@ -5,8 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/prettyirrelevant/kilishi/pkg/utils/cache"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 )
 
 // New initialises a `Spotify` object.
@@ -24,27 +23,27 @@ func New(opts InitialisationOpts) *Spotify {
 	}
 }
 
-func (s *Spotify) GetPlaylist(playlistURI string) (types.Playlist, error) {
+func (s *Spotify) GetPlaylist(playlistURI string) (utils.Playlist, error) {
 	playlistID, err := parsePlaylistURI(playlistURI)
 	if err != nil {
-		return types.Playlist{}, err
+		return utils.Playlist{}, err
 	}
 
 	clientAuthToken, err := s.getClientAuthenticationCredentials()
 	if err != nil {
-		return types.Playlist{}, err
+		return utils.Playlist{}, err
 	}
 
 	var response spotifyAPIGetPlaylistResponse
 	err = s.RequestClient.
 		Get(s.Config.BaseAPIURI + "/playlists/" + playlistID).
 		SetBearerAuthToken(clientAuthToken).
-		SetContentType(types.ApplicationJSON).
+		SetContentType(utils.ApplicationJSON).
 		Do().
 		Into(&response)
 
 	if err != nil {
-		return types.Playlist{}, err
+		return utils.Playlist{}, err
 	}
 
 	playlist := parseGetPlaylistResponse(response)
@@ -59,7 +58,7 @@ func (s *Spotify) GetPlaylist(playlistURI string) (types.Playlist, error) {
 		err := s.RequestClient.
 			Get(response.Tracks.Next).
 			SetBearerAuthToken(clientAuthToken).
-			SetContentType(types.ApplicationJSON).
+			SetContentType(utils.ApplicationJSON).
 			Do().
 			Into(&playlistItemsResp)
 
@@ -79,13 +78,13 @@ func (s *Spotify) GetPlaylist(playlistURI string) (types.Playlist, error) {
 }
 
 // CreatePlaylist uses our internal playlist object to create a playlist on Spotify.
-func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (string, error) {
-	var tracksFound []types.Track
+func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
+	var tracksFound []utils.Track
 	var wg sync.WaitGroup
 	for _, entry := range playlist.Tracks {
 		wg.Add(1)
 
-		go func(track types.Track) {
+		go func(track utils.Track) {
 			defer wg.Done()
 			s.lookupTrack(track, &tracksFound)
 		}(entry)
@@ -96,7 +95,7 @@ func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (s
 	err := s.RequestClient.
 		Post(s.Config.BaseAPIURI + "/users/" + s.Config.UserID + "/playlists").
 		SetBearerAuthToken(accessToken).
-		SetContentType(types.ApplicationJSON).
+		SetContentType(utils.ApplicationJSON).
 		SetFormData(map[string]string{
 			"name":        playlist.Title,
 			"description": playlist.Description,
@@ -114,7 +113,7 @@ func (s *Spotify) CreatePlaylist(playlist types.Playlist, accessToken string) (s
 	return response.ID, nil
 }
 
-func (s *Spotify) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
+func (s *Spotify) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
 	var response spotifyAPIBearerCredentialsResponse
 	err := s.RequestClient.
 		Post(s.Config.AuthenticationURI).
@@ -125,10 +124,10 @@ func (s *Spotify) GetAuthorizationCode(code string) (types.OauthCredentials, err
 		Into(&response)
 
 	if err != nil {
-		return types.OauthCredentials{}, err
+		return utils.OauthCredentials{}, err
 	}
 
-	return types.OauthCredentials{AccessToken: response.AccessToken, RefreshToken: response.RefreshToken, ExpiresAt: int(response.ExpiresAt)}, nil
+	return utils.OauthCredentials{AccessToken: response.AccessToken, RefreshToken: response.RefreshToken, ExpiresAt: int(response.ExpiresAt)}, nil
 }
 
 // RequiresAccessToken specifies if the streaming requires Oauth.
@@ -139,7 +138,7 @@ func (*Spotify) RequiresAccessToken() bool {
 // populatePlaylistWithTracks adds tracks found on Spotify to a newly created playlist.
 //
 // More info can be found here https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
-func (s *Spotify) populatePlaylistWithTracks(tracks []types.Track, playlistID, accessToken string) {
+func (s *Spotify) populatePlaylistWithTracks(tracks []utils.Track, playlistID, accessToken string) {
 	var tracksURI []string
 	var maximumNumOfTracksPerRequest = 100
 
@@ -162,7 +161,7 @@ func (s *Spotify) populatePlaylistWithTracks(tracks []types.Track, playlistID, a
 			err := s.RequestClient.
 				Post(s.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
 				SetBearerAuthToken(accessToken).
-				SetContentType(types.ApplicationJSON).
+				SetContentType(utils.ApplicationJSON).
 				SetFormData(map[string]string{
 					"uris": strings.Join(chunk, ","),
 				}).
@@ -176,7 +175,7 @@ func (s *Spotify) populatePlaylistWithTracks(tracks []types.Track, playlistID, a
 	wg.Wait()
 }
 
-func (s *Spotify) lookupTrack(track types.Track, tracksFound *[]types.Track) {
+func (s *Spotify) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
 	clientAuthToken, err := s.getClientAuthenticationCredentials()
 	if err != nil {
 		return
@@ -186,7 +185,7 @@ func (s *Spotify) lookupTrack(track types.Track, tracksFound *[]types.Track) {
 	err = s.RequestClient.
 		Get(s.Config.BaseAPIURI + "/search").
 		SetBearerAuthToken(clientAuthToken).
-		SetContentType(types.ApplicationJSON).
+		SetContentType(utils.ApplicationJSON).
 		SetQueryParams(map[string]string{
 			"q":     trackToSearchQuery(track),
 			"type":  "track",
@@ -207,7 +206,7 @@ func (s *Spotify) lookupTrack(track types.Track, tracksFound *[]types.Track) {
 
 // getClientAuthenticationCredentials fetches the client credentials needed for Spotify authentication.
 func (s *Spotify) getClientAuthenticationCredentials() (string, error) {
-	if token, ok := cache.GlobalCache.Get("spotifyClientAuthToken"); ok {
+	if token, ok := utils.GlobalCache.Get("spotifyClientAuthToken"); ok {
 		return token.(string), nil
 	}
 
@@ -220,7 +219,7 @@ func (s *Spotify) getClientAuthenticationCredentials() (string, error) {
 		Into(&response)
 
 	if err != nil {
-		cache.GlobalCache.Set("spotifyClientAuthToken", response.AccessToken, time.Second*time.Duration(response.ExpiresIn))
+		utils.GlobalCache.Set("spotifyClientAuthToken", response.AccessToken, time.Second*time.Duration(response.ExpiresIn))
 	}
 
 	return response.AccessToken, err

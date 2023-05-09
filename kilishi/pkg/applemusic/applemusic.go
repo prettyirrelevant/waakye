@@ -5,16 +5,15 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/prettyirrelevant/kilishi/pkg/utils"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 )
 
 func New(opts InitialisationOpts) *AppleMusic {
 	return &AppleMusic{}
 }
 
-func (a *AppleMusic) GetPlaylist(playlistURI string) (types.Playlist, error) {
+func (a *AppleMusic) GetPlaylist(playlistURI string) (utils.Playlist, error) {
 	var foundError error
-	var playlist types.Playlist
+	var playlist utils.Playlist
 
 	c := colly.NewCollector(
 		colly.UserAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"),
@@ -27,7 +26,7 @@ func (a *AppleMusic) GetPlaylist(playlistURI string) (types.Playlist, error) {
 			artistes = append(artistes, h.Text)
 		})
 
-		playlist.Tracks = append(playlist.Tracks, types.Track{
+		playlist.Tracks = append(playlist.Tracks, utils.Track{
 			Title:   utils.CleanTrackTitle(e.ChildText("div.songs-list-row__song-name")),
 			Artists: artistes,
 		})
@@ -52,13 +51,13 @@ func (a *AppleMusic) GetPlaylist(playlistURI string) (types.Playlist, error) {
 	c.Visit(playlistURI)
 
 	if foundError != nil {
-		return types.Playlist{}, foundError
+		return utils.Playlist{}, foundError
 	}
 
 	return playlist, nil
 }
 
-func (a *AppleMusic) CreatePlaylist(playlist types.Playlist, accessToken string) (string, error) {
+func (a *AppleMusic) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
 	return "", nil
 }
 
@@ -66,6 +65,6 @@ func (a *AppleMusic) RequiresAccessToken() bool {
 	return true
 }
 
-func (a *AppleMusic) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
-	return types.OauthCredentials{}, nil
+func (a *AppleMusic) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
+	return utils.OauthCredentials{}, nil
 }

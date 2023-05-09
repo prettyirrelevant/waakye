@@ -10,7 +10,7 @@ import (
 	"github.com/rs/xid"
 
 	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 )
 
 // Database represents a connection to a SQLite database.
@@ -52,7 +52,7 @@ func (d *Database) GetOauthCredentials(platform aggregator.MusicStreamingPlatfor
 }
 
 // SetOauthCredentials saves the OAuth credentials for a given music streaming platform in the database.
-func (d *Database) SetOauthCredentials(platform aggregator.MusicStreamingPlatform, credentials types.OauthCredentials) error {
+func (d *Database) SetOauthCredentials(platform aggregator.MusicStreamingPlatform, credentials utils.OauthCredentials) error {
 	authCredentialsString, err := credentials.ToString()
 	if err != nil {
 		return err

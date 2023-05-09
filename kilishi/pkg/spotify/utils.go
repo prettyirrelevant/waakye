@@ -9,7 +9,6 @@ import (
 	"github.com/imroc/req/v3"
 
 	"github.com/prettyirrelevant/kilishi/pkg/utils"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 )
 
 // parsePlaylistURI validates a Spotify playlist URI and returns the playlist ID.
@@ -25,9 +24,9 @@ func parsePlaylistURI(playlistURI string) (string, error) {
 }
 
 // parseGetPlaylistResponse transforms the playlist object returned from Spotify API into our internal object.
-func parseGetPlaylistResponse(response spotifyAPIGetPlaylistResponse) types.Playlist {
+func parseGetPlaylistResponse(response spotifyAPIGetPlaylistResponse) utils.Playlist {
 	tracks := parseTracksResponse(response.Tracks)
-	return types.Playlist{
+	return utils.Playlist{
 		ID:          response.ID,
 		Title:       response.Name,
 		Description: response.Description,
@@ -36,8 +35,8 @@ func parseGetPlaylistResponse(response spotifyAPIGetPlaylistResponse) types.Play
 }
 
 // parseTracksResponse transforms the playlist items returned from Spotify API into our internal object.
-func parseTracksResponse(response spotifyAPITracksResponse) []types.Track {
-	var tracks []types.Track
+func parseTracksResponse(response spotifyAPITracksResponse) []utils.Track {
+	var tracks []utils.Track
 
 	for _, entry := range response.Items {
 		artistes := []string{}
@@ -46,7 +45,7 @@ func parseTracksResponse(response spotifyAPITracksResponse) []types.Track {
 		}
 		tracks = append(
 			tracks,
-			types.Track{
+			utils.Track{
 				ID:      entry.Track.ID,
 				Title:   utils.CleanTrackTitle(entry.Track.Name),
 				Artists: artistes,
@@ -58,27 +57,27 @@ func parseTracksResponse(response spotifyAPITracksResponse) []types.Track {
 }
 
 // parseTracksResponse transforms the playlist items returned from Spotify API into our internal object.
-func parseSearchResponse(response spotifyAPISearchResponse) []types.Track {
-	var tracks []types.Track
+func parseSearchResponse(response spotifyAPISearchResponse) []utils.Track {
+	var tracks []utils.Track
 
 	for _, entry := range response.Tracks.Items {
 		artistes := []string{}
 		for _, artiste := range entry.Artists {
 			artistes = append(artistes, artiste.Name)
 		}
-		tracks = append(tracks, types.Track{ID: entry.ID, Title: entry.Name, Artists: artistes})
+		tracks = append(tracks, utils.Track{ID: entry.ID, Title: entry.Name, Artists: artistes})
 	}
 
 	return tracks
 }
 
 // trackIDToURI transforms a Spotify ID into URI.
-func trackIDToURI(track types.Track) string {
+func trackIDToURI(track utils.Track) string {
 	return "spotify:track:" + track.ID
 }
 
 // trackToSearchQuery transforms our internal track object into a Spotify search query.
-func trackToSearchQuery(track types.Track) string {
+func trackToSearchQuery(track utils.Track) string {
 	query := "track:" + track.Title
 	for _, artist := range track.Artists {
 		query += " artist:" + artist

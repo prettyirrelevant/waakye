@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 )
 
 // ConvertPlaylistController returns a handler function for converting a playlist
@@ -21,10 +21,10 @@ func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAgg
 				JSON(fiber.Map{"status": false, "data": nil, "error": err.Error()})
 		}
 
-		if err = validate.Struct(requestBody); err != nil {
+		if ok, errors := requestBody.Validate(); !ok {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(fiber.Map{"status": false, "data": nil, "error": err.Error()})
+				JSON(fiber.Map{"status": false, "data": nil, "errors": errors})
 		}
 
 		dbCredentials, err := db.GetOauthCredentials(requestBody.Destination)
@@ -34,7 +34,7 @@ func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAgg
 				JSON(fiber.Map{"status": false, "data": nil, "error": err.Error()})
 		}
 
-		credentials, err := types.OauthCredentialsFromDB(dbCredentials.Credentials)
+		credentials, err := utils.OauthCredentialsFromDB(dbCredentials.Credentials)
 		if err != nil {
 			return c.
 				Status(http.StatusUnprocessableEntity).

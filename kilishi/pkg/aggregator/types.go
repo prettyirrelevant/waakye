@@ -5,7 +5,7 @@ import (
 	"github.com/prettyirrelevant/kilishi/pkg/applemusic"
 	"github.com/prettyirrelevant/kilishi/pkg/deezer"
 	"github.com/prettyirrelevant/kilishi/pkg/spotify"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 	"github.com/prettyirrelevant/kilishi/pkg/ytmusic"
 )
 
@@ -15,6 +15,8 @@ const (
 	YTMusic    MusicStreamingPlatform = "ytmusic"
 	AppleMusic MusicStreamingPlatform = "apple music"
 )
+
+var AllMusicStreamingPlatforms = map[MusicStreamingPlatform]bool{Spotify: true, Deezer: true, YTMusic: true, AppleMusic: true}
 
 // MusicStreamingPlatformsAggregator is a struct that represents an aggregator of different music streaming platforms.
 type MusicStreamingPlatformsAggregator struct {
@@ -27,17 +29,17 @@ type MusicStreamingPlatformsAggregator struct {
 
 type MusicStreamingPlatformInterface interface {
 	// CreatePlaylist creates a new playlist on the platform.
-	// It takes a types.Playlist object and an access token string
+	// It takes a utils.Playlist object and an access token string
 	// and returns the URL of the newly created playlist and an error, if any.
-	CreatePlaylist(playlist types.Playlist, accessToken string) (string, error)
+	CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error)
 
-	// GetPlaylist returns a types.Playlist object for a given playlist URL.
+	// GetPlaylist returns a utils.Playlist object for a given playlist URL.
 	// It takes a playlist URL string and returns the corresponding playlist object and an error, if any.
-	GetPlaylist(playlistURL string) (types.Playlist, error)
+	GetPlaylist(playlistURL string) (utils.Playlist, error)
 
 	// GetAuthorizationCode returns an oauth credentials object for the given authorization code.
 	// It takes an authorization code string and returns an oauth credentials object and an error, if any.
-	GetAuthorizationCode(code string) (types.OauthCredentials, error)
+	GetAuthorizationCode(code string) (utils.OauthCredentials, error)
 
 	// RequiresAccessToken returns a boolean indicating whether the platform requires an access token for API calls.
 	RequiresAccessToken() bool

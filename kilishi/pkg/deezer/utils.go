@@ -10,7 +10,6 @@ import (
 	"github.com/imroc/req/v3"
 
 	"github.com/prettyirrelevant/kilishi/pkg/utils"
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
 )
 
 // parsePlaylistURI validates a Deezer playlist URI and returns the playlist ID.
@@ -25,7 +24,7 @@ func parsePlaylistURI(playlistURI string) (string, error) {
 }
 
 // trackToSearchQuery transforms our internal track object into a Deezer search query.
-func trackToSearchQuery(track types.Track) string {
+func trackToSearchQuery(track utils.Track) string {
 	query := "track:" + track.Title
 	for _, artist := range track.Artists {
 		query += " artist:" + artist
@@ -35,9 +34,9 @@ func trackToSearchQuery(track types.Track) string {
 }
 
 // parseGetPlaylistResponse transforms the playlist object returned from Deezer API into our internal object.
-func parseGetPlaylistResponse(response deezerAPIGetPlaylistResponse) types.Playlist {
+func parseGetPlaylistResponse(response deezerAPIGetPlaylistResponse) utils.Playlist {
 	tracks := parseTracksResponse(response.Tracks)
-	return types.Playlist{
+	return utils.Playlist{
 		ID:          strconv.Itoa(response.ID),
 		Title:       response.Title,
 		Description: response.Description,
@@ -45,10 +44,10 @@ func parseGetPlaylistResponse(response deezerAPIGetPlaylistResponse) types.Playl
 	}
 }
 
-func parseTracksResponse(response deezerAPITracksDataResponse) []types.Track {
-	var tracks []types.Track
+func parseTracksResponse(response deezerAPITracksDataResponse) []utils.Track {
+	var tracks []utils.Track
 	for _, track := range response.Data {
-		tracks = append(tracks, types.Track{
+		tracks = append(tracks, utils.Track{
 			ID:      strconv.Itoa(track.ID),
 			Title:   utils.CleanTrackTitle(track.Title),
 			Artists: []string{track.Artist.Name},

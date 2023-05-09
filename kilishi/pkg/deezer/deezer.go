@@ -4,7 +4,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/prettyirrelevant/kilishi/pkg/utils/types"
+	"github.com/prettyirrelevant/kilishi/pkg/utils"
 )
 
 // New initialises a `Spotify` object.
@@ -20,10 +20,10 @@ func New(opts InitialisationOpts) *Deezer {
 	}
 }
 
-func (d *Deezer) GetPlaylist(playlistURI string) (types.Playlist, error) {
+func (d *Deezer) GetPlaylist(playlistURI string) (utils.Playlist, error) {
 	playlistID, err := parsePlaylistURI(playlistURI)
 	if err != nil {
-		return types.Playlist{}, err
+		return utils.Playlist{}, err
 	}
 
 	var response deezerAPIGetPlaylistResponse
@@ -33,20 +33,20 @@ func (d *Deezer) GetPlaylist(playlistURI string) (types.Playlist, error) {
 		Into(&response)
 
 	if err != nil {
-		return types.Playlist{}, err
+		return utils.Playlist{}, err
 	}
 
 	return parseGetPlaylistResponse(response), nil
 }
 
-func (d *Deezer) CreatePlaylist(playlist types.Playlist, accessToken string) (string, error) {
+func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
 	// first, look for the tracks on Spotify
-	var tracksFound []types.Track
+	var tracksFound []utils.Track
 	var wg sync.WaitGroup
 	for _, entry := range playlist.Tracks {
 		wg.Add(1)
 
-		go func(track types.Track) {
+		go func(track utils.Track) {
 			defer wg.Done()
 			d.lookupTrack(track, &tracksFound)
 		}(entry)
@@ -57,7 +57,7 @@ func (d *Deezer) CreatePlaylist(playlist types.Playlist, accessToken string) (st
 	var response deezerAPICreatePlaylistResponse
 	err := d.RequestClient.
 		Post(d.Config.BaseAPIURI + "/users/me/playlist").
-		SetContentType(types.ApplicationJSON).
+		SetContentType(utils.ApplicationJSON).
 		SetBearerAuthToken(accessToken).
 		SetQueryParams(map[string]string{
 			"title": playlist.Title,
@@ -78,7 +78,7 @@ func (d *Deezer) CreatePlaylist(playlist types.Playlist, accessToken string) (st
 	return response.ID, nil
 }
 
-func (d *Deezer) GetAuthorizationCode(code string) (types.OauthCredentials, error) {
+func (d *Deezer) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
 	var response deezerAPIBearerCredentialsResponse
 	err := d.RequestClient.
 		Get(d.Config.AuthenticationURI).
@@ -92,10 +92,10 @@ func (d *Deezer) GetAuthorizationCode(code string) (types.OauthCredentials, erro
 		Into(&response)
 
 	if err != nil {
-		return types.OauthCredentials{}, err
+		return utils.OauthCredentials{}, err
 	}
 
-	return types.OauthCredentials{AccessToken: response.AccessToken, ExpiresAt: int(response.Expires)}, nil
+	return utils.OauthCredentials{AccessToken: response.AccessToken, ExpiresAt: int(response.Expires)}, nil
 }
 
 // RequiresAccessToken specifies if the streaming requires Oauth.
@@ -103,11 +103,11 @@ func (*Deezer) RequiresAccessToken() bool {
 	return true
 }
 
-func (d *Deezer) lookupTrack(track types.Track, tracksFound *[]types.Track) {
+func (d *Deezer) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
 	var response deezerAPISearchTrackResponse
 	err := d.RequestClient.
 		Get(d.Config.BaseAPIURI + "/search/track").
-		SetContentType(types.ApplicationJSON).
+		SetContentType(utils.ApplicationJSON).
 		SetQueryParams(map[string]string{
 			"q": trackToSearchQuery(track),
 		}).
@@ -126,7 +126,7 @@ func (d *Deezer) lookupTrack(track types.Track, tracksFound *[]types.Track) {
 }
 
 // populatePlaylistWithTracks adds tracks found on Deezer to a newly created playlist.
-func (d *Deezer) populatePlaylistWithTracks(tracks []types.Track, playlistID, accessToken string) error {
+func (d *Deezer) populatePlaylistWithTracks(tracks []utils.Track, playlistID, accessToken string) error {
 	var tracksURI []string
 	for _, track := range tracks {
 		tracksURI = append(tracksURI, track.ID)
@@ -136,7 +136,7 @@ func (d *Deezer) populatePlaylistWithTracks(tracks []types.Track, playlistID, ac
 	err := d.RequestClient.
 		Post(d.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
 		SetBearerAuthToken(accessToken).
-		SetContentType(types.ApplicationJSON).
+		SetContentType(utils.ApplicationJSON).
 		SetFormData(map[string]string{
 			"songs": strings.Join(tracksURI, ","),
 		}).
