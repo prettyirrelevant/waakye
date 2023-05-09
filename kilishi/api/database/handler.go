@@ -1,17 +1,22 @@
 package database
 
 import (
+	"embed"
 	"fmt"
 	"os"
 	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pressly/goose/v3"
 	"github.com/rs/xid"
 
 	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
 	"github.com/prettyirrelevant/kilishi/pkg/utils"
 )
+
+//go:embed migrations/*.sql
+var embedMigrations embed.FS
 
 // Database represents a connection to a SQLite database.
 type Database struct {
@@ -27,6 +32,15 @@ func New(databaseURL string) (*Database, error) {
 
 	db, err := sqlx.Connect("sqlite3", fmt.Sprintf("%s/%s", baseDir, databaseURL))
 	if err != nil {
+		return nil, err
+	}
+
+	// TODO: log that migrations ran successfully!
+	goose.SetBaseFS(embedMigrations)
+	if err = goose.SetDialect("sqlite3"); err != nil {
+		return nil, err
+	}
+	if err = goose.Up(db.DB, "migrations"); err != nil {
 		return nil, err
 	}
 
