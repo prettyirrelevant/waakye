@@ -9,9 +9,9 @@ func SuccessResponse(message string, data any) *fiber.Map {
 	}
 }
 
-func ErrorResponse(message string, errors ...error) *fiber.Map {
+func ErrorResponse(message string, errorMsgs ...string) *fiber.Map {
 	return &fiber.Map{
 		"message": message,
-		"errors":  errors,
+		"errors":  errorMsgs,
 	}
 }

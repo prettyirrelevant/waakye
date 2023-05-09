@@ -13,14 +13,18 @@ type ConvertPlaylistRequest struct {
 	PlaylistURL string                            `json:"playlistURL"`
 }
 
-func (c *ConvertPlaylistRequest) Validate() (bool, []error) {
-	var foundErrors []error
+func (c *ConvertPlaylistRequest) Validate() (bool, []string) {
+	var foundErrors []string
 
 	if ok := aggregator.AllMusicStreamingPlatforms[c.Source]; !ok {
-		foundErrors = append(foundErrors, fmt.Errorf("`source` is not one of the supported streaming platforms"))
+		foundErrors = append(foundErrors, fmt.Sprintf("%s is not a supported streaming platform", c.Source))
 	}
 	if ok := aggregator.AllMusicStreamingPlatforms[c.Destination]; !ok {
-		foundErrors = append(foundErrors, fmt.Errorf("`destination` is not one of the supported streaming platforms"))
+		foundErrors = append(foundErrors, fmt.Sprintf("%s is not a supported streaming platform", c.Source))
+	}
+
+	if c.Source == c.Destination {
+		foundErrors = append(foundErrors, "source cannot be the same as destination")
 	}
 
 	if len(foundErrors) > 0 {

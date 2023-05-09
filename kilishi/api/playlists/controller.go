@@ -19,7 +19,7 @@ func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAgg
 		if err != nil {
 			return c.
 				Status(http.StatusBadRequest).
-				JSON(presenter.ErrorResponse("validation error", err))
+				JSON(presenter.ErrorResponse("validation error", err.Error()))
 		}
 
 		if ok, errors := requestBody.Validate(); !ok {
@@ -32,21 +32,21 @@ func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAgg
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("error retrieving credentials from database", err))
+				JSON(presenter.ErrorResponse("error retrieving credentials from database", err.Error()))
 		}
 
 		credentials, err := utils.OauthCredentialsFromDB(dbCredentials.Credentials)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("", err))
+				JSON(presenter.ErrorResponse("", err.Error()))
 		}
 
 		playlistURL, err := aggregator.ConvertPlaylist(requestBody.Source, requestBody.Destination, requestBody.PlaylistURL, credentials.AccessToken)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("error converting playlist", err))
+				JSON(presenter.ErrorResponse("error converting playlist", err.Error()))
 		}
 
 		return c.Status(http.StatusOK).JSON(presenter.SuccessResponse("Playlist converted successfully", playlistURL))

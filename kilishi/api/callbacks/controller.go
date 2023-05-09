@@ -29,7 +29,7 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 		if err != nil {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err.Error()))
 		}
 
 		// It takes the format of timeInMicroSecs:streamingPlatform
@@ -37,34 +37,34 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 		if len(stateParamSlice) < 2 {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err.Error()))
 		}
 
 		stateParamTime, err := strconv.Atoi(stateParamSlice[0])
 		if err != nil {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err.Error()))
 		}
 
 		if stateParamSlice[1] != string(aggregator.Spotify) || time.Now().UnixMilli()-int64(stateParamTime) >= 60000 {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err.Error()))
 		}
 
 		oauthCredentials, err := ag.Spotify.GetAuthorizationCode(c.Query("code"))
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("unable to retrieve authorization code", err))
+				JSON(presenter.ErrorResponse("unable to retrieve authorization code", err.Error()))
 		}
 
 		err = db.SetOauthCredentials(aggregator.Spotify, oauthCredentials)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("unable to store authorization code in database", err))
+				JSON(presenter.ErrorResponse("unable to store authorization code in database", err.Error()))
 		}
 
 		return c.
@@ -80,14 +80,14 @@ func DeezerOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggrega
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("unable to retrieve authorization code", err))
+				JSON(presenter.ErrorResponse("unable to retrieve authorization code", err.Error()))
 		}
 
 		err = db.SetOauthCredentials(aggregator.Deezer, oauthCredentials)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("unable to store authorization code in database", err))
+				JSON(presenter.ErrorResponse("unable to store authorization code in database", err.Error()))
 		}
 
 		return c.
