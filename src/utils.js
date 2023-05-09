@@ -113,6 +113,9 @@ const generateAuthenticationURL = (url, queryParams) => {
     searchParams.set(key, value);
   }
 
+  logger.debug(
+    `Generated authentication url ${url}?${searchParams.toString()}`
+  );
   return `${url}?${searchParams.toString()}`;
 };
 

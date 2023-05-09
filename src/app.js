@@ -22,7 +22,16 @@ const app = express();
 app.use(morgan.successHandler);
 app.use(morgan.errorHandler);
 app.use(helmet());
-app.use("/api", basicAuth({ users: { admin: config.SECRET_KEY } }));
+app.use(
+  "/api",
+  basicAuth({
+    users: { admin: config.SECRET_KEY },
+    unauthorizedResponse: (req) =>
+      req.auth
+        ? "Credentials " + req.auth.user + ":" + req.auth.password + " rejected"
+        : "No credentials provided",
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(xss());
