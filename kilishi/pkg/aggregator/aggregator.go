@@ -58,7 +58,7 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 // SupportedPlatforms returns a list of supported music streaming platforms.
 func (m *MusicStreamingPlatformsAggregator) SupportedPlatforms() []MusicStreamingPlatform {
 	var platforms []MusicStreamingPlatform
-	for k, _ := range AllMusicStreamingPlatforms {
+	for k := range AllMusicStreamingPlatforms {
 		platforms = append(platforms, k)
 	}
 	return platforms
