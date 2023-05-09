@@ -22,14 +22,14 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 		if state == "" || code == "" {
 			return c.
 				Status(http.StatusBadRequest).
-				JSON(presenter.ErrorResponse("missing required query parameters, `state` & `code`"))
+				JSON(presenter.ErrorResponse("missing required query parameters: state and/or code"))
 		}
 
 		stateParamDecrypted, err := utils.Decrypt(state, ag.Config.SecretKey, ag.Config.InitializationVector)
 		if err != nil {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired `state` parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
 		}
 
 		// It takes the format of timeInMicroSecs:streamingPlatform
@@ -37,20 +37,20 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 		if len(stateParamSlice) < 2 {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired `state` parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
 		}
 
 		stateParamTime, err := strconv.Atoi(stateParamSlice[0])
 		if err != nil {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired `state` parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
 		}
 
 		if stateParamSlice[1] != string(aggregator.Spotify) || time.Now().UnixMilli()-int64(stateParamTime) >= 60000 {
 			return c.
 				Status(http.StatusUnprocessableEntity).
-				JSON(presenter.ErrorResponse("invalid/expired `state` parameter provided", err))
+				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err))
 		}
 
 		oauthCredentials, err := ag.Spotify.GetAuthorizationCode(c.Query("code"))

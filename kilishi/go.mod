@@ -10,7 +10,7 @@ require (
 	github.com/imroc/req/v3 v3.33.2
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/mattn/go-sqlite3 v1.14.16
-	github.com/prettyirrelevant/ytmusicapi v1.0.1
+	github.com/prettyirrelevant/ytmusicapi v1.0.2
 	github.com/rs/xid v1.5.0
 	github.com/stretchr/testify v1.8.2
 )

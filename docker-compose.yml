@@ -1,20 +1,35 @@
 version: '3'
 services:
-  waakye:
+  kilishi:
     build:
-      context: .
-      dockerfile: waakye.Dockerfile
+      context: ./kilishi
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - ./kilishi/.env
+    volumes:
+      - kilishi-sqlite:/db.sqlite3
+    depends_on:
+      - redis_cache
+      - masa
   masa:
     build:
-      context: .
-      dockerfile: masa.Dockerfile
+      context: ./masa
+      dockerfile: Dockerfile
     ports:
       - "5001:5001"
-    depends_on:
-      - waakye
     env_file:
-      - .env
+      - ./masa/.env
+
+  redis_cache:
+    image: redis:6.2-alpine
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+  kilishi-sqlite:

@@ -92,6 +92,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prettyirrelevant/ytmusicapi v1.0.1 h1:w4Y7FUWf66ttYxELbhhKDqqwL8zEOAIqPQeSwmR+0Tw=
 github.com/prettyirrelevant/ytmusicapi v1.0.1/go.mod h1:xJCAA0RJJdAGB/tu2WmCV3uD6tByQnjqFdz85JxNglg=
+github.com/prettyirrelevant/ytmusicapi v1.0.2 h1:7yS0t7an1yAekgX+7Y1NjEoIumZAMPBY9dWqIDzpPK4=
+github.com/prettyirrelevant/ytmusicapi v1.0.2/go.mod h1:xJCAA0RJJdAGB/tu2WmCV3uD6tByQnjqFdz85JxNglg=
 github.com/quic-go/qpack v0.4.0 h1:Cr9BXA1sQS2SmDUWjSofMPNKmvF6IiIfDRmgU0w1ZCo=
 github.com/quic-go/qpack v0.4.0/go.mod h1:UZVnYIfi5GRk+zI9UMaCPsmZ2xKJP7XBUvVyT1Knj9A=
 github.com/quic-go/qtls-go1-19 v0.3.2 h1:tFxjCFcTQzK+oMxG6Zcvp4Dq8dx4yD3dDiIiyc86Z5U=
