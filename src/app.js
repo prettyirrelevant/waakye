@@ -79,7 +79,7 @@ app.post("/api/oauth/deezer", async (req, res) => {
       perms: "manage_library,offline_access",
     }
   );
-  const success = await handleMusicServiceAuthentication({
+  const [success, msg] = await handleMusicServiceAuthentication({
     successText: "deezer token saved",
     email: config.DEEZER_AUTH_EMAIL,
     password: config.DEEZER_AUTH_PASSWORD,
@@ -89,7 +89,7 @@ app.post("/api/oauth/deezer", async (req, res) => {
     passwordSelector: "#login_password",
     authUrl: authURL,
   });
-  return res.status(200).json({ status: success, message: null });
+  return res.status(200).json({ status: success, message: msg });
 });
 
 app.use((req, res, next) => {
