@@ -1,1 +1,1 @@
-web: cmd/kilishi
+web: ./kilishi
