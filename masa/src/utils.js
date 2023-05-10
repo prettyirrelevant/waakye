@@ -53,6 +53,8 @@ const getPuppeteerSetup = async () => {
 const handleMusicServiceAuthentication = async (authenticationParams) => {
   const [page, browser] = await getPuppeteerSetup();
   // try {
+  let isSuccessful = false;
+  let statusMsg = "";
   await page.goto(authenticationParams.authUrl);
   logger.info(`Navigated to ${authenticationParams.authUrl}...`);
 
@@ -74,9 +76,11 @@ const handleMusicServiceAuthentication = async (authenticationParams) => {
   ]);
 
   const content = await page.content();
-  const isSuccessful = await content.includes(authenticationParams.successText);
+  isSuccessful = await content.includes(authenticationParams.successText);
+  statusMsg = isSuccessful ? "successful" : `error occured: ${content}`;
+
   await browser.close();
-  return await isSuccessful, content;
+  return [isSuccessful, statusMsg];
   // } catch (error) {
   //   throw error;
   // } finally {
