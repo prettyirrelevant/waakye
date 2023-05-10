@@ -16,6 +16,7 @@ const {
   errorConverter,
   errorHandler,
 } = require("./middlewares/error");
+const logger = require("./config/logger");
 
 const app = express();
 
@@ -67,6 +68,7 @@ app.post("/api/oauth/spotify", async (req, res) => {
     passwordSelector: "#login-password",
     authUrl: authURL,
   });
+  logger.info(`Got success value ${success} with message ${msg}`);
   return res.status(200).json({ status: success, message: msg });
 });
 
@@ -89,6 +91,7 @@ app.post("/api/oauth/deezer", async (req, res) => {
     passwordSelector: "#login_password",
     authUrl: authURL,
   });
+  logger.info(`Got success value ${success} with message ${msg}`);
   return res.status(200).json({ status: success, message: msg });
 });
 
