@@ -1,0 +1,24 @@
+name: waakye
+
+services:
+  - name: kilishi
+    environment_slug: go
+    github:
+      repo: prettyirrelevant/waakye
+      branch: main
+      deploy_on_push: true
+    source_dir: kilishi
+    dockerfile_path: kilishi/Dockerfile
+    routes:
+      - path: /
+
+  - name: masa
+    environment_slug: go
+    github:
+      repo: prettyirrelevant/waakye
+      branch: main
+      deploy_on_push: true
+    source_dir: masa
+    dockerfile_path: masa/Dockerfile
+    routes:
+      - path: /
