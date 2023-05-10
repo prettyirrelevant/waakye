@@ -34,7 +34,7 @@ const envVarsSchema = Joi.object().keys({
     .required()
     .description("The redirect URI gotten from your Spotify Dashboard"),
   BROWSER_EXECUTABLE_PATH: Joi.string()
-    .optional()
+    .default('"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"')
     .description("Path to browser executable for automation"),
   SECRET_KEY: Joi.string()
     .hex()

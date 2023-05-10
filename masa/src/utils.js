@@ -31,31 +31,21 @@ const encryptWithAES256CBC = (secretKeyHex, ivHex, plainText) => {
 const getPuppeteerSetup = async () => {
   puppeteer.use(StealthPlugin());
 
-  const browserExecutablePath =
-    process.env.BROWSER_EXECUTABLE_PATH ??
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-
   const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
-    executablePath: browserExecutablePath,
+    headless: true,
+    dumpio: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-gpu",
+      "--single-process",
+      "--disable-dev-shm-usage",
+    ],
   });
-
   const page = await browser.newPage();
 
   return [page, browser];
 };
-
-// interface AuthenticationParams {
-//   authUrl: string;
-//   emailSelector: string;
-//   passwordSelector: string;
-//   submitButtonSelector: string;
-//   successText: string;
-//   email: string;
-//   password: string;
-//   serviceName: "spotify" | "deezer";
-// }
 
 /**
  * Handles the authentication process for a music streaming service by opening a browser window and automating the login process using Puppeteer.
