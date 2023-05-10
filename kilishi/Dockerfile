@@ -3,8 +3,6 @@
 # -----------------------------------------------------------------------------
 FROM golang:1.20-bullseye as build
 
-ENV CGO_ENABLED=1
-
 WORKDIR /opt/app
 
 COPY go.mod .
@@ -14,7 +12,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -ldflags='-s -w -extldflags "-static"' -o /opt/app/kilishi ./cmd/kilishi/main.go
+RUN go build -o /opt/app/kilishi ./cmd/kilishi/main.go
 
 
 # -----------------------------------------------------------------------------
