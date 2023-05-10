@@ -75,12 +75,9 @@ const handleMusicServiceAuthentication = async (authenticationParams) => {
 
     const content = await page.content();
     const isSuccessful = content.includes(authenticationParams.successText, 0);
-    return isSuccessful, "";
+    return isSuccessful, content;
   } catch (error) {
-    logger.error(
-      `Error occurred during ${authenticationParams.serviceName} OAuth: ${error}`
-    );
-    return false, error.message;
+    throw error;
   } finally {
     await browser.close();
   }
