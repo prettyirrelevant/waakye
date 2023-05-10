@@ -52,35 +52,35 @@ const getPuppeteerSetup = async () => {
  */
 const handleMusicServiceAuthentication = async (authenticationParams) => {
   const [page, browser] = await getPuppeteerSetup();
-  try {
-    await page.goto(authenticationParams.authUrl);
-    logger.info(`Navigated to ${authenticationParams.authUrl}...`);
+  // try {
+  await page.goto(authenticationParams.authUrl);
+  logger.info(`Navigated to ${authenticationParams.authUrl}...`);
 
-    await page.type(
-      authenticationParams.emailSelector,
-      authenticationParams.email,
-      { delay: 100 }
-    );
+  await page.type(
+    authenticationParams.emailSelector,
+    authenticationParams.email,
+    { delay: 100 }
+  );
 
-    await page.type(
-      authenticationParams.passwordSelector,
-      authenticationParams.password,
-      { delay: 100 }
-    );
+  await page.type(
+    authenticationParams.passwordSelector,
+    authenticationParams.password,
+    { delay: 100 }
+  );
 
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(authenticationParams.submitButtonSelector, { delay: 100 }),
-    ]);
+  await Promise.all([
+    page.waitForNavigation(),
+    page.click(authenticationParams.submitButtonSelector, { delay: 100 }),
+  ]);
 
-    const content = await page.content();
-    const isSuccessful = content.includes(authenticationParams.successText, 0);
-    return isSuccessful, content;
-  } catch (error) {
-    throw error;
-  } finally {
-    await browser.close();
-  }
+  const content = await page.content();
+  const isSuccessful = content.includes(authenticationParams.successText, 0);
+  await browser.close();
+  return isSuccessful, content;
+  // } catch (error) {
+  //   throw error;
+  // } finally {
+  // }
 };
 
 /**
