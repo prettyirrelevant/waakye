@@ -1,0 +1,12 @@
+name: kilishi-app
+
+services:
+   - name: kilishi
+     github:
+       repo: prettyirrelevant/waakye
+       branch: main
+       deploy_on_push: true
+     source_dir: kilishi
+     dockerfile_path: kilishi/Dockerfile
+     routes:
+       - path: /
