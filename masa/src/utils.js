@@ -74,10 +74,9 @@ const handleMusicServiceAuthentication = async (authenticationParams) => {
   ]);
 
   const content = await page.content();
-  const isSuccessful = await content.includes(
-    authenticationParams.successText,
-    0
-  );
+  const isSuccessful = await content.includes(authenticationParams.successText);
+  logger.debug("got content", content);
+  logger.debug("expected text", authenticationParams.successText);
   await browser.close();
   return isSuccessful, content;
   // } catch (error) {
