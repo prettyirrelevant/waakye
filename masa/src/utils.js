@@ -48,7 +48,7 @@ const getPuppeteerSetup = async () => {
 /**
  * Handles the authentication process for a music streaming service by opening a browser window and automating the login process using Puppeteer.
  * @param authenticationParams - The authentication parameters for the music streaming service.
- * @returns A Promise that resolves to a boolean whether the authentication was successful or not.
+ * @returns A Promise that resolves to a boolean whether the authentication was successful or not and a message.
  */
 const handleMusicServiceAuthentication = async (authenticationParams) => {
   const [page, browser] = await getPuppeteerSetup();
@@ -75,12 +75,12 @@ const handleMusicServiceAuthentication = async (authenticationParams) => {
 
     const content = await page.content();
     const isSuccessful = content.includes(authenticationParams.successText, 0);
-    return isSuccessful;
+    return isSuccessful, "";
   } catch (error) {
     logger.error(
       `Error occurred during ${authenticationParams.serviceName} OAuth: ${error}`
     );
-    throw error;
+    return false, error.message;
   } finally {
     await browser.close();
   }

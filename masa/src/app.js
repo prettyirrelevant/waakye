@@ -57,7 +57,7 @@ app.post("/api/oauth/spotify", async (req, res) => {
       ),
     }
   );
-  const success = await handleMusicServiceAuthentication({
+  const [success, msg] = await handleMusicServiceAuthentication({
     successText: "spotify token saved",
     email: config.SPOTIFY_AUTH_EMAIL,
     password: config.SPOTIFY_AUTH_PASSWORD,
@@ -67,7 +67,7 @@ app.post("/api/oauth/spotify", async (req, res) => {
     passwordSelector: "#login-password",
     authUrl: authURL,
   });
-  return res.status(200).json({ status: success, message: null });
+  return res.status(200).json({ status: success, message: msg });
 });
 
 app.post("/api/oauth/deezer", async (req, res) => {
