@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -41,7 +42,7 @@ func main() {
 	callbacks.RouterV1(apiGroup, aggregatorService, db)
 	apiGroup.Get("/ping", HealthCheckController)
 
-	log.Fatal(app.Listen(":8000"))
+	log.Fatal(app.Listen(fmt.Sprintf("%s:%d", config.Address, config.Port)))
 }
 
 func HealthCheckController(c *fiber.Ctx) error {

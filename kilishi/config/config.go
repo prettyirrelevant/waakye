@@ -4,6 +4,8 @@ import "github.com/caarlos0/env/v7"
 
 type Config struct {
 	Debug                   bool   `env:"DEBUG,notEmpty"`
+	Port                    int    `env:"PORT,notEmpty"`
+	Address                 string `env:"ADDRESS,notEmpty"`
 	SecretKey               string `env:"SECRET_KEY,notEmpty"`
 	RedisURI                string `env:"REDIS_URI,notEmpty"`
 	InitializationVector    string `env:"INITIALIZATION_VECTOR,notEmpty"`
