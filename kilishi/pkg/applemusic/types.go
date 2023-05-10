@@ -9,19 +9,19 @@ type AppleMusic struct {
 
 type InitialisationOpts struct {
 	RequestClient             *req.Client
-	BaseAPIURI                string
+	BaseAPIURL                string
 	ClientID                  string
 	UserID                    string
 	ClientSecret              string
-	AuthenticationURI         string
-	AuthenticationRedirectURI string
+	AuthenticationURL         string
+	AuthenticationRedirectURL string
 }
 
 type Config struct {
-	BaseAPIURI                string
+	BaseAPIURL                string
 	UserID                    string
 	ClientID                  string
 	ClientSecret              string
-	AuthenticationURI         string
-	AuthenticationRedirectURI string
+	AuthenticationURL         string
+	AuthenticationRedirectURL string
 }

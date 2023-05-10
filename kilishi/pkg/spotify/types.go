@@ -13,21 +13,21 @@ type Spotify struct {
 
 type InitialisationOpts struct {
 	RequestClient             *req.Client
-	BaseAPIURI                string
+	BaseAPIURL                string
 	ClientID                  string
 	UserID                    string
 	ClientSecret              string
-	AuthenticationURI         string
-	AuthenticationRedirectURI string
+	AuthenticationURL         string
+	AuthenticationRedirectURL string
 }
 
 type Config struct {
-	BaseAPIURI                string
+	BaseAPIURL                string
 	UserID                    string
 	ClientID                  string
 	ClientSecret              string
-	AuthenticationURI         string
-	AuthenticationRedirectURI string
+	AuthenticationURL         string
+	AuthenticationRedirectURL string
 }
 
 // /////////////////////////////////////////////////
@@ -75,7 +75,7 @@ type spotifyAPISearchResponse struct {
 type spotifyAPICreatePlaylistResponse struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
-	URI  string `json:"uri"`
+	URL  string `json:"uri"`
 }
 
 type spotifyAPIClientCredentialsResponse struct {

@@ -15,16 +15,16 @@ func New(opts InitialisationOpts) *Spotify {
 		Config: Config{
 			UserID:                    opts.UserID,
 			ClientID:                  opts.ClientID,
-			BaseAPIURI:                opts.BaseAPIURI,
+			BaseAPIURL:                opts.BaseAPIURL,
 			ClientSecret:              opts.ClientSecret,
-			AuthenticationURI:         opts.AuthenticationURI,
-			AuthenticationRedirectURI: opts.AuthenticationRedirectURI,
+			AuthenticationURL:         opts.AuthenticationURL,
+			AuthenticationRedirectURL: opts.AuthenticationRedirectURL,
 		},
 	}
 }
 
-func (s *Spotify) GetPlaylist(playlistURI string) (utils.Playlist, error) {
-	playlistID, err := parsePlaylistURI(playlistURI)
+func (s *Spotify) GetPlaylist(playlistURL string) (utils.Playlist, error) {
+	playlistID, err := parsePlaylistURL(playlistURL)
 	if err != nil {
 		return utils.Playlist{}, err
 	}
@@ -36,7 +36,7 @@ func (s *Spotify) GetPlaylist(playlistURI string) (utils.Playlist, error) {
 
 	var response spotifyAPIGetPlaylistResponse
 	err = s.RequestClient.
-		Get(s.Config.BaseAPIURI + "/playlists/" + playlistID).
+		Get(s.Config.BaseAPIURL + "/playlists/" + playlistID).
 		SetBearerAuthToken(clientAuthToken).
 		SetContentType(utils.ApplicationJSON).
 		Do().
@@ -93,7 +93,7 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 
 	var response spotifyAPICreatePlaylistResponse
 	err := s.RequestClient.
-		Post(s.Config.BaseAPIURI + "/users/" + s.Config.UserID + "/playlists").
+		Post(s.Config.BaseAPIURL + "/users/" + s.Config.UserID + "/playlists").
 		SetBearerAuthToken(accessToken).
 		SetContentType(utils.ApplicationJSON).
 		SetFormData(map[string]string{
@@ -116,8 +116,8 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 func (s *Spotify) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
 	var response spotifyAPIBearerCredentialsResponse
 	err := s.RequestClient.
-		Post(s.Config.AuthenticationURI).
-		SetFormData(map[string]string{"grant_type": "authorization_code", "code": code, "redirect_uri": s.Config.AuthenticationRedirectURI}).
+		Post(s.Config.AuthenticationURL).
+		SetFormData(map[string]string{"grant_type": "authorization_code", "code": code, "redirect_uri": s.Config.AuthenticationRedirectURL}).
 		SetBasicAuth(s.Config.ClientID, s.Config.ClientSecret).
 		SetContentType("application/x-www-form-urlencoded").
 		Do().
@@ -139,17 +139,17 @@ func (*Spotify) RequiresAccessToken() bool {
 //
 // More info can be found here https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
 func (s *Spotify) populatePlaylistWithTracks(tracks []utils.Track, playlistID, accessToken string) {
-	var tracksURI []string
+	var tracksURL []string
 	var maximumNumOfTracksPerRequest = 100
 
 	for _, entry := range tracks {
-		tracksURI = append(tracksURI, trackIDToURI(entry))
+		tracksURL = append(tracksURL, trackIDToURL(entry))
 	}
 
 	// https://github.com/golang/go/wiki/SliceTricks#batching-with-minimal-allocation
-	chunks := make([][]string, 0, (len(tracksURI)+maximumNumOfTracksPerRequest-1)/maximumNumOfTracksPerRequest)
-	for maximumNumOfTracksPerRequest < len(tracksURI) {
-		tracksURI, chunks = tracksURI[maximumNumOfTracksPerRequest:], append(chunks, tracksURI[0:maximumNumOfTracksPerRequest:maximumNumOfTracksPerRequest])
+	chunks := make([][]string, 0, (len(tracksURL)+maximumNumOfTracksPerRequest-1)/maximumNumOfTracksPerRequest)
+	for maximumNumOfTracksPerRequest < len(tracksURL) {
+		tracksURL, chunks = tracksURL[maximumNumOfTracksPerRequest:], append(chunks, tracksURL[0:maximumNumOfTracksPerRequest:maximumNumOfTracksPerRequest])
 	}
 
 	var wg sync.WaitGroup
@@ -159,7 +159,7 @@ func (s *Spotify) populatePlaylistWithTracks(tracks []utils.Track, playlistID, a
 		go func(chunk []string) {
 			defer wg.Done()
 			err := s.RequestClient.
-				Post(s.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
+				Post(s.Config.BaseAPIURL + "/playlists/" + playlistID + "/tracks").
 				SetBearerAuthToken(accessToken).
 				SetContentType(utils.ApplicationJSON).
 				SetFormData(map[string]string{
@@ -183,7 +183,7 @@ func (s *Spotify) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
 
 	var response spotifyAPISearchResponse
 	err = s.RequestClient.
-		Get(s.Config.BaseAPIURI + "/search").
+		Get(s.Config.BaseAPIURL + "/search").
 		SetBearerAuthToken(clientAuthToken).
 		SetContentType(utils.ApplicationJSON).
 		SetQueryParams(map[string]string{
@@ -212,7 +212,7 @@ func (s *Spotify) getClientAuthenticationCredentials() (string, error) {
 
 	var response spotifyAPIClientCredentialsResponse
 	err := s.RequestClient.
-		Post(s.Config.AuthenticationURI).
+		Post(s.Config.AuthenticationURL).
 		SetBasicAuth(s.Config.ClientID, s.Config.ClientSecret).
 		SetFormData(map[string]string{"grant_type": "client_credentials"}).
 		Do().

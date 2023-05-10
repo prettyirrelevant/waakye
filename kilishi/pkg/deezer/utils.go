@@ -12,10 +12,10 @@ import (
 	"github.com/prettyirrelevant/kilishi/pkg/utils"
 )
 
-// parsePlaylistURI validates a Deezer playlist URI and returns the playlist ID.
-func parsePlaylistURI(playlistURI string) (string, error) {
+// parsePlaylistURL validates a Deezer playlist URL and returns the playlist ID.
+func parsePlaylistURL(playlistURL string) (string, error) {
 	re := regexp.MustCompile(`^https:\/\/www\.deezer\.com\/..\/playlist\/(\d+)$`)
-	matches := re.FindStringSubmatch(playlistURI)
+	matches := re.FindStringSubmatch(playlistURL)
 	if len(matches) < 2 {
 		return "", fmt.Errorf("deezer: playlist url is invalid. check that it follows the format https://www.deezer.com/<country_code>/playlist/<id>")
 	}

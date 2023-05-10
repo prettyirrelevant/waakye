@@ -13,22 +13,22 @@ func New(opts InitialisationOpts) *Deezer {
 		RequestClient: setupRequestClient(opts.RequestClient),
 		Config: Config{
 			AppID:             opts.AppID,
-			BaseAPIURI:        opts.BaseAPIURI,
+			BaseAPIURL:        opts.BaseAPIURL,
 			ClientSecret:      opts.ClientSecret,
-			AuthenticationURI: opts.AuthenticationURI,
+			AuthenticationURL: opts.AuthenticationURL,
 		},
 	}
 }
 
-func (d *Deezer) GetPlaylist(playlistURI string) (utils.Playlist, error) {
-	playlistID, err := parsePlaylistURI(playlistURI)
+func (d *Deezer) GetPlaylist(playlistURL string) (utils.Playlist, error) {
+	playlistID, err := parsePlaylistURL(playlistURL)
 	if err != nil {
 		return utils.Playlist{}, err
 	}
 
 	var response deezerAPIGetPlaylistResponse
 	err = d.RequestClient.
-		Get(d.Config.BaseAPIURI + "/playlist/" + playlistID).
+		Get(d.Config.BaseAPIURL + "/playlist/" + playlistID).
 		Do().
 		Into(&response)
 
@@ -56,7 +56,7 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 	// then, create the playlist.
 	var response deezerAPICreatePlaylistResponse
 	err := d.RequestClient.
-		Post(d.Config.BaseAPIURI + "/users/me/playlist").
+		Post(d.Config.BaseAPIURL + "/users/me/playlist").
 		SetContentType(utils.ApplicationJSON).
 		SetBearerAuthToken(accessToken).
 		SetQueryParams(map[string]string{
@@ -81,7 +81,7 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 func (d *Deezer) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
 	var response deezerAPIBearerCredentialsResponse
 	err := d.RequestClient.
-		Get(d.Config.AuthenticationURI).
+		Get(d.Config.AuthenticationURL).
 		SetQueryParams(map[string]string{
 			"app_id": d.Config.AppID,
 			"secret": d.Config.ClientSecret,
@@ -106,7 +106,7 @@ func (*Deezer) RequiresAccessToken() bool {
 func (d *Deezer) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
 	var response deezerAPISearchTrackResponse
 	err := d.RequestClient.
-		Get(d.Config.BaseAPIURI + "/search/track").
+		Get(d.Config.BaseAPIURL + "/search/track").
 		SetContentType(utils.ApplicationJSON).
 		SetQueryParams(map[string]string{
 			"q": trackToSearchQuery(track),
@@ -127,18 +127,18 @@ func (d *Deezer) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
 
 // populatePlaylistWithTracks adds tracks found on Deezer to a newly created playlist.
 func (d *Deezer) populatePlaylistWithTracks(tracks []utils.Track, playlistID, accessToken string) error {
-	var tracksURI []string
+	var tracksURL []string
 	for _, track := range tracks {
-		tracksURI = append(tracksURI, track.ID)
+		tracksURL = append(tracksURL, track.ID)
 	}
 
 	var response any
 	err := d.RequestClient.
-		Post(d.Config.BaseAPIURI + "/playlists/" + playlistID + "/tracks").
+		Post(d.Config.BaseAPIURL + "/playlists/" + playlistID + "/tracks").
 		SetBearerAuthToken(accessToken).
 		SetContentType(utils.ApplicationJSON).
 		SetFormData(map[string]string{
-			"songs": strings.Join(tracksURI, ","),
+			"songs": strings.Join(tracksURL, ","),
 		}).
 		Do().
 		Into(&response)

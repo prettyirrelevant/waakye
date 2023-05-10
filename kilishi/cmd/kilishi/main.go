@@ -67,14 +67,14 @@ func setupMiddlewares(app *fiber.App, config *config.Config) {
 			return utils.CopyString(c.Path()) + string(utils.CopyBytes(c.Body()))
 		},
 		Storage: redis.New(redis.Config{
-			URL:   config.RedisURI,
+			URL:   config.RedisURL,
 			Reset: false,
 		}),
 	}))
 }
 
 func setupDatabase(config *config.Config) *database.Database {
-	db, err := database.New(config.DatabaseURI)
+	db, err := database.New(config.DatabaseURL)
 	if err != nil {
 		panic(err)
 	}

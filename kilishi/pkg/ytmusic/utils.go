@@ -16,11 +16,11 @@ func lookupTrack(track utils.Track, foundTracks *[]utils.Track) {
 	}
 }
 
-// parsePlaylistURI validates a YTMusic playlist URI and returns the playlist ID.
-func parsePlaylistURI(playlistURI string) (string, error) {
+// parsePlaylistURL validates a YTMusic playlist URL and returns the playlist ID.
+func parsePlaylistURL(playlistURL string) (string, error) {
 	re := regexp.MustCompile(`^https:\/\/music\.youtube\.com\/playlist\?list=([a-zA-Z0-9-_]+)$`)
 
-	matches := re.FindStringSubmatch(playlistURI)
+	matches := re.FindStringSubmatch(playlistURL)
 	if len(matches) < 2 {
 		return "", fmt.Errorf("ytmusic: playlist url is invalid. check that it follows the format https://music.youtube.com/playlist?list=")
 	}

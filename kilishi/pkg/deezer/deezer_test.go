@@ -16,8 +16,8 @@ func TestDeezer(t *testing.T) {
 
 	deezer := deezer.New(deezer.InitialisationOpts{
 		RequestClient:     req.C(),
-		BaseAPIURI:        "https://api.deezer.com",
-		AuthenticationURI: "https://connect.deezer.com/oauth/access_token.php",
+		BaseAPIURL:        "https://api.deezer.com",
+		AuthenticationURL: "https://connect.deezer.com/oauth/access_token.php",
 	})
 
 	// Top Nigeria 2020

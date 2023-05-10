@@ -11,11 +11,11 @@ import (
 	"github.com/prettyirrelevant/kilishi/pkg/utils"
 )
 
-// parsePlaylistURI validates a Spotify playlist URI and returns the playlist ID.
-func parsePlaylistURI(playlistURI string) (string, error) {
+// parsePlaylistURL validates a Spotify playlist URL and returns the playlist ID.
+func parsePlaylistURL(playlistURL string) (string, error) {
 	re := regexp.MustCompile(`^(https:\/\/open\.spotify\.com\/playlist\/)([a-zA-Z0-9]+)(\?si=[a-zA-Z0-9]+)?`)
 
-	matches := re.FindStringSubmatch(playlistURI)
+	matches := re.FindStringSubmatch(playlistURL)
 	if len(matches) < 3 {
 		return "", fmt.Errorf("spotify: playlist url is invalid. check that it follows the format https://open.spotify.com/playlist/<id>")
 	}
@@ -71,8 +71,8 @@ func parseSearchResponse(response spotifyAPISearchResponse) []utils.Track {
 	return tracks
 }
 
-// trackIDToURI transforms a Spotify ID into URI.
-func trackIDToURI(track utils.Track) string {
+// trackIDToURL transforms a Spotify ID into URL.
+func trackIDToURL(track utils.Track) string {
 	return "spotify:track:" + track.ID
 }
 

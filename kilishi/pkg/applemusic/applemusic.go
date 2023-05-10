@@ -11,7 +11,7 @@ func New(opts InitialisationOpts) *AppleMusic {
 	return &AppleMusic{}
 }
 
-func (a *AppleMusic) GetPlaylist(playlistURI string) (utils.Playlist, error) {
+func (a *AppleMusic) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 	var foundError error
 	var playlist utils.Playlist
 
@@ -48,7 +48,7 @@ func (a *AppleMusic) GetPlaylist(playlistURI string) (utils.Playlist, error) {
 		fmt.Printf("Visiting %s ...", r.URL)
 	})
 
-	c.Visit(playlistURI)
+	c.Visit(playlistURL)
 
 	if foundError != nil {
 		return utils.Playlist{}, foundError

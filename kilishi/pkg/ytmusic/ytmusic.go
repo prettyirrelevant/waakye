@@ -15,8 +15,8 @@ func New() *YTMusic {
 }
 
 // GetPlaylist returns information about a playlist.
-func (y *YTMusic) GetPlaylist(playlistURI string) (utils.Playlist, error) {
-	playlistID, err := parsePlaylistURI(playlistURI)
+func (y *YTMusic) GetPlaylist(playlistURL string) (utils.Playlist, error) {
+	playlistID, err := parsePlaylistURL(playlistURL)
 	if err != nil {
 		return utils.Playlist{}, err
 	}

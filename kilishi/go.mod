@@ -9,7 +9,8 @@ require (
 	github.com/gofiber/storage/redis v1.3.4
 	github.com/imroc/req/v3 v3.33.2
 	github.com/jmoiron/sqlx v1.3.5
-	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/lib/pq v1.10.9
+	github.com/pressly/goose/v3 v3.11.2
 	github.com/prettyirrelevant/ytmusicapi v1.0.2
 	github.com/rs/xid v1.5.0
 	github.com/stretchr/testify v1.8.2
@@ -43,7 +44,6 @@ require (
 	github.com/onsi/ginkgo/v2 v2.9.2 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/pressly/goose/v3 v3.11.2 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/qtls-go1-19 v0.3.2 // indirect
 	github.com/quic-go/qtls-go1-20 v0.2.2 // indirect

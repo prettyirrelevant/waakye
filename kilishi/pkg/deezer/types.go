@@ -14,16 +14,16 @@ type Deezer struct {
 type InitialisationOpts struct {
 	RequestClient     *req.Client
 	AppID             string
-	BaseAPIURI        string
+	BaseAPIURL        string
 	ClientSecret      string
-	AuthenticationURI string
+	AuthenticationURL string
 }
 
 type Config struct {
-	BaseAPIURI        string
+	BaseAPIURL        string
 	AppID             string
 	ClientSecret      string
-	AuthenticationURI string
+	AuthenticationURL string
 }
 
 // /////////////////////////////////////////////////

@@ -19,18 +19,18 @@ func New(config *config.Config) *MusicStreamingPlatformsAggregator {
 		Deezer: deezer.New(deezer.InitialisationOpts{
 			RequestClient:     req.C(),
 			AppID:             config.DeezerAppID,
-			BaseAPIURI:        config.DeezerBaseApiURL,
+			BaseAPIURL:        config.DeezerBaseApiURL,
 			ClientSecret:      config.DeezerClientSecret,
-			AuthenticationURI: config.DeezerAuthenticationURI,
+			AuthenticationURL: config.DeezerAuthenticationURL,
 		}),
 		Spotify: spotify.New(spotify.InitialisationOpts{
 			RequestClient:             req.C(),
 			UserID:                    config.SpotifyUserID,
-			BaseAPIURI:                config.SpotifyBaseApiURL,
+			BaseAPIURL:                config.SpotifyBaseApiURL,
 			ClientID:                  config.SpotifyClientID,
 			ClientSecret:              config.SpotifyClientSecret,
-			AuthenticationURI:         config.SpotifyClientAuthURL,
-			AuthenticationRedirectURI: config.SpotifyAuthRedirectURI,
+			AuthenticationURL:         config.SpotifyClientAuthURL,
+			AuthenticationRedirectURL: config.SpotifyAuthRedirectURL,
 		}),
 	}
 }

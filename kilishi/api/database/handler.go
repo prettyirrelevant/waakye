@@ -3,11 +3,10 @@ package database
 import (
 	"embed"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
 	"github.com/rs/xid"
 
@@ -23,21 +22,16 @@ type Database struct {
 	db *sqlx.DB
 }
 
-// New creates a new Database struct and connects to a SQLite database at the given URL.
+// New creates a new Database struct and connects to a Postgres database with the provided URL.
 func New(databaseURL string) (*Database, error) {
-	baseDir, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
-
-	db, err := sqlx.Connect("sqlite3", fmt.Sprintf("%s/%s", baseDir, databaseURL))
+	db, err := sqlx.Connect("postgres", databaseURL)
 	if err != nil {
 		return nil, err
 	}
 
 	// TODO: log that migrations ran successfully!
 	goose.SetBaseFS(embedMigrations)
-	if err = goose.SetDialect("sqlite3"); err != nil {
+	if err = goose.SetDialect("postgres"); err != nil {
 		return nil, err
 	}
 	if err = goose.Up(db.DB, "migrations"); err != nil {
@@ -59,7 +53,7 @@ func (d *Database) GetOauthCredentials(platform aggregator.MusicStreamingPlatfor
 
 	err := d.db.Get(&credentials, "SELECT * FROM oauth_credentials WHERE platform=$1;", platform)
 	if err != nil {
-		return credentials, fmt.Errorf("api.database: could not fetch OAuth credentials for %s due to %s", platform, err.Error())
+		return credentials, fmt.Errorf("database: could not fetch OAuth credentials for %s due to %s", platform, err.Error())
 	}
 
 	return credentials, nil
