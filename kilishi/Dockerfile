@@ -3,6 +3,8 @@
 # -----------------------------------------------------------------------------
 FROM golang:1.20-bullseye as build
 
+ENV CGO_ENABLED=0
+
 WORKDIR /opt/app
 
 COPY go.mod .
