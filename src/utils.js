@@ -32,13 +32,11 @@ const getPuppeteerSetup = async () => {
   puppeteer.use(StealthPlugin());
 
   const browser = await puppeteer.launch({
-    headless: true,
-    dumpio: true,
+    headless: "new",
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
       "--disable-gpu",
-      "--single-process",
       "--disable-dev-shm-usage",
     ],
   });
@@ -63,20 +61,17 @@ const handleMusicServiceAuthentication = async (authenticationParams) => {
       authenticationParams.email,
       { delay: 100 }
     );
-    logger.info(`Added email...`);
 
     await page.type(
       authenticationParams.passwordSelector,
       authenticationParams.password,
       { delay: 100 }
     );
-    logger.info(`Added password...`);
 
     await Promise.all([
       page.waitForNavigation(),
       page.click(authenticationParams.submitButtonSelector, { delay: 100 }),
     ]);
-    logger.info(`Redirected to ${authenticationParams.authUrl}`);
 
     const content = await page.content();
     const isSuccessful = content.includes(authenticationParams.successText, 0);
@@ -103,9 +98,6 @@ const generateAuthenticationURL = (url, queryParams) => {
     searchParams.set(key, value);
   }
 
-  logger.debug(
-    `Generated authentication url ${url}?${searchParams.toString()}`
-  );
   return `${url}?${searchParams.toString()}`;
 };
 
