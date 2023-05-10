@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -38,8 +39,13 @@ func main() {
 	aggregatorService := aggregator.New(config)
 	playlists.RouterV1(apiGroup, aggregatorService, db)
 	callbacks.RouterV1(apiGroup, aggregatorService, db)
+	apiGroup.Get("/ping", HealthCheckController)
 
 	log.Fatal(app.Listen(":8000"))
+}
+
+func HealthCheckController(c *fiber.Ctx) error {
+	return c.Status(http.StatusOK).JSON(nil)
 }
 
 func setupMiddlewares(app *fiber.App, config *config.Config) {
