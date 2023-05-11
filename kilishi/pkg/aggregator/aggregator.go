@@ -54,11 +54,13 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 	if err != nil {
 		return "", err
 	}
+	fmt.Printf("Retrieved %s playlist with details %+v", string(source), playlist.Tracks)
 
 	playlistURL, err = destinationPlatform.CreatePlaylist(playlist, accessToken)
 	if err != nil {
 		return "", err
 	}
+	fmt.Printf("Converted playlist from %s to %s with url %s", string(source), string(destination), playlistURL)
 
 	return playlistURL, nil
 }
