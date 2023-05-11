@@ -17,14 +17,14 @@ func New(config *config.Config) *MusicStreamingPlatformsAggregator {
 		Config:  config,
 		YTMusic: ytmusic.New(),
 		Deezer: deezer.New(deezer.InitialisationOpts{
-			RequestClient:     req.C(),
+			RequestClient:     createRequestClient(config),
 			AppID:             config.DeezerAppID,
 			BaseAPIURL:        config.DeezerBaseApiURL,
 			ClientSecret:      config.DeezerClientSecret,
 			AuthenticationURL: config.DeezerAuthenticationURL,
 		}),
 		Spotify: spotify.New(spotify.InitialisationOpts{
-			RequestClient:             req.C(),
+			RequestClient:             createRequestClient(config),
 			UserID:                    config.SpotifyUserID,
 			BaseAPIURL:                config.SpotifyBaseApiURL,
 			ClientID:                  config.SpotifyClientID,
@@ -33,6 +33,14 @@ func New(config *config.Config) *MusicStreamingPlatformsAggregator {
 			AuthenticationRedirectURL: config.SpotifyAuthRedirectURL,
 		}),
 	}
+}
+
+func createRequestClient(config *config.Config) *req.Client {
+	client := req.C()
+	if config.Debug {
+		return client.DevMode().Clone()
+	}
+	return client
 }
 
 // ConvertPlaylist converts a playlist from one music streaming platform to another.
