@@ -14,8 +14,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o /opt/app/kilishi ./cmd/kilishi/main.go && \
-    wget -O /opt/app/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+RUN go build -o /opt/app/kilishi ./cmd/kilishi/main.go
 
 
 # -----------------------------------------------------------------------------
@@ -26,11 +25,6 @@ FROM gcr.io/distroless/static-debian11 as final
 WORKDIR /opt/app
 
 COPY --from=build /opt/app/kilishi /opt/app/kilishi
-COPY --from=build /opt/app/dumb-init /usr/bin/dumb-init
-
-RUN chmod +x /usr/bin/dumb-init
-
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 EXPOSE 8000
 
