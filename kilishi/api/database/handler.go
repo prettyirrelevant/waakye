@@ -66,7 +66,7 @@ func (d *Database) SetOauthCredentials(platform aggregator.MusicStreamingPlatfor
 		return err
 	}
 
-	now := time.Now().UnixMilli()
+	now := time.Now().Unix()
 	result, err := d.db.Exec(
 		`
 			INSERT INTO oauth_credentials (id, platform, credentials, created_at, updated_at)

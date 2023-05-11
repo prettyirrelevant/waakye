@@ -48,7 +48,7 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err.Error()))
 		}
 
-		if stateParamSlice[1] != string(aggregator.Spotify) || time.Now().UnixMilli()-int64(stateParamTime) >= 60000 {
+		if stateParamSlice[1] != string(aggregator.Spotify) || time.Now().Unix()-int64(stateParamTime) >= 60 {
 			return c.
 				Status(http.StatusUnprocessableEntity).
 				JSON(presenter.ErrorResponse("invalid/expired state parameter provided", err.Error()))
