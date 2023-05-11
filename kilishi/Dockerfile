@@ -3,28 +3,27 @@
 # -----------------------------------------------------------------------------
 FROM golang:1.20-bullseye as build
 
-ENV CGO_ENABLED=0
-
 WORKDIR /opt/app
-
-COPY go.mod .
-COPY go.sum .
-
-RUN go mod download
 
 COPY . .
 
-RUN go build -o /opt/app/kilishi ./cmd/kilishi/main.go
+RUN go mod download && \
+    CGO_ENABLED=0 go build -o /opt/app/kilishi ./cmd/kilishi/main.go
 
 
 # -----------------------------------------------------------------------------
 #  Final Stage
 # -----------------------------------------------------------------------------
-FROM gcr.io/distroless/static-debian11 as final
+FROM alpine:latest as final
 
 WORKDIR /opt/app
 
 COPY --from=build /opt/app/kilishi /opt/app/kilishi
+
+RUN apk -U upgrade && \
+    apk add --no-cache dumb-init ca-certificates
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 EXPOSE 8000
 
