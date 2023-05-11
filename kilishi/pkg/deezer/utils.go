@@ -77,9 +77,9 @@ func setupRequestClient(reqClient *req.Client) *req.Client {
 			}
 			return nil
 		}).
-		SetCommonRetryCount(1).
+		SetCommonRetryCount(2).
 		AddCommonRetryCondition(func(resp *req.Response, err error) bool {
 			return strings.Contains(resp.String(), "Quota limit exceeded") && resp.StatusCode == 200
 		}).
-		SetCommonRetryBackoffInterval(1*time.Second, 5*time.Second)
+		SetCommonRetryBackoffInterval(2*time.Second, 5*time.Second)
 }
