@@ -57,22 +57,20 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 		oauthCredentials, err := ag.Spotify.GetAuthorizationCode(c.Query("code"))
 		fmt.Printf("Got oauth credentials here %+v", oauthCredentials)
 		if err != nil {
-			fmt.Printf("Also got error %s", err.Error())
-		}
-
-		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
 				JSON(presenter.ErrorResponse("unable to retrieve authorization code", err.Error()))
 		}
 
 		err = db.SetOauthCredentials(aggregator.Spotify, oauthCredentials)
+		fmt.Printf("Got here hahahaha %+v", err)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
 				JSON(presenter.ErrorResponse("unable to store authorization code in database", err.Error()))
 		}
 
+		fmt.Println("Finally!!!")
 		return c.
 			Status(http.StatusOK).
 			JSON(presenter.SuccessResponse("spotify token saved successfully", nil))
