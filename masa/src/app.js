@@ -58,7 +58,7 @@ app.post("/api/oauth/spotify", async (req, res) => {
       ),
     }
   );
-  const [success, msg] = await handleMusicServiceAuthentication({
+  const { isSuccessful, statusMsg } = await handleMusicServiceAuthentication({
     successText: "spotify token saved",
     email: config.SPOTIFY_AUTH_EMAIL,
     password: config.SPOTIFY_AUTH_PASSWORD,
@@ -68,8 +68,10 @@ app.post("/api/oauth/spotify", async (req, res) => {
     passwordSelector: "#login-password",
     authUrl: authURL,
   });
-  logger.info(`Got success value ${success} with message ${msg}`);
-  return res.status(200).json({ status: success, message: msg });
+  const statusCode = isSuccessful ? 200 : 500;
+  return res
+    .status(statusCode)
+    .json({ status: isSuccessful, message: statusMsg });
 });
 
 app.post("/api/oauth/deezer", async (req, res) => {
@@ -81,7 +83,7 @@ app.post("/api/oauth/deezer", async (req, res) => {
       perms: "manage_library,offline_access",
     }
   );
-  const [success, msg] = await handleMusicServiceAuthentication({
+  const { isSuccessful, statusMsg } = await handleMusicServiceAuthentication({
     successText: "deezer token saved",
     email: config.DEEZER_AUTH_EMAIL,
     password: config.DEEZER_AUTH_PASSWORD,
@@ -91,8 +93,10 @@ app.post("/api/oauth/deezer", async (req, res) => {
     passwordSelector: "#login_password",
     authUrl: authURL,
   });
-  logger.info(`Got success value ${success} with message ${msg}`);
-  return res.status(200).json({ status: success, message: msg });
+  const statusCode = isSuccessful ? 200 : 500;
+  return res
+    .status(statusCode)
+    .json({ status: isSuccessful, message: statusMsg });
 });
 
 app.use((req, res, next) => {

@@ -78,7 +78,6 @@ const handleMusicServiceAuthentication = async (authenticationParams) => {
     const content = await page.content();
     isSuccessful = await content.includes(authenticationParams.successText);
     statusMsg = isSuccessful ? "successful" : `error occured: ${content}`;
-
     return { isSuccessful, statusMsg };
   } catch (error) {
     throw error;
