@@ -18,12 +18,12 @@ FROM alpine:latest as final
 
 WORKDIR /opt/app
 
-COPY --from=build /opt/app/kilishi /opt/app/kilishi
-
 RUN apk -U upgrade && \
     apk add --no-cache dumb-init ca-certificates
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+COPY --from=build /opt/app/kilishi /opt/app/kilishi
 
 EXPOSE 8000
 
