@@ -38,7 +38,7 @@ func New(config *config.Config) *MusicStreamingPlatformsAggregator {
 func createRequestClient(config *config.Config) *req.Client {
 	client := req.C()
 	if config.Debug {
-		return client.DevMode().Clone()
+		return client.DevMode()
 	}
 	return client
 }
