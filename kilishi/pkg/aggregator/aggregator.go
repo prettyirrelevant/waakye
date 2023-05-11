@@ -72,8 +72,8 @@ func (m *MusicStreamingPlatformsAggregator) SupportedPlatforms() []MusicStreamin
 	return platforms
 }
 
-// getStreamingPlatform retrieves the music streaming platform from the MusicStreamingPlatformsAggregator.
-func (m *MusicStreamingPlatformsAggregator) getStreamingPlatform(platform MusicStreamingPlatform) MusicStreamingPlatformInterface {
+// GetStreamingPlatform retrieves the music streaming platform from the MusicStreamingPlatformsAggregator.
+func (m *MusicStreamingPlatformsAggregator) GetStreamingPlatform(platform MusicStreamingPlatform) MusicStreamingPlatformInterface {
 	switch platform {
 	case Spotify:
 		return m.Spotify

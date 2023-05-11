@@ -28,22 +28,26 @@ func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAgg
 				JSON(presenter.ErrorResponse("validation error", errors...))
 		}
 
-		dbCredentials, err := db.GetDBOauthCredentials(requestBody.Destination)
-		if err != nil {
-			return c.
-				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("error retrieving credentials from database", err.Error()))
+		var accessToken string
+		if x := aggregator.GetStreamingPlatform(requestBody.Destination); x != nil && x.RequiresAccessToken() {
+			dbCredentials, err := db.GetDBOauthCredentials(requestBody.Destination)
+			if err != nil {
+				return c.
+					Status(http.StatusInternalServerError).
+					JSON(presenter.ErrorResponse("error retrieving credentials from database", err.Error()))
+			}
+
+			var credentials utils.OauthCredentials
+			err = credentials.FromDB(dbCredentials.Credentials)
+			if err != nil {
+				return c.
+					Status(http.StatusInternalServerError).
+					JSON(presenter.ErrorResponse("", err.Error()))
+			}
+			accessToken = credentials.AccessToken
 		}
 
-		var credentials utils.OauthCredentials
-		err = credentials.FromDB(dbCredentials.Credentials)
-		if err != nil {
-			return c.
-				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("", err.Error()))
-		}
-
-		playlistURL, err := aggregator.ConvertPlaylist(requestBody.Source, requestBody.Destination, requestBody.PlaylistURL, credentials.AccessToken)
+		playlistURL, err := aggregator.ConvertPlaylist(requestBody.Source, requestBody.Destination, requestBody.PlaylistURL, accessToken)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
