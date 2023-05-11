@@ -50,6 +50,7 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 	}
 
 	sourcePlatform, destinationPlatform := m.GetStreamingPlatform(source), m.GetStreamingPlatform(destination)
+	fmt.Printf("got %s: %s: %s", source, destination, playlistURL)
 	playlist, err := sourcePlatform.GetPlaylist(playlistURL)
 	if err != nil {
 		return "", err
