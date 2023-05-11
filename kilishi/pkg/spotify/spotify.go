@@ -1,7 +1,6 @@
 package spotify
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -30,7 +29,6 @@ func (s *Spotify) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 		return utils.Playlist{}, err
 	}
 
-	fmt.Println("Spotify Playlist ID: ", playlistID, "    ", playlistURL)
 	clientAuthToken, err := s.getClientAuthenticationCredentials()
 	if err != nil {
 		return utils.Playlist{}, err
