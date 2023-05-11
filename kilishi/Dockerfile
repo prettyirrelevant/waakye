@@ -29,7 +29,7 @@ WORKDIR /opt/app
 COPY --from=build /opt/app/kilishi /opt/app/kilishi
 COPY --from=build /usr/local/bin/dumb-init /usr/local/bin/dumb-init
 
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 EXPOSE 8000
 
