@@ -1,7 +1,6 @@
 package spotify
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -128,7 +127,6 @@ func (s *Spotify) GetAuthorizationCode(code string) (utils.OauthCredentials, err
 		return utils.OauthCredentials{}, err
 	}
 
-	fmt.Printf("Got response of %+v", response)
 	return utils.OauthCredentials{AccessToken: response.AccessToken, RefreshToken: response.RefreshToken, ExpiresAt: int(response.ExpiresAt)}, nil
 }
 

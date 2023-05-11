@@ -47,8 +47,8 @@ func GenerateID() string {
 	return xid.New().String()
 }
 
-// GetOauthCredentials retrieves the OAuth credentials for a given music streaming platform from the database.
-func (d *Database) GetOauthCredentials(platform aggregator.MusicStreamingPlatform) (OauthCredentialsInDB, error) {
+// GetDBOauthCredentials retrieves the OAuth credentials for a given music streaming platform from the database.
+func (d *Database) GetDBOauthCredentials(platform aggregator.MusicStreamingPlatform) (OauthCredentialsInDB, error) {
 	var credentials OauthCredentialsInDB
 
 	err := d.db.Get(&credentials, "SELECT * FROM oauth_credentials WHERE platform=$1;", platform)

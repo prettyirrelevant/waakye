@@ -28,14 +28,15 @@ func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAgg
 				JSON(presenter.ErrorResponse("validation error", errors...))
 		}
 
-		dbCredentials, err := db.GetOauthCredentials(requestBody.Destination)
+		dbCredentials, err := db.GetDBOauthCredentials(requestBody.Destination)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
 				JSON(presenter.ErrorResponse("error retrieving credentials from database", err.Error()))
 		}
 
-		credentials, err := utils.OauthCredentialsFromDB(dbCredentials.Credentials)
+		var credentials utils.OauthCredentials
+		err = credentials.FromDB(dbCredentials.Credentials)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).

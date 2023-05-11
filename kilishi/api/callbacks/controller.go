@@ -1,6 +1,7 @@
 package callbacks
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -54,6 +55,7 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 		}
 
 		oauthCredentials, err := ag.Spotify.GetAuthorizationCode(c.Query("code"))
+		fmt.Printf("Got oauth credentials here %+v", oauthCredentials)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).

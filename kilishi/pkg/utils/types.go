@@ -34,12 +34,11 @@ func (o *OauthCredentials) ToString() (string, error) {
 	return string(stringFormat), nil
 }
 
-func OauthCredentialsFromDB(payload string) (OauthCredentials, error) {
-	var credentials OauthCredentials
-	err := json.Unmarshal([]byte(payload), &credentials)
+func (o OauthCredentials) FromDB(payload string) error {
+	err := json.Unmarshal([]byte(payload), &o)
 	if err != nil {
-		return credentials, err
+		return err
 	}
 
-	return credentials, nil
+	return nil
 }
