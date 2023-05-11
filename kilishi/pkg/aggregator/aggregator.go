@@ -49,7 +49,7 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 		return "", fmt.Errorf("aggregator: `source` must not be the same as `destination`")
 	}
 
-	sourcePlatform, destinationPlatform := m.getStreamingPlatform(source), m.getStreamingPlatform(destination)
+	sourcePlatform, destinationPlatform := m.GetStreamingPlatform(source), m.GetStreamingPlatform(destination)
 	playlist, err := sourcePlatform.GetPlaylist(playlistURL)
 	if err != nil {
 		return "", err
