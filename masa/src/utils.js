@@ -26,7 +26,7 @@ const encryptWithAES256CBC = (secretKeyHex, ivHex, plainText) => {
 
 /**
  * Sets up a new Puppeteer browser and page with anti-detection measures enabled.
- * @returns A Promise that resolves to an array containing the new page and browser instances.
+ * @returns A Promise that resolves to an object containing the new page and browser instances.
  */
 const getPuppeteerSetup = async () => {
   puppeteer.use(StealthPlugin());
@@ -42,7 +42,7 @@ const getPuppeteerSetup = async () => {
   });
   const page = await browser.newPage();
 
-  return [page, browser];
+  return { page, browser };
 };
 
 /**
@@ -51,40 +51,40 @@ const getPuppeteerSetup = async () => {
  * @returns A Promise that resolves to a boolean whether the authentication was successful or not and a message.
  */
 const handleMusicServiceAuthentication = async (authenticationParams) => {
-  const [page, browser] = await getPuppeteerSetup();
-  // try {
-  let isSuccessful = false;
-  let statusMsg = "";
-  await page.goto(authenticationParams.authUrl);
-  logger.info(`Navigated to ${authenticationParams.authUrl}...`);
+  const { page, browser } = await getPuppeteerSetup();
+  try {
+    let isSuccessful = false;
+    let statusMsg = "";
+    await page.goto(authenticationParams.authUrl);
+    logger.info(`Navigated to ${authenticationParams.authUrl}...`);
 
-  await page.type(
-    authenticationParams.emailSelector,
-    authenticationParams.email,
-    { delay: 100 }
-  );
+    await page.type(
+      authenticationParams.emailSelector,
+      authenticationParams.email,
+      { delay: 100 }
+    );
 
-  await page.type(
-    authenticationParams.passwordSelector,
-    authenticationParams.password,
-    { delay: 100 }
-  );
+    await page.type(
+      authenticationParams.passwordSelector,
+      authenticationParams.password,
+      { delay: 100 }
+    );
 
-  await Promise.all([
-    page.waitForNavigation(),
-    page.click(authenticationParams.submitButtonSelector, { delay: 100 }),
-  ]);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(authenticationParams.submitButtonSelector, { delay: 100 }),
+    ]);
 
-  const content = await page.content();
-  isSuccessful = await content.includes(authenticationParams.successText);
-  statusMsg = isSuccessful ? "successful" : `error occured: ${content}`;
+    const content = await page.content();
+    isSuccessful = await content.includes(authenticationParams.successText);
+    statusMsg = isSuccessful ? "successful" : `error occured: ${content}`;
 
-  await browser.close();
-  return [isSuccessful, statusMsg];
-  // } catch (error) {
-  //   throw error;
-  // } finally {
-  // }
+    return { isSuccessful, statusMsg };
+  } catch (error) {
+    throw error;
+  } finally {
+    await browser.close();
+  }
 };
 
 /**
