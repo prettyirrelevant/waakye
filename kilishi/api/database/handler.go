@@ -67,9 +67,9 @@ func (d *Database) SetOauthCredentials(platform aggregator.MusicStreamingPlatfor
 
 	now := time.Now().Unix()
 	filterQuery := bson.M{"platform": platform}
-	updateQuery := bson.D{
-		{"$set", bson.D{{"platform", string(platform)}, {"credentials", authCredentialsString}, {"updated_at", now}}},
-		{"$setOnInsert", bson.D{{"created_at", now}}},
+	updateQuery := bson.M{
+		"$set":         bson.D{{Key: "platform", Value: string(platform)}, {Key: "credentials", Value: authCredentialsString}, {Key: "updated_at", Value: now}},
+		"$setOnInsert": bson.M{"created_at": now},
 	}
 	options := options.FindOneAndUpdate().SetUpsert(true)
 	err = d.db.Collection("oauth_credentials").FindOneAndUpdate(context.TODO(), filterQuery, updateQuery, options).Err()
