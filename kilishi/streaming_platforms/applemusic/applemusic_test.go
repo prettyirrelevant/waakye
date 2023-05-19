@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/prettyirrelevant/kilishi/pkg/applemusic"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/applemusic"
 	"github.com/stretchr/testify/assert"
 )
 

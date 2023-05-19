@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/prettyirrelevant/kilishi/aggregator"
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/presenter"
-	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
+	"github.com/prettyirrelevant/kilishi/utils"
 )
 
 // SpotifyOauthCallbackController handles Spotify OAuth callback requests.

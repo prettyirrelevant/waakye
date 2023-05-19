@@ -7,7 +7,7 @@ import (
 	"github.com/imroc/req/v3"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/prettyirrelevant/kilishi/pkg/deezer"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/deezer"
 )
 
 func TestDeezer(t *testing.T) {

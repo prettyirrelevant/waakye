@@ -6,9 +6,9 @@ import (
 	"github.com/imroc/req/v3"
 
 	"github.com/prettyirrelevant/kilishi/config"
-	"github.com/prettyirrelevant/kilishi/pkg/deezer"
-	"github.com/prettyirrelevant/kilishi/pkg/spotify"
-	"github.com/prettyirrelevant/kilishi/pkg/ytmusic"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/deezer"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/spotify"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/ytmusic"
 )
 
 // New creates a new MusicStreamingPlatformsAggregator instance.
@@ -54,13 +54,11 @@ func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination 
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Retrieved %s playlist with details %+v", string(source), playlist.Tracks)
 
 	playlistURL, err = destinationPlatform.CreatePlaylist(playlist, accessToken)
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Converted playlist from %s to %s with url %s", string(source), string(destination), playlistURL)
 
 	return playlistURL, nil
 }

@@ -2,11 +2,11 @@ package aggregator
 
 import (
 	"github.com/prettyirrelevant/kilishi/config"
-	"github.com/prettyirrelevant/kilishi/pkg/applemusic"
-	"github.com/prettyirrelevant/kilishi/pkg/deezer"
-	"github.com/prettyirrelevant/kilishi/pkg/spotify"
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
-	"github.com/prettyirrelevant/kilishi/pkg/ytmusic"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/applemusic"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/deezer"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/spotify"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/ytmusic"
+	"github.com/prettyirrelevant/kilishi/utils"
 )
 
 const (

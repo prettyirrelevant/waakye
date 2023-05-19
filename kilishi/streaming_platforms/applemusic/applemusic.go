@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gocolly/colly"
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
+	"github.com/prettyirrelevant/kilishi/utils"
 )
 
 func New(opts InitialisationOpts) *AppleMusic {

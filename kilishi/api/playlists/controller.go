@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/prettyirrelevant/kilishi/aggregator"
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/presenter"
-	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
+	"github.com/prettyirrelevant/kilishi/utils"
 )
 
 // ConvertPlaylistController returns a handler function for converting a playlist

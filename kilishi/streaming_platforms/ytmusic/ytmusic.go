@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
+	"github.com/prettyirrelevant/kilishi/utils"
 	"github.com/prettyirrelevant/ytmusicapi"
 )
 

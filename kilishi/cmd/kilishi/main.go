@@ -16,11 +16,11 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/utils"
 
+	"github.com/prettyirrelevant/kilishi/aggregator"
 	"github.com/prettyirrelevant/kilishi/api/callbacks"
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/playlists"
 	"github.com/prettyirrelevant/kilishi/config"
-	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
 )
 
 func main() {
@@ -46,7 +46,7 @@ func main() {
 }
 
 func HealthCheckController(c *fiber.Ctx) error {
-	return c.Status(http.StatusOK).JSON(nil)
+	return c.Status(http.StatusOK).JSON("")
 }
 
 func setupMiddlewares(app *fiber.App, config *config.Config) {

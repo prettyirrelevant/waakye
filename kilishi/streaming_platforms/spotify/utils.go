@@ -8,7 +8,7 @@ import (
 
 	"github.com/imroc/req/v3"
 
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
+	"github.com/prettyirrelevant/kilishi/utils"
 )
 
 // parsePlaylistURL validates a Spotify playlist URL and returns the playlist ID.

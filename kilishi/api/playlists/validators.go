@@ -3,7 +3,7 @@ package playlists
 import (
 	"fmt"
 
-	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
+	"github.com/prettyirrelevant/kilishi/aggregator"
 )
 
 // ConvertPlaylistRequest is a struct that represents the request body for the ConvertPlaylistController function.

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
-	"github.com/prettyirrelevant/kilishi/pkg/ytmusic"
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/ytmusic"
+	"github.com/prettyirrelevant/kilishi/utils"
 	"github.com/prettyirrelevant/ytmusicapi"
 )
 

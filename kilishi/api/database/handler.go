@@ -10,8 +10,8 @@ import (
 	"github.com/pressly/goose/v3"
 	"github.com/rs/xid"
 
-	"github.com/prettyirrelevant/kilishi/pkg/aggregator"
-	"github.com/prettyirrelevant/kilishi/pkg/utils"
+	"github.com/prettyirrelevant/kilishi/aggregator"
+	"github.com/prettyirrelevant/kilishi/utils"
 )
 
 //go:embed migrations/*.sql
