@@ -5,7 +5,7 @@ FROM golang:1.20-bullseye as build
 
 WORKDIR /opt/app
 
-COPY ./kilishi .
+COPY . .
 
 RUN go mod download && \
     CGO_ENABLED=0 go build -o /opt/app/kilishi ./cmd/kilishi/main.go

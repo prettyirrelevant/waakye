@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN pip install --upgrade pip
-COPY ./asaro/ .
+COPY . .
 
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /opt/wheels -r requirements.lock
 
