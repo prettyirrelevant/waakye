@@ -37,6 +37,9 @@ type MusicStreamingPlatformInterface interface {
 	// It takes a playlist URL string and returns the corresponding playlist object and an error, if any.
 	GetPlaylist(playlistURL string) (utils.Playlist, error)
 
+	// LookupTrack searches for a track on the streaming platform.
+	LookupTrack(track utils.Track) (utils.Track, error)
+
 	// GetAuthorizationCode returns an oauth credentials object for the given authorization code.
 	// It takes an authorization code string and returns an oauth credentials object and an error, if any.
 	GetAuthorizationCode(code string) (utils.OauthCredentials, error)

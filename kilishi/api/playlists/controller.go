@@ -7,11 +7,67 @@ import (
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/presenter"
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
-	"github.com/prettyirrelevant/kilishi/utils"
 )
 
-// ConvertPlaylistController returns a handler function for converting a playlist
-func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
+func GetPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var requestBody GetPlaylistRequest
+
+		err := c.BodyParser(&requestBody)
+		if err != nil {
+			return c.
+				Status(http.StatusBadRequest).
+				JSON(presenter.ErrorResponse("validation error", err.Error()))
+		}
+
+		if ok, errors := requestBody.Validate(); !ok {
+			return c.
+				Status(http.StatusUnprocessableEntity).
+				JSON(presenter.ErrorResponse("validation error", errors...))
+		}
+
+		x := aggregator.GetStreamingPlatform(requestBody.Platform)
+		playlist, err := x.GetPlaylist(requestBody.PlaylistURL)
+		if err != nil {
+			return c.
+				Status(http.StatusInternalServerError).
+				JSON(presenter.ErrorResponse("error retrieving playlist", err.Error()))
+		}
+
+		return c.Status(http.StatusOK).JSON(presenter.SuccessResponse("playlist retrieved successfully", playlist))
+	}
+}
+
+func FindTrackController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var requestBody FindTrackRequest
+
+		err := c.BodyParser(&requestBody)
+		if err != nil {
+			return c.
+				Status(http.StatusBadRequest).
+				JSON(presenter.ErrorResponse("validation error", err.Error()))
+		}
+
+		if ok, errors := requestBody.Validate(); !ok {
+			return c.
+				Status(http.StatusUnprocessableEntity).
+				JSON(presenter.ErrorResponse("validation error", errors...))
+		}
+
+		x := aggregator.GetStreamingPlatform(requestBody.Platform)
+		track, err := x.LookupTrack(requestBody.Track)
+		if err != nil {
+			return c.
+				Status(http.StatusInternalServerError).
+				JSON(presenter.ErrorResponse("error searching for track", err.Error()))
+		}
+
+		return c.Status(http.StatusOK).JSON(presenter.SuccessResponse("track found successfully", track))
+	}
+}
+
+func CreatePlaylistController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var requestBody ConvertPlaylistRequest
 
@@ -28,34 +84,17 @@ func ConvertPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAgg
 				JSON(presenter.ErrorResponse("validation error", errors...))
 		}
 
-		var accessToken string
-		if x := aggregator.GetStreamingPlatform(requestBody.Destination); x != nil && x.RequiresAccessToken() {
-			dbCredentials, err := db.GetDBOauthCredentials(requestBody.Destination)
-			if err != nil {
-				return c.
-					Status(http.StatusInternalServerError).
-					JSON(presenter.ErrorResponse("error retrieving credentials from database", err.Error()))
-			}
-
-			var credentials utils.OauthCredentials
-			err = credentials.FromDB(dbCredentials.Credentials)
-			if err != nil {
-				return c.
-					Status(http.StatusInternalServerError).
-					JSON(presenter.ErrorResponse("", err.Error()))
-			}
-			accessToken = credentials.AccessToken
-		}
-
-		playlistURL, err := aggregator.ConvertPlaylist(requestBody.Source, requestBody.Destination, requestBody.PlaylistURL, accessToken)
+		x := aggregator.GetStreamingPlatform(requestBody.Platform)
+		playlistURL, err := x.CreatePlaylist(requestBody.Playlist, requestBody.AccessToken)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
-				JSON(presenter.ErrorResponse("error converting playlist", err.Error()))
+				JSON(presenter.ErrorResponse("error creating playlist", err.Error()))
 		}
 
-		return c.Status(http.StatusOK).JSON(presenter.SuccessResponse("Playlist converted successfully", playlistURL))
+		return c.Status(http.StatusOK).JSON(presenter.SuccessResponse("playlist created successfully", playlistURL))
 	}
+
 }
 
 // GetSupportedPlatformsController returns a handler function for getting the list of supported music streaming platforms.

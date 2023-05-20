@@ -20,6 +20,10 @@ func (a *AppleMusic) RequiresAccessToken() bool {
 	return true
 }
 
+func (s *AppleMusic) LookupTrack(track utils.Track) (utils.Track, error) {
+	return utils.Track{}, nil
+}
+
 func (a *AppleMusic) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
 	return utils.OauthCredentials{}, nil
 }

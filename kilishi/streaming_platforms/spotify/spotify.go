@@ -1,6 +1,7 @@
 package spotify
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -81,12 +82,14 @@ func (s *Spotify) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
 	var tracksFound []utils.Track
 	var wg sync.WaitGroup
+
+	// TODO: Fix
 	for _, entry := range playlist.Tracks {
 		wg.Add(1)
 
 		go func(track utils.Track) {
 			defer wg.Done()
-			s.lookupTrack(track, &tracksFound)
+			s.LookupTrack(track)
 		}(entry)
 	}
 	wg.Wait()
@@ -108,8 +111,7 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 		return "", err
 	}
 
-	s.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
-
+	s.populatePlaylistWithTracks(tracksFound, playlist.ID, accessToken)
 	return response.ID, nil
 }
 
@@ -175,10 +177,12 @@ func (s *Spotify) populatePlaylistWithTracks(tracks []utils.Track, playlistID, a
 	wg.Wait()
 }
 
-func (s *Spotify) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
+func (s *Spotify) LookupTrack(track utils.Track) (utils.Track, error) {
+	var foundTrack utils.Track
+
 	clientAuthToken, err := s.getClientAuthenticationCredentials()
 	if err != nil {
-		return
+		return foundTrack, fmt.Errorf("spotify: %s", err.Error())
 	}
 
 	var response spotifyAPISearchResponse
@@ -195,13 +199,14 @@ func (s *Spotify) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
 		Into(&response)
 
 	if err != nil {
-		return
+		return foundTrack, fmt.Errorf("spotify: %s", err.Error())
+	}
+	if len(response.Tracks.Items) == 0 {
+		return foundTrack, fmt.Errorf("spotify: no track found that matches %s", track.Title)
 	}
 
-	if len(response.Tracks.Items) == 0 {
-		return
-	}
-	*tracksFound = append(*tracksFound, parseSearchResponse(response)[0])
+	foundTrack = parseSearchResponse(response)[0]
+	return foundTrack, nil
 }
 
 // getClientAuthenticationCredentials fetches the client credentials needed for Spotify authentication.

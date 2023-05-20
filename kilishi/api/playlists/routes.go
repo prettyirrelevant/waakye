@@ -7,6 +7,8 @@ import (
 )
 
 func RouterV1(router fiber.Router, aggregatorService *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) {
-	router.Post("/v1/playlists/convert", ConvertPlaylistController(aggregatorService, db))
+	router.Get("/v1/playlists", GetPlaylistController(aggregatorService, db))
+	router.Post("/v1/playlists", CreatePlaylistController(aggregatorService, db))
+	router.Get("/v1/playlists/track", FindTrackController(aggregatorService, db))
 	router.Get("/v1/playlists/supported", GetSupportedPlatformsController(aggregatorService, db))
 }

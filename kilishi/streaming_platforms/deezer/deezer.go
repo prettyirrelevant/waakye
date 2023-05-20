@@ -1,6 +1,7 @@
 package deezer
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 
@@ -40,15 +41,16 @@ func (d *Deezer) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 }
 
 func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
-	// first, look for the tracks on Spotify
 	var tracksFound []utils.Track
 	var wg sync.WaitGroup
+
+	// TODO: Fix
 	for _, entry := range playlist.Tracks {
 		wg.Add(1)
 
 		go func(track utils.Track) {
 			defer wg.Done()
-			d.lookupTrack(track, &tracksFound)
+			d.LookupTrack(track)
 		}(entry)
 	}
 	wg.Wait()
@@ -69,8 +71,7 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 		return "", err
 	}
 
-	// finally, add the tracks in batches
-	err = d.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
+	err = d.populatePlaylistWithTracks(tracksFound, playlist.ID, accessToken)
 	if err != nil {
 		return "", err
 	}
@@ -103,7 +104,9 @@ func (*Deezer) RequiresAccessToken() bool {
 	return true
 }
 
-func (d *Deezer) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
+func (d *Deezer) LookupTrack(track utils.Track) (utils.Track, error) {
+	var foundTrack utils.Track
+
 	var response deezerAPISearchTrackResponse
 	err := d.RequestClient.
 		Get(d.Config.BaseAPIURL + "/search/track").
@@ -115,14 +118,15 @@ func (d *Deezer) lookupTrack(track utils.Track, tracksFound *[]utils.Track) {
 		Into(&response)
 
 	if err != nil {
-		return
+		return foundTrack, fmt.Errorf("deezer: %s", err.Error())
 	}
 
 	if len(response.Results.Data) == 0 {
-		return
+		return foundTrack, fmt.Errorf("deezer: no track found that matches %s", track.Title)
 	}
 
-	*tracksFound = append(*tracksFound, parseTracksResponse(response.Results)[0])
+	foundTrack = parseTracksResponse(response.Results)[0]
+	return foundTrack, nil
 }
 
 // populatePlaylistWithTracks adds tracks found on Deezer to a newly created playlist.

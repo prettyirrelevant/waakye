@@ -8,14 +8,6 @@ import (
 	"github.com/prettyirrelevant/ytmusicapi"
 )
 
-// lookupTrack searches for track on YTMusic and appends the top result to a slice.
-func lookupTrack(track utils.Track, foundTracks *[]utils.Track) {
-	searchResults, err := ytmusicapi.SearchTracks(trackToSearchQuery(track), ytmusicapi.SongsFilter, ytmusicapi.NoScope, 5, false)
-	if err == nil && len(searchResults) > 0 {
-		*foundTracks = append(*foundTracks, utils.Track{ID: searchResults[0].VideoID, Title: searchResults[0].Title, Artists: searchResults[0].Artistes})
-	}
-}
-
 // parsePlaylistURL validates a YTMusic playlist URL and returns the playlist ID.
 func parsePlaylistURL(playlistURL string) (string, error) {
 	re := regexp.MustCompile(`^https:\/\/music\.youtube\.com\/playlist\?list=([a-zA-Z0-9-_]+)$`)

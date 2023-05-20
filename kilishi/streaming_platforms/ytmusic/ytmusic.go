@@ -30,15 +30,16 @@ func (y *YTMusic) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 }
 
 // CreatePlaylist creates a new playlist using the information provided.
-func (*YTMusic) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
+func (y *YTMusic) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
 	var foundTracks []utils.Track
 	var wg sync.WaitGroup
 
+	// TODO: Fix
 	for _, trackEntry := range playlist.Tracks {
 		wg.Add(1)
 		go func(payload utils.Track) {
 			defer wg.Done()
-			lookupTrack(payload, &foundTracks)
+			y.LookupTrack(payload)
 		}(trackEntry)
 	}
 	wg.Wait()
@@ -53,6 +54,18 @@ func (*YTMusic) CreatePlaylist(playlist utils.Playlist, accessToken string) (str
 		return "", fmt.Errorf("ytmusic: %s", err.Error())
 	}
 	return playlistID, nil
+}
+
+// LookupTrack searches for track on YTMusic and appends the top result to a slice.
+func (*YTMusic) LookupTrack(track utils.Track) (utils.Track, error) {
+	var foundTrack utils.Track
+
+	searchResults, err := ytmusicapi.SearchTracks(trackToSearchQuery(track), ytmusicapi.SongsFilter, ytmusicapi.NoScope, 5, false)
+	if err != nil {
+		return foundTrack, fmt.Errorf("ytmusic: %s", err.Error())
+	}
+
+	return utils.Track{ID: searchResults[0].VideoID, Title: searchResults[0].Title, Artists: searchResults[0].Artistes}, nil
 }
 
 func (*YTMusic) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
