@@ -9,11 +9,11 @@ RUN apt-get update && apt-get install gnupg wget -y && \
 
 WORKDIR /opt/app
 
-COPY package*.json ./
+COPY ./masa/package*.json ./
 
 RUN npm install --omit=dev
 
-COPY . .
+COPY ./masa .
 
 EXPOSE 5001
 

@@ -67,9 +67,6 @@ class TrackResponseSchema(Schema):
         data["identifier"] = data.pop("videoId")
         return data
 
-    class Meta:
-        strict = True
-
 
 class PlaylistResponseSchema(Schema):
     identifier = fields.Str(data_key="id", required=True)
