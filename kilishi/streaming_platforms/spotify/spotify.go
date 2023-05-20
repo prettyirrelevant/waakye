@@ -80,20 +80,6 @@ func (s *Spotify) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 
 // CreatePlaylist uses our internal playlist object to create a playlist on Spotify.
 func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
-	var tracksFound []utils.Track
-	var wg sync.WaitGroup
-
-	// TODO: Fix
-	for _, entry := range playlist.Tracks {
-		wg.Add(1)
-
-		go func(track utils.Track) {
-			defer wg.Done()
-			s.LookupTrack(track)
-		}(entry)
-	}
-	wg.Wait()
-
 	var response spotifyAPICreatePlaylistResponse
 	err := s.RequestClient.
 		Post(s.Config.BaseAPIURL + "/users/" + s.Config.UserID + "/playlists").
@@ -111,7 +97,7 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 		return "", err
 	}
 
-	s.populatePlaylistWithTracks(tracksFound, playlist.ID, accessToken)
+	s.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
 	return response.ID, nil
 }
 

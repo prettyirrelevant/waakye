@@ -3,7 +3,6 @@ package deezer
 import (
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/prettyirrelevant/kilishi/utils"
 )
@@ -41,21 +40,6 @@ func (d *Deezer) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 }
 
 func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
-	var tracksFound []utils.Track
-	var wg sync.WaitGroup
-
-	// TODO: Fix
-	for _, entry := range playlist.Tracks {
-		wg.Add(1)
-
-		go func(track utils.Track) {
-			defer wg.Done()
-			d.LookupTrack(track)
-		}(entry)
-	}
-	wg.Wait()
-
-	// then, create the playlist.
 	var response deezerAPICreatePlaylistResponse
 	err := d.RequestClient.
 		Post(d.Config.BaseAPIURL + "/users/me/playlist").
@@ -71,7 +55,7 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 		return "", err
 	}
 
-	err = d.populatePlaylistWithTracks(tracksFound, playlist.ID, accessToken)
+	err = d.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
 	if err != nil {
 		return "", err
 	}

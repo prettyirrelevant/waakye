@@ -1,8 +1,6 @@
 package aggregator
 
 import (
-	"fmt"
-
 	"github.com/imroc/req/v3"
 
 	"github.com/prettyirrelevant/kilishi/config"
@@ -41,26 +39,6 @@ func createRequestClient(config *config.Config) *req.Client {
 		return client.DevMode()
 	}
 	return client
-}
-
-// ConvertPlaylist converts a playlist from one music streaming platform to another.
-func (m *MusicStreamingPlatformsAggregator) ConvertPlaylist(source, destination MusicStreamingPlatform, playlistURL, accessToken string) (string, error) {
-	if source == destination {
-		return "", fmt.Errorf("aggregator: `source` must not be the same as `destination`")
-	}
-
-	sourcePlatform, destinationPlatform := m.GetStreamingPlatform(source), m.GetStreamingPlatform(destination)
-	playlist, err := sourcePlatform.GetPlaylist(playlistURL)
-	if err != nil {
-		return "", err
-	}
-
-	playlistURL, err = destinationPlatform.CreatePlaylist(playlist, accessToken)
-	if err != nil {
-		return "", err
-	}
-
-	return playlistURL, nil
 }
 
 // SupportedPlatforms returns a list of supported music streaming platforms.

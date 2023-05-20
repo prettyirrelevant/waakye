@@ -2,7 +2,6 @@ package ytmusic
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/prettyirrelevant/kilishi/utils"
 	"github.com/prettyirrelevant/ytmusicapi"
@@ -31,21 +30,8 @@ func (y *YTMusic) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 
 // CreatePlaylist creates a new playlist using the information provided.
 func (y *YTMusic) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
-	var foundTracks []utils.Track
-	var wg sync.WaitGroup
-
-	// TODO: Fix
-	for _, trackEntry := range playlist.Tracks {
-		wg.Add(1)
-		go func(payload utils.Track) {
-			defer wg.Done()
-			y.LookupTrack(payload)
-		}(trackEntry)
-	}
-	wg.Wait()
-
 	var trackIDs []string
-	for _, entry := range foundTracks {
+	for _, entry := range playlist.Tracks {
 		trackIDs = append(trackIDs, entry.ID)
 	}
 
