@@ -27,4 +27,4 @@ COPY --from=builder /opt/app .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
-CMD ["exec", "gunicorn", "--bind", "0.0.0.0:$PORT", "app:application"]
+CMD ["gunicorn", "app:application"]
