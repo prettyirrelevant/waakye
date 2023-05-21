@@ -9,6 +9,8 @@ import (
 	"github.com/prettyirrelevant/kilishi/utils"
 )
 
+var basePlaylistURL = "https://open.spotify.com/playlist/"
+
 // New initialises a `Spotify` object.
 func New(opts InitialisationOpts) *Spotify {
 	return &Spotify{
@@ -98,7 +100,7 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 	}
 
 	s.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
-	return response.ID, nil
+	return basePlaylistURL + response.ID, nil
 }
 
 func (s *Spotify) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {

@@ -7,6 +7,8 @@ import (
 	"github.com/prettyirrelevant/kilishi/utils"
 )
 
+var basePlaylistURL = "https://www.deezer.com/en/playlist/"
+
 // New initialises a `Spotify` object.
 func New(opts InitialisationOpts) *Deezer {
 	return &Deezer{
@@ -60,7 +62,7 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 		return "", err
 	}
 
-	return response.ID, nil
+	return basePlaylistURL + response.ID, nil
 }
 
 func (d *Deezer) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
