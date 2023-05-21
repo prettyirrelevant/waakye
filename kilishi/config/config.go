@@ -7,7 +7,6 @@ type Config struct {
 	Port                    int    `env:"PORT,notEmpty"`
 	Address                 string `env:"ADDRESS,notEmpty"`
 	SecretKey               string `env:"SECRET_KEY,notEmpty"`
-	RedisURL                string `env:"REDIS_URL,notEmpty"`
 	InitializationVector    string `env:"INITIALIZATION_VECTOR,notEmpty"`
 	DatabaseURL             string `env:"DATABASE_URL,notEmpty"`
 	SpotifyClientID         string `env:"SPOTIFY_CLIENT_ID,notEmpty"`

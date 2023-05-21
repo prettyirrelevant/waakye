@@ -41,7 +41,7 @@ func New(databaseURL string) (*Database, error) {
 
 	return &Database{
 		client: client,
-		db:     client.Database("waakye"),
+		db:     client.Database("kilishi"),
 	}, nil
 }
 

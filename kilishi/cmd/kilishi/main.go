@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/storage/redis"
+	"github.com/gofiber/storage/mongodb"
 
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -66,9 +66,10 @@ func setupMiddlewares(app *fiber.App, config *config.Config) {
 		KeyGenerator: func(c *fiber.Ctx) string {
 			return utils.CopyString(c.Path()) + string(utils.CopyBytes(c.Body()))
 		},
-		Storage: redis.New(redis.Config{
-			URL:   config.RedisURL,
-			Reset: false,
+		Storage: mongodb.New(mongodb.Config{
+			ConnectionURI: config.DatabaseURL,
+			Database:      "kilishi",
+			Collection:    "app_cache",
 		}),
 	}))
 }
