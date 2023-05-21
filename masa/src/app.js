@@ -6,8 +6,8 @@ const cors = require("cors");
 const basicAuth = require("express-basic-auth");
 const config = require("./config/config");
 const {
-  encryptWithAES256CBC,
-  generateAuthenticationURL,
+  generateSpotifyAuthenticationURL,
+  generateDeezerAuthenticationURL,
   handleMusicServiceAuthentication,
 } = require("./utils");
 const morgan = require("./middlewares/morgan");
@@ -43,21 +43,19 @@ app.get("/ping", (req, res) => {
   return res.status(200).json();
 });
 
+app.get("/api/oauth/:platform/link", async (req, res) => {
+  if (req.params.platform === "spotify") {
+    return res.status(200).json({ data: generateSpotifyAuthenticationURL() });
+  }
+
+  if (req.params.platform === "deezer") {
+    return res.status(200).json({ data: generateDeezerAuthenticationURL() });
+  }
+
+  return res.status(400).json({ message: "Invalid platform provided" });
+});
+
 app.post("/api/oauth/spotify", async (req, res) => {
-  const authURL = generateAuthenticationURL(
-    "https://accounts.spotify.com/authorize",
-    {
-      response_type: "code",
-      client_id: config.SPOTIFY_CLIENT_ID,
-      redirect_uri: config.SPOTIFY_AUTH_REDIRECT_URI,
-      scope: "playlist-modify-public",
-      state: encryptWithAES256CBC(
-        config.SECRET_KEY,
-        config.INITIALIZATION_VECTOR,
-        `${Date.now()}:spotify`
-      ),
-    }
-  );
   const { isSuccessful, statusMsg } = await handleMusicServiceAuthentication({
     successText: "spotify token saved",
     email: config.SPOTIFY_AUTH_EMAIL,
@@ -66,23 +64,13 @@ app.post("/api/oauth/spotify", async (req, res) => {
     submitButtonSelector: "#login-button",
     emailSelector: "#login-username",
     passwordSelector: "#login-password",
-    authUrl: authURL,
+    authUrl: generateSpotifyAuthenticationURL(),
   });
   const statusCode = isSuccessful ? 200 : 500;
-  return res
-    .status(statusCode)
-    .json({ status: isSuccessful, message: statusMsg });
+  return res.status(statusCode).json({ message: statusMsg });
 });
 
 app.post("/api/oauth/deezer", async (req, res) => {
-  const authURL = generateAuthenticationURL(
-    "https://connect.deezer.com/oauth/auth.php",
-    {
-      app_id: config.DEEZER_APP_ID,
-      redirect_uri: config.DEEZER_AUTH_REDIRECT_URI,
-      perms: "manage_library,offline_access",
-    }
-  );
   const { isSuccessful, statusMsg } = await handleMusicServiceAuthentication({
     successText: "deezer token saved",
     email: config.DEEZER_AUTH_EMAIL,
@@ -91,12 +79,10 @@ app.post("/api/oauth/deezer", async (req, res) => {
     submitButtonSelector: "#login_form_submit",
     emailSelector: "#login_mail",
     passwordSelector: "#login_password",
-    authUrl: authURL,
+    authUrl: generateDeezerAuthenticationURL(),
   });
   const statusCode = isSuccessful ? 200 : 500;
-  return res
-    .status(statusCode)
-    .json({ status: isSuccessful, message: statusMsg });
+  return res.status(statusCode).json({ message: statusMsg });
 });
 
 app.use((req, res, next) => {

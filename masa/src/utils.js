@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const logger = require("./config/logger");
+const config = require("./config/config");
 
 /**
  * Encrypts a plain text using AES-256-CBC encryption with the given secret key and IV
@@ -101,9 +102,35 @@ const generateAuthenticationURL = (url, queryParams) => {
   return `${url}?${searchParams.toString()}`;
 };
 
+const generateSpotifyAuthenticationURL = () => {
+  return generateAuthenticationURL("https://accounts.spotify.com/authorize", {
+    response_type: "code",
+    client_id: config.SPOTIFY_CLIENT_ID,
+    redirect_uri: config.SPOTIFY_AUTH_REDIRECT_URI,
+    scope: "playlist-modify-public",
+    state: encryptWithAES256CBC(
+      config.SECRET_KEY,
+      config.INITIALIZATION_VECTOR,
+      `${Date.now()}:spotify`
+    ),
+  });
+};
+
+const generateDeezerAuthenticationURL = () => {
+  return generateAuthenticationURL(
+    "https://connect.deezer.com/oauth/auth.php",
+    {
+      app_id: config.DEEZER_APP_ID,
+      redirect_uri: config.DEEZER_AUTH_REDIRECT_URI,
+      perms: "manage_library,offline_access",
+    }
+  );
+};
+
 module.exports = {
   getPuppeteerSetup,
   encryptWithAES256CBC,
-  generateAuthenticationURL,
+  generateDeezerAuthenticationURL,
+  generateSpotifyAuthenticationURL,
   handleMusicServiceAuthentication,
 };
