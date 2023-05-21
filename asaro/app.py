@@ -73,6 +73,11 @@ class PlaylistResponseSchema(Schema):
     description = fields.Str(required=False)
     tracks = fields.List(fields.Nested(TrackResponseSchema(unknown=EXCLUDE)), required=True)
 
+    @post_dump
+    def transform_data(self, data, **kwargs):
+        data["identifier"] = data.pop("id")
+        return data
+
 
 class SearchTrackResponseSchema(Schema):
     category = fields.Str(required=True)
