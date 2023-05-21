@@ -68,7 +68,7 @@ class TrackResponseSchema(Schema):
 
 
 class PlaylistResponseSchema(Schema):
-    identifier = fields.Str(data_key="id", required=True)
+    id = fields.Str(required=True)
     title = fields.Str(required=True)
     description = fields.Str(required=False)
     tracks = fields.List(fields.Nested(TrackResponseSchema(unknown=EXCLUDE)), required=True)
