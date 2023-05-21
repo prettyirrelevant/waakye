@@ -20,6 +20,7 @@ type Config struct {
 	DeezerAppID             string `env:"DEEZER_APP_ID,notEmpty"`
 	DeezerClientSecret      string `env:"DEEZER_CLIENT_SECRET,notEmpty"`
 	DeezerAuthenticationURL string `env:"DEEZER_AUTHENTICATION_URL,notEmpty"`
+	YTMusicApiBaseUrl       string `env:"YTMUSICAPI_BASE_URL,notEmpty"`
 }
 
 func New() (*Config, error) {

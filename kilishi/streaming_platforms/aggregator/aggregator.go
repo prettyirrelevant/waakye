@@ -12,8 +12,12 @@ import (
 // New creates a new MusicStreamingPlatformsAggregator instance.
 func New(config *config.Config) *MusicStreamingPlatformsAggregator {
 	return &MusicStreamingPlatformsAggregator{
-		Config:  config,
-		YTMusic: ytmusic.New(),
+		Config: config,
+		YTMusic: ytmusic.New(ytmusic.InitialisationOpts{
+			RequestClient:       createRequestClient(config),
+			BaseAPIURL:          config.YTMusicApiBaseUrl,
+			AuthenticationToken: config.SecretKey,
+		}),
 		Deezer: deezer.New(deezer.InitialisationOpts{
 			RequestClient:     createRequestClient(config),
 			AppID:             config.DeezerAppID,
@@ -59,8 +63,6 @@ func (m *MusicStreamingPlatformsAggregator) GetStreamingPlatform(platform MusicS
 		return m.Deezer
 	case YTMusic:
 		return m.YTMusic
-	case AppleMusic:
-		return m.AppleMusic
 	default:
 		return nil
 	}

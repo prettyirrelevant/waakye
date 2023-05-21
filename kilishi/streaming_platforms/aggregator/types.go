@@ -2,7 +2,6 @@ package aggregator
 
 import (
 	"github.com/prettyirrelevant/kilishi/config"
-	"github.com/prettyirrelevant/kilishi/streaming_platforms/applemusic"
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/deezer"
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/spotify"
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/ytmusic"
@@ -10,21 +9,19 @@ import (
 )
 
 const (
-	Spotify    MusicStreamingPlatform = "spotify"
-	Deezer     MusicStreamingPlatform = "deezer"
-	YTMusic    MusicStreamingPlatform = "ytmusic"
-	AppleMusic MusicStreamingPlatform = "apple music"
+	Spotify MusicStreamingPlatform = "spotify"
+	Deezer  MusicStreamingPlatform = "deezer"
+	YTMusic MusicStreamingPlatform = "ytmusic"
 )
 
-var AllMusicStreamingPlatforms = map[MusicStreamingPlatform]bool{Spotify: true, Deezer: true, YTMusic: true, AppleMusic: true}
+var AllMusicStreamingPlatforms = map[MusicStreamingPlatform]bool{Spotify: true, Deezer: true, YTMusic: true}
 
 // MusicStreamingPlatformsAggregator is a struct that represents an aggregator of different music streaming platforms.
 type MusicStreamingPlatformsAggregator struct {
-	Config     *config.Config
-	Spotify    *spotify.Spotify
-	Deezer     *deezer.Deezer
-	YTMusic    *ytmusic.YTMusic
-	AppleMusic *applemusic.AppleMusic
+	Config  *config.Config
+	Spotify *spotify.Spotify
+	Deezer  *deezer.Deezer
+	YTMusic *ytmusic.YTMusic
 }
 
 type MusicStreamingPlatformInterface interface {
