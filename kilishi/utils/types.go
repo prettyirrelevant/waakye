@@ -25,17 +25,18 @@ type OauthCredentials struct {
 	ExpiresAt    int
 }
 
-func (o *OauthCredentials) ToString() (string, error) {
-	stringFormat, err := json.Marshal(o)
-	if err != nil {
-		return "", err
-	}
+func (o *OauthCredentials) ToBytes() ([]byte, error) {
+	var result []byte
 
-	return string(stringFormat), nil
+	result, err := json.Marshal(o)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }
 
-func (o OauthCredentials) FromDB(payload string) error {
-	err := json.Unmarshal([]byte(payload), &o)
+func (o OauthCredentials) FromDB(payload []byte) error {
+	err := json.Unmarshal(payload, &o)
 	if err != nil {
 		return err
 	}

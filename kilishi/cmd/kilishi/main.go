@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/storage/mongodb"
+	"github.com/gofiber/storage/redis/v2"
 
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -38,8 +38,10 @@ func main() {
 
 	apiGroup := app.Group("/api")
 	aggregatorService := aggregator.New(config)
+
 	playlists.RouterV1(apiGroup, aggregatorService, db)
 	callbacks.RouterV1(apiGroup, aggregatorService, db)
+
 	apiGroup.Get("/ping", HealthCheckController)
 
 	log.Fatal(app.Listen(fmt.Sprintf("%s:%d", config.Address, config.Port)))
@@ -66,16 +68,15 @@ func setupMiddlewares(app *fiber.App, config *config.Config) {
 		KeyGenerator: func(c *fiber.Ctx) string {
 			return utils.CopyString(c.Path()) + string(utils.CopyBytes(c.Body()))
 		},
-		Storage: mongodb.New(mongodb.Config{
-			ConnectionURI: config.DatabaseURL,
-			Database:      "kilishi",
-			Collection:    "app_cache",
+		Storage: redis.New(redis.Config{
+			URL:   fmt.Sprintf("%s/1", config.DatabaseURL),
+			Reset: false,
 		}),
 	}))
 }
 
 func setupDatabase(config *config.Config) *database.Database {
-	db, err := database.New(config.DatabaseURL)
+	db, err := database.New(fmt.Sprintf("%s/0", config.DatabaseURL))
 	if err != nil {
 		panic(err)
 	}

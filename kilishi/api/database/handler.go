@@ -6,73 +6,82 @@ import (
 	"time"
 
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/prettyirrelevant/kilishi/utils"
 )
 
-// Database represents a connection to a SQLite database.
+var Ctx = context.TODO()
+
+// Database represents a connection to a Redis instance.
 type Database struct {
-	client *mongo.Client
-	db     *mongo.Database
+	client *redis.Client
 }
 
 // New creates a new Database struct and connects to a MongoDB database using the provided URL.
 func New(databaseURL string) (*Database, error) {
-	client, err := mongo.NewClient(options.Client().ApplyURI(databaseURL))
+	var db *Database
+
+	opts, err := redis.ParseURL(databaseURL)
 	if err != nil {
-		return nil, err
+		return db, err
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	err = client.Connect(ctx)
-	if err != nil {
-		return nil, err
+	client := redis.NewClient(opts)
+	if status := client.Ping(Ctx); status.Err() != nil {
+		return db, status.Err()
 	}
 
-	err = client.Ping(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Database{
-		client: client,
-		db:     client.Database("kilishi"),
-	}, nil
+	db.client = client
+	return db, nil
 }
 
 // GetDBOauthCredentials retrieves the OAuth credentials for a given music streaming platform from the database.
 func (d *Database) GetDBOauthCredentials(platform aggregator.MusicStreamingPlatform) (OauthCredentialsInDB, error) {
-	var credentials OauthCredentialsInDB
+	var dbCredentials OauthCredentialsInDB
+	var hashKey = fmt.Sprintf("oauth_cred:%s", platform)
 
-	filter := bson.M{"platform": platform}
-	err := d.db.Collection("oauth_credentials").FindOne(context.TODO(), filter).Decode(&credentials)
+	err := d.client.HGetAll(Ctx, hashKey).Scan(&dbCredentials)
 	if err != nil {
-		return credentials, fmt.Errorf("database: could not fetch oauth credentials for %s due to %s", platform, err.Error())
+		return dbCredentials, fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
 	}
-
-	return credentials, nil
+	return dbCredentials, nil
 }
 
 // SetOauthCredentials saves the OAuth credentials for a given music streaming platform in the database.
 func (d *Database) SetOauthCredentials(platform aggregator.MusicStreamingPlatform, credentials utils.OauthCredentials) error {
-	authCredentialsString, err := credentials.ToString()
+	var hashKey = fmt.Sprintf("oauth_cred:%s", platform)
+
+	bytesCredentials, err := credentials.ToBytes()
 	if err != nil {
 		return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
 	}
 
-	now := time.Now().Unix()
-	filterQuery := bson.M{"platform": platform}
-	updateQuery := bson.M{
-		"$set":         bson.D{{Key: "platform", Value: string(platform)}, {Key: "credentials", Value: authCredentialsString}, {Key: "updated_at", Value: now}},
-		"$setOnInsert": bson.M{"created_at": now},
+	count, err := d.client.Exists(Ctx, hashKey).Result()
+	if err != nil {
+		return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
 	}
-	options := options.FindOneAndUpdate().SetUpsert(true)
-	err = d.db.Collection("oauth_credentials").FindOneAndUpdate(context.TODO(), filterQuery, updateQuery, options).Err()
+	if count == 1 {
+		_, err = d.client.Pipelined(Ctx, func(p redis.Pipeliner) error {
+			p.HSet(Ctx, hashKey, "credentials", bytesCredentials)
+			p.HSet(Ctx, hashKey, "updated_at", time.Now().Unix())
+			return nil
+		})
+		if err != nil {
+			return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
+		}
+
+		return nil
+	}
+
+	now := time.Now().Unix()
+	_, err = d.client.Pipelined(Ctx, func(p redis.Pipeliner) error {
+		p.HSet(Ctx, hashKey, "platform", string(platform))
+		p.HSet(Ctx, hashKey, "credentials", bytesCredentials)
+		p.HSet(Ctx, hashKey, "created_at", now)
+		p.HSet(Ctx, hashKey, "updated_at", now)
+		return nil
+	})
 	if err != nil {
 		return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
 	}
