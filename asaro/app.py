@@ -5,7 +5,6 @@ from functools import wraps
 from flask import Flask, request
 from marshmallow import EXCLUDE, Schema, ValidationError, fields, post_dump, post_load, validate
 from werkzeug.exceptions import HTTPException
-
 from ytmusicapi import YTMusic
 
 application = Flask(__name__)
@@ -110,10 +109,9 @@ def validate_request(schema_instance):
 def requires_auth(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-        print(request.authorization)
         if (
             request.authorization is None
-            or request.authorization.type != "Bearer"
+            or request.authorization.type != "bearer"
             or request.authorization.token != os.getenv("SECRET_KEY")
         ):
             return {
