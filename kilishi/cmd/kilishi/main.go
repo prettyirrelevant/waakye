@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -48,7 +47,7 @@ func main() {
 }
 
 func HealthCheckController(c *fiber.Ctx) error {
-	return c.Status(http.StatusOK).JSON("")
+	return c.SendStatus(http.StatusOK)
 }
 
 func setupMiddlewares(app *fiber.App, config *config.Config) {
@@ -56,13 +55,13 @@ func setupMiddlewares(app *fiber.App, config *config.Config) {
 	app.Use(logger.New())
 	app.Use(recover.New())
 	app.Use(cache.New(cache.Config{
-		Expiration: 168 * time.Hour,
+		Expiration: 72 * time.Hour,
 		Methods:    []string{fiber.MethodPost},
 		Next: func(c *fiber.Ctx) bool {
-			ignoreCache := c.Query("ignoreCache", "false")
-			if val, err := strconv.ParseBool(ignoreCache); err != nil || !val {
+			if c.Path() == "/api/v1/playlists" && c.Method() == fiber.MethodPost {
 				return true
 			}
+
 			return false
 		},
 		KeyGenerator: func(c *fiber.Ctx) string {

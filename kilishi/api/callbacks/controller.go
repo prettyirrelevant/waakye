@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/presenter"
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
@@ -15,7 +16,6 @@ import (
 
 // SpotifyOauthCallbackController handles Spotify OAuth callback requests.
 func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
-	// TODO: Log extensively
 	return func(c *fiber.Ctx) error {
 		state := c.Query("state")
 		code := c.Query("code")
@@ -32,7 +32,7 @@ func SpotifyOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggreg
 				JSON(presenter.ErrorResponse("invalid state parameter provided", err.Error()))
 		}
 
-		// It takes the format of timeInMicroSecs:streamingPlatform
+		// It takes the format of unixTimeInSecs:streamingPlatform
 		stateParamSlice := strings.Split(stateParamDecrypted, ":")
 		if len(stateParamSlice) < 2 {
 			return c.

@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
 	"github.com/prettyirrelevant/kilishi/utils"
 )
 
-var Ctx = context.TODO()
+var ctx = context.TODO()
 
 // Database represents a connection to a Redis instance.
 type Database struct {
@@ -24,16 +24,12 @@ func New(databaseURL string) (*Database, error) {
 
 	opts, err := redis.ParseURL(databaseURL)
 	if err != nil {
-		return db, err
+		return db, fmt.Errorf("database: url parse failed due to  %s", err.Error())
 	}
 
-	// Hop.sh requires some sort of delay before connection to the redis server.
-	time.Sleep(time.Minute * 1)
-	fmt.Println("Slept for one minute before connection....")
-
 	client := redis.NewClient(opts)
-	if status := client.Ping(Ctx); status.Err() != nil {
-		return db, status.Err()
+	if status := client.Ping(ctx); status.Err() != nil {
+		return db, fmt.Errorf("database: ping failed due to %s", status.Err().Error())
 	}
 
 	db.client = client
@@ -45,9 +41,9 @@ func (d *Database) GetDBOauthCredentials(platform aggregator.MusicStreamingPlatf
 	var dbCredentials OauthCredentialsInDB
 	var hashKey = fmt.Sprintf("oauth_cred:%s", platform)
 
-	err := d.client.HGetAll(Ctx, hashKey).Scan(&dbCredentials)
+	err := d.client.HGetAll(ctx, hashKey).Scan(&dbCredentials)
 	if err != nil {
-		return dbCredentials, fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
+		return dbCredentials, fmt.Errorf("database: credentials fetch failed for %s due to %s", platform, err.Error())
 	}
 	return dbCredentials, nil
 }
@@ -58,36 +54,37 @@ func (d *Database) SetOauthCredentials(platform aggregator.MusicStreamingPlatfor
 
 	bytesCredentials, err := credentials.ToBytes()
 	if err != nil {
-		return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
+		return fmt.Errorf("database: credentials conversion to bytes failed for %s due to %s", platform, err.Error())
 	}
 
-	count, err := d.client.Exists(Ctx, hashKey).Result()
+	count, err := d.client.Exists(ctx, hashKey).Result()
 	if err != nil {
-		return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
+		return fmt.Errorf("database: credentials existence check failed for %s due to %s", platform, err.Error())
 	}
+
 	if count == 1 {
-		_, err = d.client.Pipelined(Ctx, func(p redis.Pipeliner) error {
-			p.HSet(Ctx, hashKey, "credentials", bytesCredentials)
-			p.HSet(Ctx, hashKey, "updated_at", time.Now().Unix())
+		_, err = d.client.Pipelined(ctx, func(p redis.Pipeliner) error {
+			p.HSet(ctx, hashKey, "credentials", bytesCredentials)
+			p.HSet(ctx, hashKey, "updated_at", time.Now().Unix())
 			return nil
 		})
 		if err != nil {
-			return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
+			return fmt.Errorf("database: oauth credentials save failed for %s due to %s", platform, err.Error())
 		}
 
 		return nil
 	}
 
 	now := time.Now().Unix()
-	_, err = d.client.Pipelined(Ctx, func(p redis.Pipeliner) error {
-		p.HSet(Ctx, hashKey, "platform", string(platform))
-		p.HSet(Ctx, hashKey, "credentials", bytesCredentials)
-		p.HSet(Ctx, hashKey, "created_at", now)
-		p.HSet(Ctx, hashKey, "updated_at", now)
+	_, err = d.client.Pipelined(ctx, func(p redis.Pipeliner) error {
+		p.HSet(ctx, hashKey, "platform", string(platform))
+		p.HSet(ctx, hashKey, "credentials", bytesCredentials)
+		p.HSet(ctx, hashKey, "created_at", now)
+		p.HSet(ctx, hashKey, "updated_at", now)
 		return nil
 	})
 	if err != nil {
-		return fmt.Errorf("database: could not set oauth credentials for %s due to %s", platform, err.Error())
+		return fmt.Errorf("database: oauth credentials save failed for %s due to %s", platform, err.Error())
 	}
 
 	return nil

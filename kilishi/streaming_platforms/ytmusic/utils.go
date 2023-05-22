@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/imroc/req/v3"
+
 	"github.com/prettyirrelevant/kilishi/utils"
 )
 

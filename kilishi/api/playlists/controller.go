@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/presenter"
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
