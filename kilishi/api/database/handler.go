@@ -29,6 +29,7 @@ func New(databaseURL string) (*Database, error) {
 
 	// Hop.sh requires some sort of delay before connection to the redis server.
 	time.Sleep(time.Minute * 1)
+	fmt.Println("Slept for one minute before connection....")
 
 	client := redis.NewClient(opts)
 	if status := client.Ping(Ctx); status.Err() != nil {
