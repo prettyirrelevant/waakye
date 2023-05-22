@@ -20,20 +20,18 @@ type Database struct {
 
 // New creates a new Database struct and connects to a MongoDB database using the provided URL.
 func New(databaseURL string) (*Database, error) {
-	var db *Database
 
 	opts, err := redis.ParseURL(databaseURL)
 	if err != nil {
-		return db, fmt.Errorf("database: url parse failed due to  %s", err.Error())
+		return &Database{}, fmt.Errorf("database: url parse failed due to  %s", err.Error())
 	}
 
 	client := redis.NewClient(opts)
 	if status := client.Ping(ctx); status.Err() != nil {
-		return db, fmt.Errorf("database: ping failed due to %s", status.Err().Error())
+		return &Database{}, fmt.Errorf("database: ping failed due to %s", status.Err().Error())
 	}
 
-	db.client = client
-	return db, nil
+	return &Database{client}, nil
 }
 
 // GetDBOauthCredentials retrieves the OAuth credentials for a given music streaming platform from the database.
