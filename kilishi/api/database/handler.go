@@ -11,7 +11,7 @@ import (
 	"github.com/prettyirrelevant/kilishi/utils"
 )
 
-var ctx = context.TODO()
+var ctx = context.Background()
 
 // Database represents a connection to a Redis instance.
 type Database struct {
