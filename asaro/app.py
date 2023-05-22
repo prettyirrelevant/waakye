@@ -185,6 +185,7 @@ def search_track(payload):
         limit=payload["limit"],
         ignore_spelling=payload["ignore_spelling"],
     )
+
     try:
         search_schema.load(results)
     except ValidationError as e:
