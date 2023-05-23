@@ -44,7 +44,7 @@ func FindTrackController(aggregator *aggregator.MusicStreamingPlatformsAggregato
 	return func(c *fiber.Ctx) error {
 		var queryParams FindTrackRequest
 
-		err := c.BodyParser(&queryParams)
+		err := c.QueryParser(&queryParams)
 		if err != nil {
 			return c.
 				Status(http.StatusBadRequest).
