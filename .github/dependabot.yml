@@ -26,3 +26,12 @@ updates:
     labels:
       - "go dependencies"
       - "kilishi"
+
+  - package-ecosystem: "gomod"
+    directory: "/shaki"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "go dependencies"
+      - "shaki"
