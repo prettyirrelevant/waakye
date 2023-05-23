@@ -12,23 +12,23 @@ import (
 
 func GetPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var requestBody GetPlaylistRequest
+		var queryParams GetPlaylistRequest
 
-		err := c.BodyParser(&requestBody)
+		err := c.QueryParser(&queryParams)
 		if err != nil {
 			return c.
 				Status(http.StatusBadRequest).
 				JSON(presenter.ErrorResponse("validation error", err.Error()))
 		}
 
-		if ok, errors := requestBody.Validate(); !ok {
+		if ok, errors := queryParams.Validate(); !ok {
 			return c.
 				Status(http.StatusUnprocessableEntity).
 				JSON(presenter.ErrorResponse("validation error", errors...))
 		}
 
-		x := aggregator.GetStreamingPlatform(requestBody.Platform)
-		playlist, err := x.GetPlaylist(requestBody.PlaylistURL)
+		x := aggregator.GetStreamingPlatform(queryParams.Platform)
+		playlist, err := x.GetPlaylist(queryParams.PlaylistURL)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
@@ -41,23 +41,23 @@ func GetPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAggrega
 
 func FindTrackController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var requestBody FindTrackRequest
+		var queryParams FindTrackRequest
 
-		err := c.BodyParser(&requestBody)
+		err := c.BodyParser(&queryParams)
 		if err != nil {
 			return c.
 				Status(http.StatusBadRequest).
 				JSON(presenter.ErrorResponse("validation error", err.Error()))
 		}
 
-		if ok, errors := requestBody.Validate(); !ok {
+		if ok, errors := queryParams.Validate(); !ok {
 			return c.
 				Status(http.StatusUnprocessableEntity).
 				JSON(presenter.ErrorResponse("validation error", errors...))
 		}
 
-		x := aggregator.GetStreamingPlatform(requestBody.Platform)
-		track, err := x.LookupTrack(requestBody.Track)
+		x := aggregator.GetStreamingPlatform(queryParams.Platform)
+		track, err := x.LookupTrack(queryParams.Track)
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).

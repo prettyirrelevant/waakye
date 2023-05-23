@@ -10,8 +10,8 @@ import (
 )
 
 type GetPlaylistRequest struct {
-	Platform    aggregator.MusicStreamingPlatform `json:"platform"`
-	PlaylistURL string                            `json:"playlist_url"`
+	Platform    aggregator.MusicStreamingPlatform `query:"platform"`
+	PlaylistURL string                            `query:"playlist_url"`
 }
 
 func (g *GetPlaylistRequest) Validate() (bool, []string) {
@@ -33,8 +33,8 @@ func (g *GetPlaylistRequest) Validate() (bool, []string) {
 }
 
 type FindTrackRequest struct {
-	Platform aggregator.MusicStreamingPlatform `json:"platform"`
-	Track    utils.Track                       `json:"track"`
+	Platform aggregator.MusicStreamingPlatform `query:"platform"`
+	Track    utils.Track                       `query:"track"`
 }
 
 func (f *FindTrackRequest) Validate() (bool, []string) {
