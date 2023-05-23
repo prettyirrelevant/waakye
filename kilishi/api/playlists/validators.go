@@ -34,7 +34,8 @@ func (g *GetPlaylistRequest) Validate() (bool, []string) {
 
 type FindTrackRequest struct {
 	Platform aggregator.MusicStreamingPlatform `query:"platform"`
-	Track    utils.Track                       `query:"track"`
+	Title    string                            `query:"title"`
+	Artists  []string
 }
 
 func (f *FindTrackRequest) Validate() (bool, []string) {
@@ -44,11 +45,11 @@ func (f *FindTrackRequest) Validate() (bool, []string) {
 	if err != nil {
 		foundErrors = append(foundErrors, err.Error())
 	}
-	err = validateString(f.Track.Title, "`track` requires a title")
+	err = validateString(f.Title, "title is required")
 	if err != nil {
 		foundErrors = append(foundErrors, err.Error())
 	}
-	err = validateStringSlice(f.Track.Artists, "`track` requires at least one artist")
+	err = validateStringSlice(f.Artists, "artists is required")
 	if err != nil {
 		foundErrors = append(foundErrors, err.Error())
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/presenter"
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
+	"github.com/prettyirrelevant/kilishi/utils"
 )
 
 func GetPlaylistController(aggregator *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
@@ -57,7 +58,7 @@ func FindTrackController(aggregator *aggregator.MusicStreamingPlatformsAggregato
 		}
 
 		x := aggregator.GetStreamingPlatform(queryParams.Platform)
-		track, err := x.LookupTrack(queryParams.Track)
+		track, err := x.LookupTrack(utils.Track{Title: queryParams.Title, Artists: queryParams.Artists})
 		if err != nil {
 			return c.
 				Status(http.StatusInternalServerError).
