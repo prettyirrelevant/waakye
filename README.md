@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="http://waakye.prettyirrelevant.wtf"><img src="https://res.cloudinary.com/dybhjquqy/image/upload/v1684839435/waakye_xva44d.png" alt="waakye" width="200"></a>
+  <a href="http://waakye.prettyirrelevant.wtf"><img src="https://res.cloudinary.com/dybhjquqy/image/upload/v1684839435/waakye_xva44d.png" alt="waakye"></a>
   <br>
   waakye
   <br>
