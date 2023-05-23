@@ -35,7 +35,7 @@ func (g *GetPlaylistRequest) Validate() (bool, []string) {
 type FindTrackRequest struct {
 	Platform aggregator.MusicStreamingPlatform `query:"platform"`
 	Title    string                            `query:"title"`
-	Artists  []string
+	Artists  []string                          `query:"artists"`
 }
 
 func (f *FindTrackRequest) Validate() (bool, []string) {
