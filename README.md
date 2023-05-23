@@ -17,37 +17,40 @@
 </p>
 
 <p align="center">
-  <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#download">CLI</a> •
-  <a href="#related">API Documentation</a> •
-  <a href="#credits">Credits</a> •
+  <a href="#features">Features</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#folder-structure">Folder Structure</a> •
   <a href="#license">License</a>
 </p>
 
 
+## 🎯 Features
+<sup>[(Back to top)](#table-of-contents)</sup>
+
+- Supports multiple music streaming platforms such as Spotify, Deezer, YTMusic & Apple Music(coming soon).
+- Intuitive web application that is easy to use.
+- CLI application for terminal lovers.
+- Can convert playlists with large number of tracks.
+- Free to use.
+
+
+## 🤹 Usage
+<sup>[(Back to top)](#table-of-contents)</sup>
+
+
+## 🌵 Folder Structure
+<sup>[(Back to top)](#table-of-contents)</sup>
+
+```sh
+.
+├── asaro   (Ytmusicapi Wrapper API)
+├── kilishi (Golang API)
+├── masa    (Puppeteer Authentication Server)
+└── shaki   (CLI Application)
+```
+
+
 ## ⚠️ License
+<sup>[(Back to top)](#table-of-contents)</sup>
 
 `waakye` is free and open-source software licensed under the [MIT License](https://github.com/prettyirrelevant/waakye/blob/main/LICENSE.md). Logo is by [Icons8](https://icons8.com/icon/d2CXqaKsX8S8/playlist).
-
-<!-- ## Table of Contents
-
-## Roadmaps
-
-## FAQs
-
-## License
-
-
-## Supported Streaming Platforms
-- Spotify
-- YTMusic
-- Deezer
-
-## Codebase
-
-| Folder                |      Description                 |
-| :-------------------- | :------------------------------: |
-| [asaro](asaro)        |       Ytmusicapi Wrapper         |
-| [kilishi](kilishi)    |           GoLang API             |
-| [masa](masa)          | Puppeteer Authentication server  | -->
