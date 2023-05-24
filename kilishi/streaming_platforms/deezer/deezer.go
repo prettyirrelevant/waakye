@@ -107,11 +107,11 @@ func (d *Deezer) LookupTrack(track utils.Track) (utils.Track, error) {
 		return foundTrack, fmt.Errorf("deezer: %s", err.Error())
 	}
 
-	if len(response.Results.Data) == 0 {
+	if len(response.Data) == 0 {
 		return foundTrack, fmt.Errorf("deezer: no track found that matches %s", track.Title)
 	}
 
-	foundTrack = parseTracksResponse(response.Results)[0]
+	foundTrack = parseSearchTracksResponse(response)[0]
 	return foundTrack, nil
 }
 

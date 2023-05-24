@@ -25,17 +25,18 @@ func parsePlaylistURL(playlistURL string) (string, error) {
 
 // trackToSearchQuery transforms our internal track object into a Deezer search query.
 func trackToSearchQuery(track utils.Track) string {
-	query := "track:" + track.Title
-	for _, artist := range track.Artists {
-		query += " artist:" + artist
+	q := fmt.Sprintf("track:\"%s\"", track.Title)
+	for _, artistName := range track.Artists {
+		q += fmt.Sprintf(" artist:\"%s\"", artistName)
+		break
 	}
 
-	return query
+	return q
 }
 
 // parseGetPlaylistResponse transforms the playlist object returned from Deezer API into our internal object.
 func parseGetPlaylistResponse(response deezerAPIGetPlaylistResponse) utils.Playlist {
-	tracks := parseTracksResponse(response.Tracks)
+	tracks := parsePlaylistTracksResponse(response)
 	return utils.Playlist{
 		ID:          strconv.Itoa(response.ID),
 		Title:       response.Title,
@@ -43,10 +44,22 @@ func parseGetPlaylistResponse(response deezerAPIGetPlaylistResponse) utils.Playl
 		Tracks:      tracks,
 	}
 }
-
-func parseTracksResponse(response deezerAPITracksDataResponse) []utils.Track {
+func parsePlaylistTracksResponse(data deezerAPIGetPlaylistResponse) []utils.Track {
 	var tracks []utils.Track
-	for _, track := range response.Data {
+	for _, track := range data.Tracks.Data {
+		tracks = append(tracks, utils.Track{
+			ID:      strconv.Itoa(track.ID),
+			Title:   utils.CleanTrackTitle(track.Title),
+			Artists: []string{track.Artist.Name},
+		})
+	}
+
+	return tracks
+}
+
+func parseSearchTracksResponse(data deezerAPISearchTrackResponse) []utils.Track {
+	var tracks []utils.Track
+	for _, track := range data.Data {
 		tracks = append(tracks, utils.Track{
 			ID:      strconv.Itoa(track.ID),
 			Title:   utils.CleanTrackTitle(track.Title),

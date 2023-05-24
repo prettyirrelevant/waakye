@@ -96,6 +96,17 @@ class SearchTrackResponseSchema(Schema):
 
 
 def validate_request(schema_instance):
+    """Decorator to validate the request payload against a specified schema.
+
+    This decorator validates the request payload using the provided `schema_instance`.
+    If the payload fails validation, a ValidationError response is returned.
+
+    Args:
+        schema_instance (Schema): The schema instance to validate the request payload against.
+
+    Returns:
+        callable: The decorated function.
+    """
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -112,6 +123,18 @@ def validate_request(schema_instance):
 
 
 def requires_auth(f):
+    """Decorator that requires authentication with a bearer token.
+
+    This decorator checks if the request includes a valid bearer token
+    for authentication. If the token is not provided or is invalid, it
+    returns an AuthenticationError response.
+
+    Args:
+        f (callable): The function to be decorated.
+
+    Returns:
+        callable: The decorated function.
+    """
     @wraps(f)
     def decorator(*args, **kwargs):
         if (
@@ -176,7 +199,7 @@ def create_playlist(payload):
 
 @application.post("/tracks/search")
 @validate_request(SearchTrackRequestSchema())
-def search_track(payload):
+def search_track(payload): 
     search_schema = SearchTrackResponseSchema(unknown=EXCLUDE, many=True)
     results = ytmusic.search(
         query=payload["q"],

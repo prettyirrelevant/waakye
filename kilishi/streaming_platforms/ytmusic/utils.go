@@ -2,6 +2,8 @@ package ytmusic
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
 
 	"github.com/imroc/req/v3"
 
@@ -26,11 +28,22 @@ func trackToSearchQuery(track utils.Track) string {
 	return searchQuery
 }
 
+func cleanTrackArtist(name string) string {
+	re := regexp.MustCompile(`(?i)vevo`)
+	cleanedName := strings.TrimSpace(re.ReplaceAllString(name, ""))
+	return cleanedName
+}
+
 // parseGetPlaylistResponse transforms the playlist object returned from `ytmusicapi` into our internal object.
 func parseGetPlaylistResponse(response ytmusicAPIGetPlaylistResponse) utils.Playlist {
 	var tracks []utils.Track
 	for _, entry := range response.Data.Tracks {
-		tracks = append(tracks, utils.Track{ID: entry.Identifier, Title: utils.CleanTrackTitle(entry.Title), Artists: entry.Artists})
+		var artists []string
+		for _, artist := range entry.Artists {
+			artists = append(artists, cleanTrackArtist(artist))
+		}
+
+		tracks = append(tracks, utils.Track{ID: entry.Identifier, Title: utils.CleanTrackTitle(entry.Title), Artists: artists})
 	}
 
 	return utils.Playlist{

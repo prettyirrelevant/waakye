@@ -4,6 +4,7 @@ tmp_*
 testdata_*
 build-errors*.log
 .DS_Store
+tmp
 
 node_modules
 screenshots

@@ -78,13 +78,13 @@ func trackIDToURL(track utils.Track) string {
 
 // trackToSearchQuery transforms our internal track object into a Spotify search query.
 func trackToSearchQuery(track utils.Track) string {
-	query := "track:" + track.Title
-	for _, artist := range track.Artists {
-		query += " artist:" + artist
+	q := fmt.Sprintf("track:%s", track.Title)
+	for _, artistName := range track.Artists {
+		q += fmt.Sprintf(" artist:%s", artistName)
 		break // search with > 1 artiste fails.
 	}
 
-	return query
+	return q
 }
 
 func setupRequestClient(reqClient *req.Client) *req.Client {
