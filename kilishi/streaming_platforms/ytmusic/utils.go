@@ -12,20 +12,12 @@ import (
 
 // trackToSearchQuery takes a track and transforms it into a search query.
 func trackToSearchQuery(track utils.Track) string {
-	searchQuery := track.Title + " by"
-	for index, artiste := range track.Artists {
-		if len(track.Artists) == 1 {
-			searchQuery += " " + artiste
-		} else if len(track.Artists) > 1 && len(track.Artists)-1 == index {
-			searchQuery += " and " + artiste
-		} else {
-			searchQuery += " " + artiste
-			if index < len(track.Artists)-2 {
-				searchQuery += ","
-			}
-		}
+	q := track.Title + " by"
+	for _, artiste := range track.Artists {
+		q += " " + artiste
+		break
 	}
-	return searchQuery
+	return q
 }
 
 func cleanTrackArtist(name string) string {
