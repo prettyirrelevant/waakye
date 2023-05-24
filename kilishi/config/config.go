@@ -1,6 +1,9 @@
 package config
 
-import "github.com/caarlos0/env/v7"
+import (
+	"github.com/caarlos0/env/v7"
+	_ "github.com/joho/godotenv/autoload"
+)
 
 type Config struct {
 	Debug                   bool   `env:"DEBUG,notEmpty"`
@@ -24,6 +27,7 @@ type Config struct {
 
 func New() (*Config, error) {
 	var cfg Config
+
 	if err := env.Parse(&cfg, env.Options{RequiredIfNoDef: true}); err != nil {
 		return &cfg, err
 	}

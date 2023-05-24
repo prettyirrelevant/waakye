@@ -11,7 +11,7 @@ func CleanTrackTitle(title string) string {
 	re := regexp.MustCompile(`[\(\[].*?[\)\]]`)
 
 	cleanedTitle := strings.TrimSpace(re.ReplaceAllString(title, ""))
-	if strings.Contains(strings.ToLower(title), "remix") {
+	if strings.Contains(strings.ToLower(title), "remix") && !strings.Contains(strings.ToLower(cleanedTitle), "remix") {
 		cleanedTitle += " Remix"
 	}
 
