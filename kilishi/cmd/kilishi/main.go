@@ -41,7 +41,7 @@ func main() {
 	playlists.RouterV1(apiGroup, aggregatorService, db)
 	callbacks.RouterV1(apiGroup, aggregatorService, db)
 
-	apiGroup.Get("/ping", HealthCheckController)
+	apiGroup.Get("/v1/ping", HealthCheckController)
 
 	log.Fatal(app.Listen(fmt.Sprintf("%s:%d", config.Address, config.Port)))
 }

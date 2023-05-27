@@ -29,7 +29,7 @@
 <sup>[(Back to top)](#table-of-contents)</sup>
 
 - Supports multiple music streaming platforms such as Spotify, Deezer, YTMusic & Apple Music(coming soon).
-- Intuitive web application that is easy to use.
+- Intuitive web application that is easy to use(coming soon).
 - CLI application for terminal lovers.
 - Can convert playlists with large number of tracks.
 - Free to use.
