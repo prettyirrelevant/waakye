@@ -12,7 +12,6 @@ import (
 	"github.com/briandowns/spinner"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
-	"golang.design/x/clipboard"
 
 	"github.com/prettyirrelevant/kilishi/streaming_platforms/aggregator"
 	"github.com/prettyirrelevant/shaki/cmd/services"
@@ -100,13 +99,7 @@ var ConvertCmd = &cobra.Command{
 			panic(err)
 		}
 
-		err = clipboard.Init()
-		if err != nil {
-			panic(err)
-		}
-
-		clipboard.Write(clipboard.FmtText, []byte(createPlaylistResp.Data))
-		fmt.Printf("Playlist created successfully and copied to clipboard! Enjoy!!!\nURL: %s\n", createPlaylistResp.Data)
+		fmt.Printf("Playlist created successfully ;)\nURL -> %s\n", createPlaylistResp.Data)
 	},
 }
 
