@@ -44,7 +44,7 @@ func (d *Deezer) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
 	var response deezerAPICreatePlaylistResponse
 	err := d.RequestClient.
-		Post(d.Config.BaseAPIURL + "/users/me/playlist").
+		Post(d.Config.BaseAPIURL + "user/me/playlists").
 		SetContentType(utils.ApplicationJSON).
 		SetBearerAuthToken(accessToken).
 		SetQueryParams(map[string]string{
@@ -124,7 +124,7 @@ func (d *Deezer) populatePlaylistWithTracks(tracks []utils.Track, playlistID, ac
 
 	var response any
 	err := d.RequestClient.
-		Post(d.Config.BaseAPIURL + "/playlists/" + playlistID + "/tracks").
+		Post(d.Config.BaseAPIURL + "/playlist/" + playlistID + "/tracks").
 		SetBearerAuthToken(accessToken).
 		SetContentType(utils.ApplicationJSON).
 		SetFormData(map[string]string{
