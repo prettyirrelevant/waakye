@@ -1,0 +1,37 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/asaro"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "python dependencies"
+      - "asaro"
+
+  - package-ecosystem: "npm"
+    directory: "/masa"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "npm dependencies"
+      - "masa"
+
+  - package-ecosystem: "gomod"
+    directory: "/kilishi"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "go dependencies"
+      - "kilishi"
+
+  - package-ecosystem: "gomod"
+    directory: "/shaki"
+    schedule:
+      interval: "weekly"
+    target-branch: "main"
+    labels:
+      - "go dependencies"
+      - "shaki"
