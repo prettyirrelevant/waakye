@@ -1,5 +1,5 @@
 name: Lint
-on: [workflow_call, pull_request, push]
+on: [workflow_call, pull_request]
 permissions:
   contents: read
 
