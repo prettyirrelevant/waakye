@@ -173,10 +173,6 @@ def index():
 def fetch_playlist(payload):
     playlist_schema = PlaylistResponseSchema(unknown=EXCLUDE)
     result = ytmusic.get_playlist(playlistId=payload["url"], limit=None)
-    try:
-        playlist_schema.load(result)
-    except ValidationError as e:
-        return {"message": "ValidationError", "errors": e.messages}, 422
 
     return {"data": playlist_schema.dump(result)}
 
@@ -199,7 +195,7 @@ def create_playlist(payload):
 
 @application.post("/tracks/search")
 @validate_request(SearchTrackRequestSchema())
-def search_track(payload): 
+def search_track(payload):
     search_schema = SearchTrackResponseSchema(unknown=EXCLUDE, many=True)
     results = ytmusic.search(
         query=payload["q"],
