@@ -9,11 +9,11 @@
 <h4 align="center">Convert your favorite playlists effortlessly between music streaming platforms.</h4>
 
 <p align="center">
-  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/prettyirrelevant/waakye/ci.yml?branch=main&style=for-the-badge&logo=github">
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/prettyirrelevant/waakye/lint.yml?branch=main&style=for-the-badge&logo=github">
   <img src="https://img.shields.io/badge/Go-1.19+-00ADD8?style=for-the-badge&logo=go" alt="License">
   <img src="https://img.shields.io/badge/Python-3.9+-1f425f.svg?style=for-the-badge&logo=python" alt="Python version">
   <img src="https://img.shields.io/badge/Javascript-F7DF1E.svg?style=for-the-badge&logo=JavaScript&logoColor=white" alt="Javascript version">
-  <img src="https://img.shields.io/github/license/prettyirrelevant/waakye.svg?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/github/license/prettyirrelevant/waakye?style=for-the-badge" alt="License">
 </p>
 
 <p align="center">
