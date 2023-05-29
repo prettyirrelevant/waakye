@@ -38,7 +38,15 @@
 
 ## 🤹 Usage
 <sup>[(Back to top)](#--------waakye--)</sup>
+
 ### CLI
+
+#### Installation
+- From the [Releases](https://github.com/prettyirrelevant/waakye/releases/latest) tab, download the appropriate release archive for your OS and architecture.
+- Extract the archive and move it to your system's PATH
+- Run `waakye --version` and ensure the version returned matches the one downloaded.
+
+#### Demo
 [![asciicast](https://asciinema.org/a/TGtOlT3aGj7TMtaW1e03CfV8n.svg)](https://asciinema.org/a/TGtOlT3aGj7TMtaW1e03CfV8n)
 
 ### UI
