@@ -1,24 +1,28 @@
-brews:
-  - name: waakye
-    homepage: https://github.com/prettyirrelevant/waakye
-    tap:
-      owner: prettyirrelevant
-      name: homebrew-waakye
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
 builds:
-  - env:
-      - CGO_ENABLED=0
+  - id: waakye-cli
+    main: ./main.go
+    binary: waakye
+    env:
+    - CGO_ENABLED=0
     goos:
       - linux
       - windows
       - darwin
 archives:
-  - replacements:
-      386: i386
-      amd64: x86_64
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-  - format: tar.gz
+  - id: waakye
+    format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{ .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
     - goos: windows
       format: zip
@@ -32,3 +36,8 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+
+# The lines beneath this are called `modelines`. See `:help modeline`
+# Feel free to remove those if you don't want/use them.
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
