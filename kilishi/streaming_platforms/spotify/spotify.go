@@ -108,7 +108,6 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 		trackURIs = append(trackURIs, trackIDToURI(entry))
 	}
 
-	fmt.Printf("Track URIs: %+v", trackURIs)
 	// https://github.com/golang/go/wiki/SliceTricks#batching-with-minimal-allocation
 	requestsPayloads := make([][]string, 0, (len(trackURIs)+maximumNumOfTracksPerRequest-1)/maximumNumOfTracksPerRequest)
 	for maximumNumOfTracksPerRequest < len(trackURIs) {
