@@ -19,7 +19,7 @@
     "http-status": "^1.6.2",
     "joi": "^17.9.2",
     "morgan": "^1.10.0",
-    "puppeteer": "^19.11.1",
+    "puppeteer": "^20.4.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "winston": "^3.8.2",
