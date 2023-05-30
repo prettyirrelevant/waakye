@@ -57,7 +57,7 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 		return "", err
 	}
 
-	err = d.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
+	err = d.populatePlaylistWithTracks(playlist.Tracks, response.ID, accessToken)
 	if err != nil {
 		return "", err
 	}

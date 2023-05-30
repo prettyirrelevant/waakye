@@ -3,14 +3,16 @@ package spotify
 import (
 	"errors"
 	"fmt"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/prettyirrelevant/kilishi/utils"
 )
 
-var basePlaylistURL = "https://open.spotify.com/playlist/"
+const (
+	basePlaylistURL              = "https://open.spotify.com/playlist/"
+	maximumNumOfTracksPerRequest = 100
+)
 
 // New initializes a `Spotify` object.
 func New(opts *InitialisationOpts) *Spotify {
@@ -84,6 +86,9 @@ func (s *Spotify) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 // CreatePlaylist uses our internal playlist object to create a playlist on Spotify.
 func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
 	var response spotifyAPICreatePlaylistResponse
+	var trackURIs []string
+	var wg sync.WaitGroup
+
 	err := s.RequestClient.
 		Post(s.Config.BaseAPIURL + "/users/" + s.Config.UserID + "/playlists").
 		SetBearerAuthToken(accessToken).
@@ -99,7 +104,37 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 		return "", err
 	}
 
-	s.populatePlaylistWithTracks(playlist.Tracks, playlist.ID, accessToken)
+	for _, entry := range playlist.Tracks {
+		trackURIs = append(trackURIs, trackIDToURI(entry))
+	}
+
+	fmt.Printf("Track URIs: %+v", trackURIs)
+	// https://github.com/golang/go/wiki/SliceTricks#batching-with-minimal-allocation
+	requestsPayloads := make([][]string, 0, (len(trackURIs)+maximumNumOfTracksPerRequest-1)/maximumNumOfTracksPerRequest)
+	for maximumNumOfTracksPerRequest < len(trackURIs) {
+		trackURIs, requestsPayloads = trackURIs[maximumNumOfTracksPerRequest:], append(requestsPayloads, trackURIs[0:maximumNumOfTracksPerRequest:maximumNumOfTracksPerRequest])
+	}
+	requestsPayloads = append(requestsPayloads, trackURIs)
+	for _, payload := range requestsPayloads {
+		wg.Add(1)
+
+		go func(entry []string) {
+			defer wg.Done()
+			err := s.RequestClient.
+				Post(s.Config.BaseAPIURL + "/playlists/" + response.ID + "/tracks").
+				SetBearerAuthToken(accessToken).
+				SetBodyJsonMarshal(map[string]any{
+					"uris": entry,
+				}).
+				Do()
+
+			if err != nil {
+				return
+			}
+		}(payload)
+	}
+	wg.Wait()
+
 	return basePlaylistURL + response.ID, nil
 }
 
@@ -141,45 +176,6 @@ func (s *Spotify) GetAuthorizationCode(code string) (utils.OauthCredentials, err
 // RequiresAccessToken specifies if the streaming requires Oauth.
 func (*Spotify) RequiresAccessToken() bool {
 	return true
-}
-
-// populatePlaylistWithTracks adds tracks found on Spotify to a newly created playlist.
-//
-// More info can be found here https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
-func (s *Spotify) populatePlaylistWithTracks(tracks []utils.Track, playlistID, accessToken string) {
-	var tracksURL []string
-	var maximumNumOfTracksPerRequest = 100
-
-	for _, entry := range tracks {
-		tracksURL = append(tracksURL, trackIDToURL(entry))
-	}
-
-	// https://github.com/golang/go/wiki/SliceTricks#batching-with-minimal-allocation
-	chunks := make([][]string, 0, (len(tracksURL)+maximumNumOfTracksPerRequest-1)/maximumNumOfTracksPerRequest)
-	for maximumNumOfTracksPerRequest < len(tracksURL) {
-		tracksURL, chunks = tracksURL[maximumNumOfTracksPerRequest:], append(chunks, tracksURL[0:maximumNumOfTracksPerRequest:maximumNumOfTracksPerRequest])
-	}
-
-	var wg sync.WaitGroup
-	for _, entry := range chunks {
-		wg.Add(1)
-
-		go func(chunk []string) {
-			defer wg.Done()
-			err := s.RequestClient.
-				Post(s.Config.BaseAPIURL + "/playlists/" + playlistID + "/tracks").
-				SetBearerAuthToken(accessToken).
-				SetBodyJsonMarshal(map[string]string{
-					"uris": strings.Join(chunk, ","),
-				}).
-				Do()
-
-			if err != nil {
-				return
-			}
-		}(entry)
-	}
-	wg.Wait()
 }
 
 func (s *Spotify) LookupTrack(track utils.Track) (utils.Track, error) {
