@@ -87,11 +87,10 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 	err := s.RequestClient.
 		Post(s.Config.BaseAPIURL + "/users/" + s.Config.UserID + "/playlists").
 		SetBearerAuthToken(accessToken).
-		SetContentType(utils.ApplicationJSON).
-		SetFormData(map[string]string{
+		SetBodyJsonMarshal(map[string]any{
 			"name":        playlist.Title,
 			"description": playlist.Description,
-			"public":      "true",
+			"public":      true,
 		}).
 		Do().
 		Into(&response)
@@ -152,8 +151,7 @@ func (s *Spotify) populatePlaylistWithTracks(tracks []utils.Track, playlistID, a
 			err := s.RequestClient.
 				Post(s.Config.BaseAPIURL + "/playlists/" + playlistID + "/tracks").
 				SetBearerAuthToken(accessToken).
-				SetContentType(utils.ApplicationJSON).
-				SetFormData(map[string]string{
+				SetBodyJsonMarshal(map[string]string{
 					"uris": strings.Join(chunk, ","),
 				}).
 				Do()
