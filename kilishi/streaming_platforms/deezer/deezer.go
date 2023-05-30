@@ -43,12 +43,14 @@ func (d *Deezer) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 
 func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (string, error) {
 	var response deezerAPICreatePlaylistResponse
+	var tracksIDs []string
+
 	err := d.RequestClient.
-		Post(d.Config.BaseAPIURL + "user/me/playlists").
+		Post(d.Config.BaseAPIURL + "/user/me/playlists").
 		SetContentType(utils.ApplicationJSON).
-		SetBearerAuthToken(accessToken).
 		SetQueryParams(map[string]string{
-			"title": playlist.Title,
+			"title":        playlist.Title,
+			"access_token": accessToken,
 		}).
 		Do().
 		Into(&response)
@@ -57,12 +59,27 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 		return "", err
 	}
 
-	err = d.populatePlaylistWithTracks(playlist.Tracks, response.ID, accessToken)
+	for _, track := range playlist.Tracks {
+		tracksIDs = append(tracksIDs, track.ID)
+	}
+
+	var _response any
+	err = d.RequestClient.
+		Post(fmt.Sprintf("%s/playlist/%d/tracks", d.Config.BaseAPIURL, response.ID)).
+		SetBearerAuthToken(accessToken).
+		SetContentType(utils.ApplicationJSON).
+		SetFormData(map[string]string{
+			"songs":        strings.Join(tracksIDs, ","),
+			"access_token": accessToken,
+		}).
+		Do().
+		Into(&_response)
+
 	if err != nil {
 		return "", err
 	}
 
-	return basePlaylistURL + response.ID, nil
+	return fmt.Sprintf("%s%d", basePlaylistURL, response.ID), nil
 }
 
 func (d *Deezer) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
@@ -113,25 +130,4 @@ func (d *Deezer) LookupTrack(track utils.Track) (utils.Track, error) {
 
 	foundTrack = parseSearchTracksResponse(response)[0]
 	return foundTrack, nil
-}
-
-// populatePlaylistWithTracks adds tracks found on Deezer to a newly created playlist.
-func (d *Deezer) populatePlaylistWithTracks(tracks []utils.Track, playlistID, accessToken string) error {
-	var tracksURL []string
-	for _, track := range tracks {
-		tracksURL = append(tracksURL, track.ID)
-	}
-
-	var response any
-	err := d.RequestClient.
-		Post(d.Config.BaseAPIURL + "/playlist/" + playlistID + "/tracks").
-		SetBearerAuthToken(accessToken).
-		SetContentType(utils.ApplicationJSON).
-		SetFormData(map[string]string{
-			"songs": strings.Join(tracksURL, ","),
-		}).
-		Do().
-		Into(&response)
-
-	return err
 }
