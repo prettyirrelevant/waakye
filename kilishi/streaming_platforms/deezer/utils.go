@@ -73,6 +73,15 @@ func parseSearchTracksResponse(data deezerAPISearchTrackResponse) []utils.Track 
 func setupRequestClient(reqClient *req.Client) *req.Client {
 	return reqClient.
 		SetCommonErrorResult(&deezerAPIError{}).
+		SetResultStateCheckFunc(func(resp *req.Response) req.ResultState {
+			if resp.StatusCode >= 400 {
+				return req.ErrorState
+			}
+			if resp.StatusCode == 200 && strings.HasPrefix(resp.String(), "{\"error\":{\"type\":") {
+				return req.ErrorState
+			}
+			return req.SuccessState
+		}).
 		OnAfterResponse(func(client *req.Client, resp *req.Response) error {
 			// There is an underlying error, e.g. network error or unmarshal error.
 			if resp.Err != nil {

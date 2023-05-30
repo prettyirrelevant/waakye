@@ -71,8 +71,8 @@ func parseSearchResponse(response spotifyAPISearchResponse) []utils.Track {
 	return tracks
 }
 
-// trackIDToURL transforms a Spotify ID into URL.
-func trackIDToURL(track utils.Track) string {
+// trackIDToURI transforms a Spotify ID into URL.
+func trackIDToURI(track utils.Track) string {
 	return "spotify:track:" + track.ID
 }
 

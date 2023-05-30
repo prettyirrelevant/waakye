@@ -15,7 +15,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/utils"
 
-	"github.com/prettyirrelevant/kilishi/api/callbacks"
+	"github.com/prettyirrelevant/kilishi/api/auth"
 	"github.com/prettyirrelevant/kilishi/api/database"
 	"github.com/prettyirrelevant/kilishi/api/playlists"
 	"github.com/prettyirrelevant/kilishi/config"
@@ -39,7 +39,7 @@ func main() {
 	aggregatorService := aggregator.New(cfg)
 
 	playlists.RouterV1(apiGroup, aggregatorService, db)
-	callbacks.RouterV1(apiGroup, aggregatorService, db)
+	auth.RouterV1(apiGroup, aggregatorService, db)
 
 	apiGroup.Get("/v1/ping", HealthCheckController)
 

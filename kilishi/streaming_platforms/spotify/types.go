@@ -88,6 +88,13 @@ type spotifyAPIBearerCredentialsResponse struct {
 	ExpiresAt    int64  `json:"expires_at"`
 }
 
+type spotifyAPIRefreshTokenResponse struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	Scope       string `json:"scope"`
+	ExpiresIn   int    `json:"expires_in"`
+}
+
 type spotifyAPIError struct {
 	APIError struct {
 		Status  uint   `json:"status"`
