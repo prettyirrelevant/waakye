@@ -1,4 +1,4 @@
-package callbacks
+package auth
 
 import (
 	"net/http"
@@ -93,5 +93,42 @@ func DeezerOauthCallbackController(ag *aggregator.MusicStreamingPlatformsAggrega
 		return c.
 			Status(http.StatusOK).
 			JSON(presenter.SuccessResponse("deezer token saved successfully", nil))
+	}
+}
+
+func SpotifyRefreshAccessTokenController(ag *aggregator.MusicStreamingPlatformsAggregator, db *database.Database) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		credentialsInDB, err := db.GetDBOauthCredentials(aggregator.Spotify)
+		if err != nil {
+			return c.
+				Status(http.StatusInternalServerError).
+				JSON(presenter.ErrorResponse("unable to retrieve db credentials", err.Error()))
+		}
+
+		var oldCredentials utils.OauthCredentials
+		err = oldCredentials.FromDB(credentialsInDB.Credentials)
+		if err != nil {
+			return c.
+				Status(http.StatusInternalServerError).
+				JSON(presenter.ErrorResponse("unable to parse db credentials", err.Error()))
+		}
+
+		newCredentials, err := ag.Spotify.RefreshAccessToken(oldCredentials)
+		if err != nil {
+			return c.
+				Status(http.StatusInternalServerError).
+				JSON(presenter.ErrorResponse("unable refresh access token", err.Error()))
+		}
+
+		err = db.SetOauthCredentials(aggregator.Spotify, newCredentials)
+		if err != nil {
+			return c.
+				Status(http.StatusInternalServerError).
+				JSON(presenter.ErrorResponse("unable to store newly updated access token", err.Error()))
+		}
+
+		return c.
+			Status(http.StatusOK).
+			JSON(presenter.SuccessResponse("spotify access token refreshed", nil))
 	}
 }

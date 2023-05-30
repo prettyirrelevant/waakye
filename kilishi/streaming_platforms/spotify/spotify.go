@@ -103,6 +103,24 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 	return basePlaylistURL + response.ID, nil
 }
 
+func (s *Spotify) RefreshAccessToken(payload utils.OauthCredentials) (utils.OauthCredentials, error) {
+	var response spotifyAPIRefreshTokenResponse
+
+	err := s.RequestClient.
+		Post(s.Config.AuthenticationURL).
+		SetFormData(map[string]string{"grant_type": "refresh_token", "refresh_token": payload.RefreshToken}).
+		SetBasicAuth(s.Config.ClientID, s.Config.ClientSecret).
+		SetContentType("application/x-www-form-urlencoded").
+		Do().
+		Into(&response)
+
+	if err != nil {
+		return utils.OauthCredentials{}, err
+	}
+
+	return utils.OauthCredentials{AccessToken: response.AccessToken, ExpiresAt: response.ExpiresIn}, nil
+}
+
 func (s *Spotify) GetAuthorizationCode(code string) (utils.OauthCredentials, error) {
 	var response spotifyAPIBearerCredentialsResponse
 	err := s.RequestClient.
