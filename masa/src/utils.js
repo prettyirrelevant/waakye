@@ -2,7 +2,6 @@ const crypto = require("crypto");
 const chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const logger = require("./config/logger");
 const config = require("./config/config");
 
 /**

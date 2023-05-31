@@ -120,6 +120,7 @@ func SpotifyRefreshAccessTokenController(ag *aggregator.MusicStreamingPlatformsA
 				JSON(presenter.ErrorResponse("unable refresh access token", err.Error()))
 		}
 
+		newCredentials.RefreshToken = oldCredentials.RefreshToken
 		err = db.SetOauthCredentials(aggregator.Spotify, newCredentials)
 		if err != nil {
 			return c.
