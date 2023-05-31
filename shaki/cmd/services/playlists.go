@@ -7,7 +7,7 @@ import (
 )
 
 var reqClient = req.C().
-	SetBaseURL("https://kilishi.dokku.prettyirrelevant.wtf/api/v1").
+	SetBaseURL("https://kilishi.fly.dev/api/v1").
 	OnAfterResponse(func(client *req.Client, resp *req.Response) error {
 		if resp.Err != nil {
 			return nil

@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const logger = require("./config/logger");
@@ -32,17 +33,29 @@ const encryptWithAES256CBC = (secretKeyHex, ivHex, plainText) => {
 const getPuppeteerSetup = async () => {
   puppeteer.use(StealthPlugin());
 
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-gpu",
-      "--disable-dev-shm-usage",
-    ],
-  });
-  const page = await browser.newPage();
+  const browser =
+    config.NODE_ENV === "production"
+      ? await puppeteer.launch({
+          args: chromium.args,
+          dumpio: true,
+          defaultViewport: chromium.defaultViewport,
+          executablePath: await chromium.executablePath(),
+          headless: chromium.headless,
+          ignoreHTTPSErrors: true,
+        })
+      : await puppeteer.launch({
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+          ],
+          headless: "new",
+          dumpio: true,
+          executablePath: config.BROWSER_EXECUTABLE_PATH,
+        });
 
+  const page = await browser.newPage();
   return { page, browser };
 };
 
@@ -52,7 +65,19 @@ const getPuppeteerSetup = async () => {
  * @returns A Promise that resolves to a boolean whether the authentication was successful or not and a message.
  */
 const handleMusicServiceAuthentication = async (authenticationParams) => {
-  const { page, browser } = await getPuppeteerSetup();
+  let page, browser;
+  try {
+    const pp = await getPuppeteerSetup();
+    page = pp.page;
+    browser = pp.browser;
+  } catch (error) {
+    logger.error(error);
+    return {
+      isSuccessful: false,
+      statusMsg: "An error occured while setting up puppeteer",
+    };
+  }
+
   try {
     let isSuccessful = false;
     let statusMsg = "";
@@ -82,8 +107,12 @@ const handleMusicServiceAuthentication = async (authenticationParams) => {
     return { isSuccessful, statusMsg };
   } catch (error) {
     logger.error(error);
+    return {
+      isSuccessful: false,
+      statusMsg: "An error occured while running puppeteer",
+    };
   } finally {
-    await browser.close();
+    await browser?.close();
   }
 };
 

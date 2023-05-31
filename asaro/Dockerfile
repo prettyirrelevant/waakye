@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip
 COPY . .
 
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /opt/wheels -r requirements.lock
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /opt/wheels -r requirements.txt
 
 
 #########

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sparticuz/chromium": "^110.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -19,9 +20,11 @@
     "http-status": "^1.6.2",
     "joi": "^17.9.2",
     "morgan": "^1.10.0",
-    "puppeteer": "^19.11.1",
+    "puppeteer-core": "19.6",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-http": "^3.2.0",
     "winston": "^3.8.2",
     "xss-clean": "^0.1.1"
   },

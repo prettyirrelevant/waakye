@@ -1,0 +1,18 @@
+org: prettyirrelevant
+app: masa-serverless
+service: masa-serverless
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  app:
+    handler: src/index.handler
+    events:
+      - http: ANY /
+      - http: ANY /{proxy+}
+    timeout: 30
+
+plugins:
+  - serverless-dotenv-plugin
