@@ -169,7 +169,7 @@ func (s *Spotify) GetAuthorizationCode(code string) (utils.OauthCredentials, err
 		return utils.OauthCredentials{}, err
 	}
 
-	return utils.OauthCredentials{AccessToken: response.AccessToken, RefreshToken: response.RefreshToken, ExpiresAt: int(response.ExpiresAt)}, nil
+	return utils.OauthCredentials{AccessToken: response.AccessToken, RefreshToken: response.RefreshToken, ExpiresAt: response.ExpiresAt}, nil
 }
 
 // RequiresAccessToken specifies if the streaming requires Oauth.
