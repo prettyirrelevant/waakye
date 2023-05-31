@@ -85,7 +85,7 @@ type spotifyAPIClientCredentialsResponse struct {
 type spotifyAPIBearerCredentialsResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-	ExpiresAt    int  `json:"expires_at"`
+	ExpiresAt    int    `json:"expires_at"`
 }
 
 type spotifyAPIRefreshTokenResponse struct {
