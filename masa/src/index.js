@@ -1,6 +1,7 @@
 const app = require("./app");
 const config = require("./config/config");
 const logger = require("./config/logger");
+const serverless = require("serverless-http");
 
 server = app.listen(config.PORT, () => {
   logger.info(`Listening to port ${config.PORT}`);
@@ -31,3 +32,5 @@ process.on("SIGTERM", () => {
     server.close();
   }
 });
+
+module.exports.handler = serverless(app);

@@ -1,13 +1,21 @@
+from gevent import monkey  # isort: skip
+monkey.patch_all()  # isort: skip
+
 import os
 import re
 from functools import wraps
 
 from flask import Flask, request
+from flask_caching import Cache
 from marshmallow import EXCLUDE, Schema, ValidationError, fields, post_dump, post_load, validate
 from werkzeug.exceptions import HTTPException
 from ytmusicapi import YTMusic
 
 application = Flask(__name__)
+application.config['CACHE_TYPE'] = "SimpleCache"
+application.config['CACHE_DEFAULT_TIMEOUT'] = 86400
+
+cache = Cache(application)
 ytmusic = YTMusic(os.getenv("YTMUSIC_HEADERS"))
 
 
@@ -107,6 +115,7 @@ def validate_request(schema_instance):
     Returns:
         callable: The decorated function.
     """
+
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -135,6 +144,7 @@ def requires_auth(f):
     Returns:
         callable: The decorated function.
     """
+
     @wraps(f)
     def decorator(*args, **kwargs):
         if (
@@ -170,6 +180,7 @@ def index():
 
 @application.post("/playlists")
 @validate_request(GetPlaylistRequestSchema())
+@cache.cached()
 def fetch_playlist(payload):
     playlist_schema = PlaylistResponseSchema(unknown=EXCLUDE)
     result = ytmusic.get_playlist(playlistId=payload["url"], limit=None)
@@ -195,6 +206,7 @@ def create_playlist(payload):
 
 @application.post("/tracks/search")
 @validate_request(SearchTrackRequestSchema())
+@cache.cached(timeout=43200)
 def search_track(payload):
     search_schema = SearchTrackResponseSchema(unknown=EXCLUDE, many=True)
     results = ytmusic.search(

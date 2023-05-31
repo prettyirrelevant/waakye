@@ -1,0 +1,16 @@
+# flyctl launch added from .gitignore
+# python generated files
+**/__pycache__
+**/*.py[oc]
+**/build
+**/dist
+**/wheels
+**/*.egg-info
+
+# venv
+**/.venv
+
+**/.DS_Store
+**/.env
+**/.vscode
+fly.toml
