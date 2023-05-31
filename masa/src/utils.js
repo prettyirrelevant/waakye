@@ -3,6 +3,7 @@ const chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const config = require("./config/config");
+const logger = require("./config/logger");
 
 /**
  * Encrypts a plain text using AES-256-CBC encryption with the given secret key and IV
