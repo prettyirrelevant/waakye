@@ -5,8 +5,9 @@ import (
 	"testing"
 
 	"github.com/imroc/req/v3"
-	"github.com/prettyirrelevant/kilishi/streaming_platforms/spotify"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/prettyirrelevant/kilishi/streaming_platforms/spotify"
 )
 
 func TestSpotify(t *testing.T) {
