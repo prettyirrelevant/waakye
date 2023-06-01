@@ -56,7 +56,7 @@ func setupMiddlewares(app *fiber.App, cfg *config.Config) {
 	app.Use(recover.New())
 	app.Use(cache.New(cache.Config{
 		Expiration: 24 * time.Hour,
-		Methods:    []string{fiber.MethodPost},
+		Methods:    []string{fiber.MethodPost, fiber.MethodGet},
 		Next: func(c *fiber.Ctx) bool {
 			noCacheEndpoints := map[string]bool{"/api/v1/playlists": true, "/api/v1/auth/spotify/refresh": true}
 			if _, ok := noCacheEndpoints[c.Path()]; ok && c.Method() == fiber.MethodPost {
