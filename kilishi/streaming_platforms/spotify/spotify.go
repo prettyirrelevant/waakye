@@ -105,7 +105,7 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 	}
 
 	for _, entry := range playlist.Tracks {
-		if ok := utils.Contains(playlist.Tracks, entry); ok {
+		if ok := utils.Contains(trackURIs, entry.ID); ok {
 			trackURIs = append(trackURIs, trackIDToURI(entry))
 		}
 	}

@@ -61,7 +61,7 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 
 	// ensure we do not have duplication.
 	for _, entry := range playlist.Tracks {
-		if ok := utils.Contains(playlist.Tracks, entry); ok {
+		if ok := utils.Contains(tracksIDs, entry.ID); !ok {
 			tracksIDs = append(tracksIDs, entry.ID)
 		}
 	}
@@ -69,11 +69,10 @@ func (d *Deezer) CreatePlaylist(playlist utils.Playlist, accessToken string) (st
 	var _response any
 	err = d.RequestClient.
 		Post(fmt.Sprintf("%s/playlist/%d/tracks", d.Config.BaseAPIURL, response.ID)).
-		SetBearerAuthToken(accessToken).
 		SetContentType(utils.ApplicationJSON).
-		SetBodyJsonMarshal(map[string]string{
-			"songs":        strings.Join(tracksIDs, ","),
+		SetQueryParams(map[string]string{
 			"access_token": accessToken,
+			"songs":        strings.Join(tracksIDs, ","),
 		}).
 		Do().
 		Into(&_response)

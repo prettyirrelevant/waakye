@@ -18,9 +18,9 @@ func CleanTrackTitle(title string) string {
 	return cleanedTitle
 }
 
-func Contains(arr []Track, val Track) bool {
+func Contains(arr []string, val string) bool {
 	for _, i := range arr {
-		if i.ID == val.ID {
+		if val == i {
 			return true
 		}
 	}
