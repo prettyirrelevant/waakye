@@ -52,19 +52,12 @@ func HealthCheckController(c *fiber.Ctx) error {
 
 func setupMiddlewares(app *fiber.App, cfg *config.Config) {
 	app.Use(cors.New())
-	app.Use(logger.New())
-	app.Use(recover.New())
 	app.Use(cache.New(cache.Config{
-		Expiration: 24 * time.Hour,
-		Methods:    []string{fiber.MethodPost, fiber.MethodGet},
+		Expiration: 1440 * time.Minute,
+		Methods:    []string{fiber.MethodGet},
 		Next: func(c *fiber.Ctx) bool {
-			noCachePOSTEndpoints := map[string]bool{"/api/v1/playlists": true, "/api/v1/auth/spotify/refresh": true}
-			if _, ok := noCachePOSTEndpoints[c.Path()]; ok && c.Method() == fiber.MethodPost {
-				return true
-			}
-
-			noCacheGETEndpoints := map[string]bool{"/api/v1/auth/deezer/callback": true, "/api/v1/auth/spotify/callback": true, "/api/v1/ping": true}
-			if _, ok := noCacheGETEndpoints[c.Path()]; ok && c.Method() == fiber.MethodGet {
+			noCacheEndpoints := map[string]bool{"/api/v1/auth/deezer/callback": true, "/api/v1/auth/spotify/callback": true, "/api/v1/ping": true}
+			if _, ok := noCacheEndpoints[c.Path()]; ok && c.Method() == fiber.MethodGet {
 				return true
 			}
 
@@ -77,7 +70,10 @@ func setupMiddlewares(app *fiber.App, cfg *config.Config) {
 			URL:   cfg.DatabaseURL,
 			Reset: false,
 		}),
+		CacheControl: true,
 	}))
+	app.Use(logger.New())
+	app.Use(recover.New())
 }
 
 func setupDatabase(cfg *config.Config) *database.Database {

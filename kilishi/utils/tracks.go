@@ -17,3 +17,13 @@ func CleanTrackTitle(title string) string {
 
 	return cleanedTitle
 }
+
+func Contains(arr []Track, val Track) bool {
+	for _, i := range arr {
+		if i.ID == val.ID {
+			return true
+		}
+	}
+
+	return false
+}
