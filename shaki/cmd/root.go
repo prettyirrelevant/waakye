@@ -9,7 +9,7 @@ import (
 	"github.com/prettyirrelevant/shaki/cmd/commands/history"
 )
 
-const Version = "0.0.3"
+const Version = "0.0.4"
 
 var rootCmd = &cobra.Command{
 	Use:     "waakye",
