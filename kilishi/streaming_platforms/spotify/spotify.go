@@ -105,7 +105,9 @@ func (s *Spotify) CreatePlaylist(playlist utils.Playlist, accessToken string) (s
 	}
 
 	for _, entry := range playlist.Tracks {
-		trackURIs = append(trackURIs, trackIDToURI(entry))
+		if ok := utils.Contains(playlist.Tracks, entry); ok {
+			trackURIs = append(trackURIs, trackIDToURI(entry))
+		}
 	}
 
 	// https://github.com/golang/go/wiki/SliceTricks#batching-with-minimal-allocation

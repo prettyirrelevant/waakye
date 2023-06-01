@@ -36,7 +36,9 @@ func (y *YTMusic) GetPlaylist(playlistURL string) (utils.Playlist, error) {
 func (y *YTMusic) CreatePlaylist(playlist utils.Playlist, _ string) (string, error) {
 	var trackIDs []string
 	for _, entry := range playlist.Tracks {
-		trackIDs = append(trackIDs, entry.ID)
+		if ok := utils.Contains(playlist.Tracks, entry); ok {
+			trackIDs = append(trackIDs, entry.ID)
+		}
 	}
 
 	var response ytmusicAPICreatePlaylistResponse
