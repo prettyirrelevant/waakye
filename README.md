@@ -81,4 +81,4 @@ Contributions of all kinds are welcome! Whether you want to report a bug, fix do
 ## ⚠️ License
 <sup>[(Back to top)](#--------waakye--)</sup>
 
-`waakye` is free and open-source software licensed under the [MIT License](https://github.com/prettyirrelevant/waakye/blob/main/LICENSE.md). Logo is by [Icons8](https://icons8.com/icon/d2CXqaKsX8S8/playlist).
+`waakye` is free and open-source software licensed under the [MIT License](https://github.com/prettyirrelevant/waakye/blob/main/LICENSE.md). Logo is from [Icons8](https://icons8.com/icon/d2CXqaKsX8S8/playlist).
