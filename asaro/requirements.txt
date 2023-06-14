@@ -15,7 +15,7 @@ MarkupSafe==2.1.2
 marshmallow==3.19.0
 packaging==23.1
 python-dotenv==1.0.0
-requests==2.30.0
+requests==2.31.0
 urllib3==2.0.3
 Werkzeug==2.3.4
 ytmusicapi==1.0.2
