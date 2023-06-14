@@ -17,8 +17,8 @@ github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 h1:tfuBGBXKqDEe
 github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572/go.mod h1:9Pwr4B2jHnOSGXyyzV8ROjYa2ojvAY6HCGYYfMoC3Ls=
 github.com/gofiber/fiber/v2 v2.44.0 h1:Z90bEvPcJM5GFJnu1py0E1ojoerkyew3iiNJ78MQCM8=
 github.com/gofiber/fiber/v2 v2.44.0/go.mod h1:VTMtb/au8g01iqvHyaCzftuM/xmZgKOZCtFzz6CdV9w=
-github.com/gofiber/storage/redis/v2 v2.0.1 h1:wMOd1n1MNMV8+oLho/TZbZEY43ICKWxzTm1ueyczF8Q=
-github.com/gofiber/storage/redis/v2 v2.0.1/go.mod h1:QmJ5Rq4+CZepXE1SpfqbhJsCWeSbMupJPsTv/6kVBQ0=
+github.com/gofiber/storage/redis/v2 v2.0.2 h1:cTi3iwxdaNF8oUmFO8LYEx0ZMlOhbzaj0oP9AZnYO6Q=
+github.com/gofiber/storage/redis/v2 v2.0.2/go.mod h1:Qr0p2kHbkLLHWSDwxxRBVqmJWuhlDkVnCArpqD0I8No=
 github.com/gofiber/utils v1.1.0 h1:vdEBpn7AzIUJRhe+CiTOJdUcTg4Q9RK+pEa0KPbLdrM=
 github.com/golang/mock v1.6.0 h1:ErTB+efbowRARo13NNdxyJji2egdxLGQhRaY+DUumQc=
 github.com/golang/mock v1.6.0/go.mod h1:p6yTPP+5HYm5mzsMV8JkE6ZKdX+/wYM6Hr+LicevLPs=
