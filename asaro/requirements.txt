@@ -19,5 +19,5 @@ requests==2.31.0
 urllib3==2.0.3
 Werkzeug==2.3.6
 ytmusicapi==1.1.0
-zope.event==4.6
+zope.event==5.0
 zope.interface==6.0
