@@ -49,6 +49,7 @@ func parseGetPlaylistResponse(response ytmusicAPIGetPlaylistResponse) utils.Play
 func setupRequestClient(reqClient *req.Client, baseURL string) *req.Client {
 	return reqClient.
 		SetBaseURL(baseURL).
+		EnableDumpEachRequest().
 		SetCommonContentType(utils.ApplicationJSON).
 		SetCommonErrorResult(&ytmusiAPIError{}).
 		OnAfterResponse(func(client *req.Client, resp *req.Response) error {
@@ -64,7 +65,8 @@ func setupRequestClient(reqClient *req.Client, baseURL string) *req.Client {
 			// Edge case: neither an error state response nor a success state response,
 			// dump content to help troubleshoot.
 			if !resp.IsSuccessState() {
-				return fmt.Errorf("bad response, raw dump:\n%s", resp.Dump())
+				resp.Err = fmt.Errorf("bad status: %s\nraw content:\n%s", resp.Status, resp.Dump())
+				return nil
 			}
 			return nil
 		}).

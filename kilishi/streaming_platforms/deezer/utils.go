@@ -72,6 +72,7 @@ func parseSearchTracksResponse(data deezerAPISearchTrackResponse) []utils.Track 
 
 func setupRequestClient(reqClient *req.Client) *req.Client {
 	return reqClient.
+		EnableDumpEachRequest().
 		SetCommonErrorResult(&deezerAPIError{}).
 		SetResultStateCheckFunc(func(resp *req.Response) req.ResultState {
 			if resp.StatusCode >= 400 {
@@ -95,7 +96,8 @@ func setupRequestClient(reqClient *req.Client) *req.Client {
 			// Edge case: neither an error state response nor a success state response,
 			// dump content to help troubleshoot.
 			if !resp.IsSuccessState() {
-				return fmt.Errorf("bad response, raw dump:\n%s", resp.Dump())
+				resp.Err = fmt.Errorf("bad status: %s\nraw content:\n%s", resp.Status, resp.Dump())
+				return nil
 			}
 			return nil
 		}).
