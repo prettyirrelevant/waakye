@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/prettyirrelevant/shaki/cmd/commands/convert"
-	"github.com/prettyirrelevant/shaki/cmd/commands/history"
 )
 
 const Version = "0.0.4"
@@ -26,5 +25,4 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(convert.ConvertCmd)
-	rootCmd.AddCommand(&history.HistoryCommand)
 }

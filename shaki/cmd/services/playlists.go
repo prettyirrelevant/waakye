@@ -8,6 +8,7 @@ import (
 
 var reqClient = req.C().
 	SetBaseURL("https://kilishi.fly.dev/api/v1").
+	EnableDumpEachRequest().
 	OnAfterResponse(func(client *req.Client, resp *req.Response) error {
 		if resp.Err != nil {
 			return nil
@@ -17,11 +18,15 @@ var reqClient = req.C().
 			return nil
 		}
 		if !resp.IsSuccessState() {
-			return fmt.Errorf("bad response, raw dump:\n%s", resp.Dump())
+			resp.Err = fmt.Errorf("bad status: %s\nraw content:\n%s", resp.Status, resp.String())
+			return nil
 		}
 		return nil
 	}).
-	SetCommonRetryCount(2)
+	SetCommonRetryCount(2).
+	SetCommonRetryCondition(func(resp *req.Response, err error) bool {
+		return resp.StatusCode < 500
+	})
 
 func GetPlaylist(url, platform string) (APIGetPlaylistResponse, error) {
 	var response APIGetPlaylistResponse

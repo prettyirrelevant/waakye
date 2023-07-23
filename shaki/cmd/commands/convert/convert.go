@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/charmbracelet/log"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 
@@ -31,19 +32,24 @@ var ConvertCmd = &cobra.Command{
 		source := getStreamingPlatformInput("Source")
 		destination := getStreamingPlatformInput("Destination")
 		if source == destination {
-			panic(ErrPlaylistSourceAndDestinationSame)
+			log.Error(ErrPlaylistSourceAndDestinationSame)
+			return
 		}
 
 		// get the playlist
 		s := spinner.New(spinner.CharSets[11], 10*time.Millisecond)
 		s.Suffix = fmt.Sprintf(" Fetching playlist %s on %s...\n", url, source)
-		s.Color("green", "bold") //nolint:errcheck // error check is needless here
+		setColorErr := s.Color("green", "bold")
+		if setColorErr != nil {
+			log.Warn("Unable to set color for spinner", "err", setColorErr)
+		}
 		s.Start()
 
 		playlist, err := services.GetPlaylist(url, source)
 		s.Stop()
 		if err != nil {
-			panic(fmt.Errorf("an error occurred while fetching the playlist: %s", err.Error()))
+			log.Error("An error occurred while fetching the playlist", "err", err)
+			return
 		}
 
 		// now search for each tracks in the playlist
@@ -81,11 +87,10 @@ var ConvertCmd = &cobra.Command{
 			}
 		}
 
-		fmt.Printf("Found %d tracks from a total of %d.\n", len(successfulSearches), len(playlist.Data.Tracks))
+		log.Info("Playlist tracks conversion info:", "Tracks found", len(successfulSearches), "Total number of tracks", len(playlist.Data.Tracks))
 		if len(playlist.Data.Tracks)-len(successfulSearches) > 0 {
-			fmt.Println("Details of tracks not found below:")
 			for _, v := range failedSearchesIndex {
-				fmt.Printf("Track %d -> Title: %s Artists: %+v\n", v, playlist.Data.Tracks[v].Title, playlist.Data.Tracks[v].Artists)
+				log.Info("Track not found info:", "Track", int(v), "Title", playlist.Data.Tracks[v].Title, "Artists", playlist.Data.Tracks[v].Artists)
 			}
 		}
 
@@ -96,10 +101,11 @@ var ConvertCmd = &cobra.Command{
 		createPlaylistResp, err := services.CreatePlaylist(playlist.Data.Title, playlist.Data.Description, destination, successfulSearches)
 		s.Stop()
 		if err != nil {
-			panic(err)
+			log.Error("An error occured during playlist creation", "err", err)
+			return
 		}
 
-		fmt.Printf("Playlist created successfully ;)\nURL -> %s\n", createPlaylistResp.Data)
+		log.Info("Playlist created successfully ;)", "URL", createPlaylistResp.Data)
 	},
 }
 
