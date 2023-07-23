@@ -120,6 +120,20 @@ linters-settings:
     lines: 100
     statements: 50
 
+  depguard:
+    rules:
+        main:
+          files:
+            - $all
+          allow:
+            - $gostd
+            - github.com/prettyirrelevant
+            - github.com/spf13/cobra
+            - github.com/charmbracelet/log
+            - github.com/imroc/req/v3
+            - github.com/briandowns/spinner
+            - github.com/manifoldco/promptui
+
 issues:
   max-per-linter: 0
   max-same: 0

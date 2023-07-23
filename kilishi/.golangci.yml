@@ -122,6 +122,20 @@ linters-settings:
     lines: 100
     statements: 50
 
+  depguard:
+    rules:
+        main:
+          files:
+            - $all
+          allow:
+            - $gostd
+            - github.com/prettyirrelevant
+            - github.com/gofiber
+            - github.com/redis
+            - github.com/imroc/req/v3
+            - github.com/caarlos0/env/v7
+            - github.com/joho/godotenv/autoload
+
 issues:
   max-per-linter: 0
   max-same: 0

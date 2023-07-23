@@ -10,24 +10,25 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: "1.20"
-          cache: false
+
       - uses: actions/checkout@v3
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.52.2
-          working-directory: kilishi
+          working-directory: ./kilishi
 
   lint_shaki:
+    needs: [lint_kilishi]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-go@v4
         with:
           go-version: "1.20"
-          cache: false
+
       - uses: actions/checkout@v3
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.52.2
-          working-directory: shaki
+          working-directory: ./shaki
