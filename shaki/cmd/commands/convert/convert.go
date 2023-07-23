@@ -90,7 +90,7 @@ var ConvertCmd = &cobra.Command{
 		log.Info("Playlist tracks conversion info:", "Tracks found", len(successfulSearches), "Total number of tracks", len(playlist.Data.Tracks))
 		if len(playlist.Data.Tracks)-len(successfulSearches) > 0 {
 			for _, v := range failedSearchesIndex {
-				log.Info("Track not found info:", "Track", int(v), "Title", playlist.Data.Tracks[v].Title, "Artists", playlist.Data.Tracks[v].Artists)
+				log.Info("Track not found info:", "Track", v, "Title", playlist.Data.Tracks[v].Title, "Artists", playlist.Data.Tracks[v].Artists)
 			}
 		}
 
@@ -101,7 +101,7 @@ var ConvertCmd = &cobra.Command{
 		createPlaylistResp, err := services.CreatePlaylist(playlist.Data.Title, playlist.Data.Description, destination, successfulSearches)
 		s.Stop()
 		if err != nil {
-			log.Error("An error occured during playlist creation", "err", err)
+			log.Error("An error occurred during playlist creation", "err", err)
 			return
 		}
 
