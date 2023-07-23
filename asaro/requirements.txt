@@ -2,7 +2,7 @@ blinker==1.6.2
 cachelib==0.10.2
 certifi==2023.5.7
 charset-normalizer==3.2.0
-click==8.1.5
+click==8.1.6
 Flask==2.3.2
 Flask-Caching==2.0.2
 gevent==23.7.0
