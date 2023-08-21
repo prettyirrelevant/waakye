@@ -8,7 +8,7 @@ require (
 	github.com/gofiber/storage/redis/v2 v2.0.3
 	github.com/imroc/req/v3 v3.37.2
 	github.com/joho/godotenv v1.5.1
-	github.com/redis/go-redis/v9 v9.0.5
+	github.com/redis/go-redis/v9 v9.1.0
 )
 
 require (
