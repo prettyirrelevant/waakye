@@ -20,7 +20,7 @@
     "http-status": "^1.6.2",
     "joi": "^17.9.2",
     "morgan": "^1.10.0",
-    "puppeteer-core": "19.6",
+    "puppeteer-core": "21.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "serverless-dotenv-plugin": "^6.0.0",
