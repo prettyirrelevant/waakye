@@ -17,7 +17,7 @@ packaging==23.1
 python-dotenv==1.0.0
 requests==2.31.0
 urllib3==2.0.3
-Werkzeug==2.3.6
+Werkzeug==3.0.0
 ytmusicapi==1.1.1
 zope.event==5.0
 zope.interface==6.0
